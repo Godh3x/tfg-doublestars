@@ -1,2 +1,2 @@
-## Based on the code distributed by tensorflow in https://github.com/tensorflow/models using Apache License 2.0
-The code is located under models/samples/core/get_started/
+## Based on the code distributed by (tensorflow)[https://www.tensorflow.org/tutorials/layers]
+## Data reader done by (kwotsin)[https://kwotsin.github.io/tech/2017/01/29/tfrecords.html]
