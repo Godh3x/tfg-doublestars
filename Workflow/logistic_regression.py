@@ -6,6 +6,7 @@ import os
 import sys
 import logging
 import settings
+from threading import Event
 
 # get the logger for the current module
 logger = logging.getLogger('workflow.logistic_regression')
@@ -44,17 +45,17 @@ def predict(model, file):
   # return the prediction
   return model.predict(X)
 
-def run(din):
+def run(din, stop_event):
   '''Infinite loop executing loop_step()'''
   logger.info('Running logistic regression')
   # setup history logging
   logging_setup()
 
-  while True:
-    loop_step(din)
+  while not stop_event.is_set():
+    loop_step(din, stop_event)
     show = False
 
-def loop_step(din):
+def loop_step(din, stop_event):
   '''For every csv file in din make a prediction, if predicted as posible double
   the name is stored in accepted file.'''
   # input directory check
@@ -92,11 +93,14 @@ def loop_step(din):
     else:
       logger.info('Star {0} predicted as: not double')
     hist.info(fname)
+    # this check will allow stop events to break the execution sooner
+    if stop_event.is_set():
+      return 0
 
 if __name__ == '__main__':
   try:
     settings.init()
-    run(settings.dcsv)
+    run(settings.dcsv, Event())
   except KeyboardInterrupt: # preven Ctrl+C exceptions
     print('Interruption detected, closing...')
     try:

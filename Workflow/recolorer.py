@@ -3,6 +3,7 @@ import sys
 import logging
 from PIL import Image, ImageDraw
 import settings
+from threading import Event
 
 # get the logger for the current module
 logger = logging.getLogger('workflow.recolorer')
@@ -92,17 +93,17 @@ def process(file, din, dout, dout2):
   # register file in history log to prevent future processing
   hist.info('{0}'.format(file))
 
-def run(listfile, din, dout, dout2):
+def run(listfile, din, dout, dout2, stop_event):
   '''Infinite loop executing loop_step()'''
   logger.info('Running recolorer')
   # setup history logging
   logging_setup()
 
-  while True:
-    loop_step(listfile, din, dout, dout2)
+  while not stop_event.is_set():
+    loop_step(listfile, din, dout, dout2, stop_event)
     show = False
 
-def loop_step(listfile, din, dout, dout2):
+def loop_step(listfile, din, dout, dout2, stop_event):
   '''Recolors every jpg file listed in listfile taking the associated image from din, for each file creates a png file in dout.
   Also creates two pngs *_f, containing only red, white and black pixels, and *_l,containing only blue, white and black pixels'''
 
@@ -137,7 +138,11 @@ def loop_step(listfile, din, dout, dout2):
         continue
       # recolor the picture
       process(fname, din, dout, dout2)
+      # remove the original picture
       os.remove('{0}/{1}'.format(din,fname))
+      # this check will allow stop events to break the execution sooner
+      if stop_event.is_set():
+        return 0;
 
 if __name__ == '__main__':
   try:

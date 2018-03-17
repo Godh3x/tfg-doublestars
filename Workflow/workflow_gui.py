@@ -7,7 +7,7 @@ import pixel_counter
 import recolorer
 import logistic_regression
 from threading import Thread, Event
-from time import sleep
+import tkinter as tk
 
 # create logger with 'workflow'
 logger = logging.getLogger('workflow')
@@ -15,6 +15,9 @@ logger = logging.getLogger('workflow')
 # threads and stop handlers
 threads = []
 stop_events = []
+
+# create the main window
+window = tk.Tk()
 
 def prepare_threads():
   '''Prepares a thread for every step and insert them in threads, in order, also create a
@@ -39,26 +42,32 @@ def steps():
   for t in threads:
     t.start()
 
-def main():
-  try:
-    settings.init()
-    steps()
-
-    while True:
-      sleep(1)
-  except KeyboardInterrupt: # preven Ctrl+C exceptions
-    print('Interruption detected, stopping threads and closing...')
-    # stop threads
+def on_close():
+  '''Define window actions on close'''
+  # stop threads
+  if len(threads) != 0:
     for e in stop_events:
       e.set()
-    # wait for threads to stop
-    for t in threads:
-      t.join()
-    # exit
+  # exit
+  window.destroy()
+
+def run():
+  settings.init()
+  steps()
+
+def main():
+
+  # set on_close() as the handler for window
+  window.protocol('WM_DELETE_WINDOW', on_close)
+  # run
+  window.mainloop()
+
+if __name__ == '__main__':
+  try:
+    main()
+  except KeyboardInterrupt: # preven Ctrl+C exceptions
+    print('Interruption detected, closing...')
     try:
       sys.exit(0)
     except SystemExit:
       os._exit(0)
-
-if __name__ == '__main__':
-  main()

@@ -3,6 +3,7 @@ import sys
 import logging
 from PIL import Image
 import settings
+from threading import Event
 
 # get the logger for the current module
 logger = logging.getLogger('workflow.pixel_counter')
@@ -97,17 +98,17 @@ def process(file, din, dout):
   # register file in history log to prevent future processing
   hist.info('{0}'.format(file))
 
-def run(din, dout):
+def run(din, dout, stop_event):
   '''Infinite loop executing loop_step()'''
   logger.info('Running pixel counter')
   # setup history logging
   logging_setup()
 
-  while True:
-    loop_step(din, dout)
+  while not stop_event.is_set():
+    loop_step(din, dout, stop_event)
     show = False
 
-def loop_step(din, dout):
+def loop_step(din, dout, stop_event):
   '''Counts the number of pixels for every jpg file inside din, for each file creates a csv in dout.'''
 
   # input directory check
@@ -140,11 +141,14 @@ def loop_step(din, dout):
       continue
     # count the pixels in the file
     process(fname, din, dout)
+    # this check will allow stop events to break the execution sooner
+    if stop_event.is_set():
+      return 0
 
 if __name__ == '__main__':
   try:
     settings.init()
-    run(settings.dpics, settings.dcsv)
+    run(settings.dpics, settings.dcsv, Event())
   except KeyboardInterrupt: # preven Ctrl+C exceptions
     print('Interruption detected, closing...')
     try:
