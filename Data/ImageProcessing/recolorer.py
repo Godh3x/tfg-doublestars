@@ -1,6 +1,8 @@
 import os
+import sys
 import logging
 from PIL import Image, ImageDraw
+import settings
 
 # get the logger for the current module
 logger = logging.getLogger('workflow.recolorer')
@@ -8,6 +10,8 @@ logger = logging.getLogger('workflow.recolorer')
 # history file to prevent duplicates
 histfile = 'recolorer_history.log'
 hist = logging.getLogger('recolorer_history')
+
+show = True
 
 def logging_setup():
   '''Sets up the logger values for every step in the workflow'''
@@ -21,6 +25,8 @@ def logging_setup():
   fh.setFormatter(formatter)
   # add the handlers to the logger
   hist.addHandler(fh)
+  # ensure this function is only used once
+  logging_setup.__code__ = (lambda:None).__code__
 
 def colorgroup(pixel):
   '''Assign the given pixel to one of the known color groups(red, green, blue, bkack or white)'''
@@ -87,21 +93,28 @@ def process(file, din, dout, dout2):
   hist.info('{0}'.format(file))
 
 def run(listfile, din, dout, dout2):
-  '''Recolors every jpg file listed in listfile taking the associated image from din, for each file creates a png file in dout.
-  Also creates two pngs *_f, containing only red, white and black pixels, and *_l,containing only blue, white and black pixels'''
+  '''Infinite loop executing loop_step()'''
   logger.info('Running recolorer')
   # setup history logging
   logging_setup()
 
+  while True:
+    loop_step(listfile, din, dout, dout2)
+    show = False
+
+def loop_step(listfile, din, dout, dout2):
+  '''Recolors every jpg file listed in listfile taking the associated image from din, for each file creates a png file in dout.
+  Also creates two pngs *_f, containing only red, white and black pixels, and *_l,containing only blue, white and black pixels'''
+
   # input list file check
   if not os.path.isfile(listfile):
-    logger.warning('Input list file, {0}, not found.'.format(din))
-    return 0;
+    return 0
 
   # input directory check
   if not os.path.isdir(din):
-    logger.critical('Image input directory, {0}, not found.'.format(din))
-    return -99;
+    if show:
+      logger.critical('Image input directory, {0}, not found.'.format(din))
+    return 0
 
   # output directory check
   if not os.path.isdir(dout):
@@ -121,7 +134,18 @@ def run(listfile, din, dout, dout2):
       fname = file[:-1]
       # ignore file if it has been processed before
       if fname in open(histfile).read():
-        logger.debug('Skipped {0} because it has been processed before'.format(fname))
         continue
       # recolor the picture
       process(fname, din, dout, dout2)
+      os.remove('{0}/{1}'.format(din,fname))
+
+if __name__ == '__main__':
+  try:
+    settings.init()
+    run(settings.accepted, settings.dpics, settings.drecolor, settings.dprecolor)
+  except KeyboardInterrupt: # preven Ctrl+C exceptions
+    print('Interruption detected, closing...')
+    try:
+      sys.exit(0)
+    except SystemExit:
+      os._exit(0)

@@ -1,6 +1,8 @@
 import os
+import sys
 import logging
 from PIL import Image
+import settings
 
 # get the logger for the current module
 logger = logging.getLogger('workflow.pixel_counter')
@@ -8,6 +10,8 @@ logger = logging.getLogger('workflow.pixel_counter')
 # history file to prevent duplicates
 histfile = 'pixel_counter_history.log'
 hist = logging.getLogger('pixel_counter_history')
+
+show = True
 
 def logging_setup():
   '''Sets up the logger values for every step in the workflow'''
@@ -21,6 +25,8 @@ def logging_setup():
   fh.setFormatter(formatter)
   # add the handlers to the logger
   hist.addHandler(fh)
+  # ensure this function is only used once
+  logging_setup.__code__ = (lambda:None).__code__
 
 def colorgroup(pixel):
   '''Assign the given pixel to one of the known color groups(red, green, blue, bkack or white)'''
@@ -58,14 +64,14 @@ def formatter(dict, pixels, out):
   #store them in the file
   out.write('{0},{1},{2},{3},{4}\n'.format(red, blue, white, prop_b_r, prop_w_r))
 
-def process(file, din, dout, dbin):
+def process(file, din, dout):
   '''Count the number of red, green, blue, black and white pixels in a given file'''
   # dictionary to store the pixel count for every recognised color
-  count = {  'red' : 0,
-           'green' : 0,
-            'blue' : 0,
-           'black' : 0,
-           'white' : 0}
+  count = {  'red': 0,
+           'green': 0,
+            'blue': 0,
+           'black': 0,
+           'white': 0}
   # open the jpg file
   im = Image.open('{0}/{1}'.format(din,file)).convert('RGB')
   # get the width and height of the opened image
@@ -79,8 +85,9 @@ def process(file, din, dout, dbin):
       count[color] += 1
   # remove the file if there's more white than black or there isn't any red or blue
   if count['white'] > count['black'] or (count['red'] == 0 and count['blue'] == 0):
-    logger.debug("Moved {0} to {1} because there was more white than black or there wasn't any red or blue".format(file, dbin))
-    os.rename('{0}/{1}'.format(din,file), '{0}/{1}'.format(dbin,file))
+    logger.debug("Deleted {0} because there was more white than black or there wasn't any \
+      red or blue".format(file, dbin))
+    os.remove('{0}/{1}'.format(din,file))
     return
 
   # create the associated csv in dout and write the results
@@ -90,27 +97,29 @@ def process(file, din, dout, dbin):
   # register file in history log to prevent future processing
   hist.info('{0}'.format(file))
 
-def run(din, dout, dbin):
-  '''Counts the number of pixels for every jpg file inside din, for each file creates a csv in dout.
-  If any file is to be deleted it is moved to dbin.'''
+def run(din, dout):
+  '''Infinite loop executing loop_step()'''
   logger.info('Running pixel counter')
   # setup history logging
   logging_setup()
 
+  while True:
+    loop_step(din, dout)
+    show = False
+
+def loop_step(din, dout):
+  '''Counts the number of pixels for every jpg file inside din, for each file creates a csv in dout.'''
+
   # input directory check
   if not os.path.isdir(din):
-    logger.critical('Input directory, {0}, not found.'.format(din))
-    return -99;
+    if show:
+      logger.critical('Input directory, {0}, not found.'.format(din))
+    return 0
 
   # output directory check
   if not os.path.isdir(dout):
     logger.warning('Output directory, {0}, not found. Creating...'.format(dout))
     os.makedirs(dout)
-
-  # bin directory check
-  if not os.path.isdir(dbin):
-    logger.warning('Bin directory, {0}, not found. Creating...'.format(dbin))
-    os.makedirs(dbin)
 
   # encrypt input directory file
   encdin = os.fsencode(din)
@@ -123,12 +132,22 @@ def run(din, dout, dbin):
       continue
     # ignore file if it has been processed before
     if fname in open(histfile).read():
-      logger.debug('Skipped {0} because it has been processed before'.format(fname))
       continue
-    # move to bin the jpg file if the size is 0
+    # delete the jpg file if the size is 0
     if os.stat('{0}/{1}'.format(din,fname)).st_size == 0:
-      logger.debug('Moved {0} to bin because file size is 0'.format(fname))
-      os.rename('{0}/{1}'.format(din,fname), '{0}/{1}'.format(dbin,fname))
+      logger.debug('Deleted {0} because file size is 0'.format(fname))
+      os.remove('{0}/{1}'.format(din,fname))
       continue
     # count the pixels in the file
-    process(fname, din, dout, dbin)
+    process(fname, din, dout)
+
+if __name__ == '__main__':
+  try:
+    settings.init()
+    run(settings.dpics, settings.dcsv)
+  except KeyboardInterrupt: # preven Ctrl+C exceptions
+    print('Interruption detected, closing...')
+    try:
+      sys.exit(0)
+    except SystemExit:
+      os._exit(0)
