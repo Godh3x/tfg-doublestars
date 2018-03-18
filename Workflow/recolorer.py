@@ -147,7 +147,7 @@ def loop_step(listfile, din, dout, dout2, stop_event):
 if __name__ == '__main__':
   try:
     settings.init()
-    run(settings.accepted, settings.dpics, settings.drecolor, settings.dprecolor)
+    run(settings.accepted, settings.dpics, settings.drecolor, settings.dprecolor, Event())
   except KeyboardInterrupt: # preven Ctrl+C exceptions
     print('Interruption detected, closing...')
     try:
