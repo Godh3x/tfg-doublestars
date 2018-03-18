@@ -18,6 +18,5 @@ def main():
     if fname[-4:] == '.log':
       os.remove(fname)
 
-
 if __name__ == '__main__':
   main()
