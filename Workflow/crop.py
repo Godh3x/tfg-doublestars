@@ -31,53 +31,57 @@ def logging_setup():
     logging_setup.__code__ = (lambda: None).__code__
 
 
-def process(file, din, dout, only_center):
-    '''Reads the image from din/file, then saves the result of cropping in
-    dout/file. The number of tiles is defined by the ntiles variable in settings.'''
-    tiles = imgsl.slice('{0}/{1}'.format(din, file),
+def process(file, input, output, only_center):
+    '''Reads the image from input/file, then saves the result of cropping in
+    output/file. The number of tiles is defined by the ntiles variable in settings.'''
+    tiles = imgsl.slice('{0}/{1}'.format(input, file),
                         settings.ntiles, save=False)
     if only_center:
-        imgsl.save_tiles((tiles[4],), directory=dout,
+        imgsl.save_tiles((tiles[4],), directory='{0}_tmp'.format(output),
                          prefix=file[:-4], format='jpg')
-        os.rename('{0}/{1}_02_02.jpg'.format(dout,
-                                             file[:-4]), '{0}/{1}'.format(dout, file))
+        os.rename('{0}_tmp/{1}_02_02.jpg'.format(output,
+                                                 file[:-4]), '{0}/{1}'.format(output, file))
     else:
-        imgsl.save_tiles(tiles, directory=dout, prefix=file, format='jpg')
+        imgsl.save_tiles(tiles, directory=output, prefix=file, format='jpg')
 
     # register file in history log to prevent future processing
     hist.info('{0}'.format(file))
 
 
-def run(din, dout, stop_event, only_center=True):
+def run(input, output, stop_event, only_center=True):
     '''Infinite loop executing loop_step()'''
     logger.info('Running crop')
     # setup history logging
     logging_setup()
 
     while not stop_event.is_set():
-        loop_step(din, dout, stop_event, only_center)
+        loop_step(input, output, stop_event, only_center)
         show = False
 
 
-def loop_step(din, dout, stop_event, only_center):
-    '''Crops every jpg file inside din, for each file creates a jpg file in dout.'''
+def loop_step(input, output, stop_event, only_center):
+    '''Crops every jpg file inside input, for each file creates a jpg file in output.'''
 
     # input directory check
-    if not os.path.isdir(din):
+    if not os.path.isdir(input):
         if show:
-            logger.critical('Input directory, {0}, not found.'.format(din))
+            logger.critical('input directory, {0}, not found.'.format(input))
         return 0
 
     # output directory check
-    if not os.path.isdir(dout):
+    if not os.path.isdir(output):
         logger.warning(
-            'Output directory, {0}, not found. Creating...'.format(dout))
-        os.makedirs(dout)
+            'Output directory, {0}, not found. Creating...'.format(output))
+        os.makedirs(output)
+
+    # temporal output directory check
+    if not os.path.isdir('{0}_tmp'.format(output)):
+        os.makedirs('{0}_tmp'.format(output))
 
     # encrypt input directory file
-    encdin = os.fsencode(din)
+    encinput = os.fsencode(input)
     # loop through every element in input directory
-    for file in os.listdir(encdin):
+    for file in os.listdir(encinput):
         # decrypt file name
         fname = os.fsdecode(file)
         # ignore file if it doesn't end in jpg
@@ -87,12 +91,12 @@ def loop_step(din, dout, stop_event, only_center):
         if fname in open(histfile).read():
             continue
         # delete the jpg file if the size is 0
-        if os.stat('{0}/{1}'.format(din, fname)).st_size == 0:
+        if os.stat('{0}/{1}'.format(input, fname)).st_size == 0:
             logger.debug('Deleted {0} because file size is 0'.format(fname))
-            os.remove('{0}/{1}'.format(din, fname))
+            os.remove('{0}/{1}'.format(input, fname))
             continue
         # count the pixels in the file
-        process(fname, din, dout, only_center)
+        process(fname, input, output, only_center)
         # this check will allow stop events to break the execution sooner
         if stop_event.is_set():
             return 0
@@ -102,7 +106,7 @@ if __name__ == '__main__':
     try:
         settings.init()
         run(settings.dpics, settings.dcrop, Event())
-    except KeyboardInterrupt:  # preven Ctrl+C exceptions
+    except Keyboarinputterrupt:  # preven Ctrl+C exceptions
         print('Interruption detected, closing...')
         try:
             sys.exit(0)

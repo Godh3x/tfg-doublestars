@@ -11,7 +11,8 @@ def main():
     shutil.rmtree(settings.dcsv, True)
     shutil.rmtree(settings.drecolor, True)
     shutil.rmtree(settings.dprecolor, True)
-    shutil.rmtree(settings.dzoom, True)
+    shutil.rmtree(settings.dcrop, True)
+    shutil.rmtree('{0}_tmp'.format(settings.dcrop), True)
     if os.path.isfile(settings.accepted):
         os.remove(settings.accepted)
 
