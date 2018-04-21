@@ -62,9 +62,9 @@ def formatter(dict, pixels, out):
     '''Given a dictionary of colors and the total of pixels write in out the desired normalized output'''
     out.write('%red,%blue,%white,prop_blue_red,prop_white_red\n')  # header
     # get the normalized values and proportions
-    red = dict['red']/pixels
-    blue = dict['blue']/pixels
-    white = dict['white']/pixels
+    red = (dict['red']/pixels)*100
+    blue = (dict['blue']/pixels)*100
+    white = (dict['white']/pixels)*100
     prop_b_r = blue/red
     prop_w_r = white/red
     # store them in the file
