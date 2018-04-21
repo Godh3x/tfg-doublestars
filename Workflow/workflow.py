@@ -34,7 +34,7 @@ def define_flow():
         ],
         'callback': lambda: None,
     }
-
+    '''
     flow['crop'] = {
         'input': [
             flow['dummy']['output'][0],
@@ -44,10 +44,10 @@ def define_flow():
         ],
         'callback': crop.run,
     }
-
+    '''
     flow['pixel_counter'] = {
         'input': [
-            flow['crop']['output'][0]
+            flow['dummy']['output'][0]
         ],
         'output': [
             settings.dcsv
@@ -67,7 +67,7 @@ def define_flow():
 
     flow['recolorer'] = {
         'input': [
-            flow['crop']['output'][0],
+            flow['dummy']['output'][0],
             flow['logistic_regression']['output'][0]
         ],
         'output': [

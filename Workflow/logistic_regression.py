@@ -90,7 +90,7 @@ def loop_step(input, output, stop_event):
         p = predict(model, '{0}/{1}'.format(input, fname))
         os.remove('{0}/{1}'.format(input, fname))
         # if prediction is 1 store it as accepted
-        if p == 1:
+        if p[0] == 1:
             with open(output, 'a') as out:
                 out.write('{0}.jpg\n'.format(fname[:-4]))
             logger.info('Star {0} predicted as: may be double, added to {1}'.format(fname[:-4],
