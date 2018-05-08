@@ -1,61 +1,80 @@
 import logging
+import os
+
+# Logs directory
+d_log = 'log'
 
 
-def init(crlogger=True):
-    '''Sets the global variables and initializes them, also create the app logger'''
-    # original pictures directory
-    global dpics
-    dpics = 'images'
+# logger name used by all the app steps
+global logger_name
+logger_name = 'workflow'
 
-    # csv storage
-    global dcsv
-    dcsv = 'csv'
-
-    # images recolors
-    global drecolor
-    drecolor = 'recolor'
-
-    # partial images recolors
-    global dprecolor
-    dprecolor = 'p_recolor'
-
-    # logistic regression model file
-    global model
-    model = 'model.pkl'
-
-    # logistic regression acceptance list file
-    global accepted
-    accepted = 'list.accepted'
-
-    # float value that defines the zooming factor
-    global ntiles
-    ntiles = 9
-
-    # zoomed images storage directory
-    global dcrop
-    dcrop = 'cropped'
-
-    if crlogger:
-        create_logger()
+def logpath(file):
+    '''
+    Given a log file returns the file path
+    '''
+    return '{0}/{1}'.format(d_log, file)
 
 
 def create_logger():
-    '''Ensures the logger is created only once'''
-    logger = logging.getLogger('workflow')
+    '''
+    Creates the logger
+    '''
+    # create the base logger
+    logger = logging.getLogger(logger_name)
     logfile = 'doublestars.log'
-    logging_setup(logfile, logger)
+    logging_setup(logger, logfile)
 
 
-def logging_setup(logfile, logger):
-    '''Sets up the logger values for every step in the workflow'''
+def logging_setup(logger, logfile, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'):
+    '''
+    Sets up a logger for the given parameters
+    '''
+    # if logs file doesn't exists -> create
+    if not os.path.isdir(d_log):
+        os.makedirs(d_log)
     # default log level, used in case a message is unespecified.
     logger.setLevel(logging.DEBUG)
     # create file handler which logs even debug messages
-    fh = logging.FileHandler(logfile)
+    fh = logging.FileHandler('{0}/{1}'.format(d_log, logfile))
     fh.setLevel(logging.DEBUG)
     # create formatter and add it to the handlers
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(format)
     fh.setFormatter(formatter)
     # add the handlers to the logger
     logger.addHandler(fh)
+
+def init(crlogger=True):
+    '''
+    Set the global variables and create the app logger
+    '''
+    # original pictures directory
+    global d_pics
+    d_pics = 'images'
+    # csv storage
+    global d_csv
+    d_csv = 'csv'
+    # images recolors
+    global d_recolor
+    d_recolor = 'recolor'
+    # partial images recolors
+    global d_precolor
+    d_precolor = 'p_recolor'
+    # recolorer list file
+    global f_to_recolor
+    f_to_recolor = 'recolor.list'
+    # zoomed images storage directory
+    global d_crop
+    d_crop = 'cropped'
+    # float value that defines the zooming factor
+    global ntiles
+    ntiles = 9
+    # logistic regression model file
+    global f_model
+    f_model = 'model.pkl'
+    # output directory for stars detected as doubles
+    global d_accepted
+    d_accepted = 'detected_doubles'
+
+    if crlogger:
+        create_logger()

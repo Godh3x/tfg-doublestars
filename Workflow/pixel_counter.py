@@ -6,7 +6,7 @@ import settings
 from threading import Event
 
 # get the logger for the current module
-logger = logging.getLogger('workflow.pixel_counter')
+logger = logging.getLogger('{0}.pixel_counter'.format(settings.logger_name))
 
 # history file to prevent duplicates
 histfile = 'pixel_counter_history.log'
@@ -16,33 +16,32 @@ show = True
 
 
 def logging_setup():
-    '''Sets up the logger values for every step in the workflow'''
-    # default log level, used in case a message is unespecified.
-    hist.setLevel(logging.DEBUG)
-    # create file handler which logs even debug messages
-    fh = logging.FileHandler(histfile)
-    fh.setLevel(logging.DEBUG)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(message)s')
-    fh.setFormatter(formatter)
-    # add the handlers to the logger
-    hist.addHandler(fh)
+    '''
+    Sets up the logger format
+    '''
+    # define history file
+    histformat = '%(message)s'
+    # format history file
+    settings.logging_setup(hist, histfile, histformat)
     # ensure this function is only used once
     logging_setup.__code__ = (lambda: None).__code__
 
 
 def colorgroup(pixel):
-    '''Assign the given pixel to one of the known color groups(red, green, blue, bkack or white)'''
+    '''
+    Assign the given pixel to one of the known color groups
+    (red, green, blue, bkack or white)
+    '''
     # list of known colors and their R G B values
-    groups = {'red': (255,   0,   0),
-              'green': (0, 255,   0),
-              'blue': (0,   0, 255),
-              'black': (0,   0,   0),
-              'white': (255, 255, 255)}
+    groups = {
+        'red': (255,   0,   0),
+        'green': (0, 255,   0),
+        'blue': (0,   0, 255),
+        'black': (0,   0,   0),
+        'white': (255, 255, 255)
+    }
     # distance between every color group and the pixel
-
-    def dist(p1, p2): return abs(p1[0] - p2[0]) + \
-        abs(p1[1] - p2[1]) + abs(p1[2] - p2[2])
+    dist = lambda p1, p2: abs(p1[0] - p2[0]) + abs(p1[1] - p2[1]) + abs(p1[2] - p2[2])
     # store the distance results in a dictorionary, key is the color group name and value is the distance
     res = {}
     for c, v in groups.items():
@@ -73,13 +72,17 @@ def formatter(dict, pixels, out):
 
 
 def process(file, input, output):
-    '''Count the number of red, green, blue, black and white pixels in a given file'''
+    '''
+    Count the number of red, green, blue, black and white pixels in a given file
+    '''
     # dictionary to store the pixel count for every recognised color
-    count = {'red': 0,
-             'green': 0,
-             'blue': 0,
-             'black': 0,
-             'white': 0}
+    count = {
+        'red': 0,
+        'green': 0,
+        'blue': 0,
+        'black': 0,
+        'white': 0
+        }
     # open the jpg file
     im = Image.open('{0}/{1}'.format(input, file)).convert('RGB')
     # get the width and height of the opened image
@@ -93,11 +96,9 @@ def process(file, input, output):
             count[color] += 1
     # remove the file if there's more white than black or there isn't any red or blue
     if count['white'] > count['black'] or (count['red'] == 0 and count['blue'] == 0):
-        logger.debug("Deleted {0} because there was more white than black or there wasn't any \
-      red or blue".format(file, dbin))
+        logger.debug("Deleted {0} because there was more white than black or there wasn't any red or blue".format(file, dbin))
         os.remove('{0}/{1}'.format(input, file))
         return
-
     # create the associated csv in output and write the results
     with open('{0}/{1}.csv'.format(output, file[:-4]), 'w') as out:
         logger.debug(
@@ -107,32 +108,21 @@ def process(file, input, output):
     hist.info('{0}'.format(file))
 
 
-def run(input, output, stop_event):
-    '''Infinite loop executing loop_step()'''
-    logger.info('Running pixel counter')
-    # setup history logging
-    logging_setup()
-
-    while not stop_event.is_set():
-        loop_step(input, output, stop_event)
-        show = False
-
-
 def loop_step(input, output, stop_event):
-    '''Counts the number of pixels for every jpg file inside input, for each file creates a csv in output.'''
-
+    '''
+    Counts the number of pixels for every jpg file inside input, for each file
+    creates a csv in output.
+    '''
     # input directory check
     if not os.path.isdir(input):
         if show:
             logger.critical('Input directory, {0}, not found.'.format(input))
         return 0
-
     # output directory check
     if not os.path.isdir(output):
         logger.warning(
             'Output directory, {0}, not found. Creating...'.format(output))
         os.makedirs(output)
-
     # encrypt input directory file
     encinput = os.fsencode(input)
     # loop through every element in input directory
@@ -143,7 +133,7 @@ def loop_step(input, output, stop_event):
         if not fname.endswith(".jpg"):
             continue
         # ignore file if it has been processed before
-        if fname in open(histfile).read():
+        if fname in open(settings.logpath(histfile)).read():
             continue
         # delete the jpg file if the size is 0
         if os.stat('{0}/{1}'.format(input, fname)).st_size == 0:
@@ -157,10 +147,23 @@ def loop_step(input, output, stop_event):
             return 0
 
 
+def run(input, output, stop_event):
+    '''
+    Executes loop_step() until thread is stopped.
+    '''
+    logger.info('Running pixel counter')
+    # setup history logging
+    logging_setup()
+
+    while not stop_event.is_set():
+        loop_step(input, output, stop_event)
+        show = False
+
+
 if __name__ == '__main__':
     try:
         settings.init()
-        run(settings.dpics, settings.dcsv, Event())
+        run(settings.d_pics, settings.d_csv, Event())
     except Keyboarinputterrupt:  # preven Ctrl+C exceptions
         print('Interruption detected, closing...')
         try:

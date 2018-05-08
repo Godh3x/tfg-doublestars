@@ -9,71 +9,63 @@ import settings
 from threading import Event
 
 # get the logger for the current module
-logger = logging.getLogger('workflow.logistic_regression')
+logger = logging.getLogger('{0}.logistic_regression'.format(settings.logger_name))
 
 # history file to prevent duplicates
 histfile = 'logistic_regression_history.log'
 hist = logging.getLogger('logistic_regression_history')
 
+
 show = True
 
 
 def logging_setup():
-    '''Sets up the logger values for every step in the workflow'''
-    # default log level, used in case a message is unespecified.
-    hist.setLevel(logging.DEBUG)
-    # create file handler which logs even debug messages
-    fh = logging.FileHandler(histfile)
-    fh.setLevel(logging.DEBUG)
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(message)s')
-    fh.setFormatter(formatter)
-    # add the handlers to the logger
-    hist.addHandler(fh)
+    '''
+    Sets up the logger format
+    '''
+    # define history file
+    histformat = '%(message)s'
+    # format history file
+    settings.logging_setup(hist, histfile, histformat)
     # ensure this function is only used once
     logging_setup.__code__ = (lambda: None).__code__
 
 
 def load(file):
-    '''Load the data of a given csv file'''
+    '''
+    Load the data of a given csv file
+    '''
     df = pd.read_csv(file)
     return np.array(df)
 
 
 def predict(model, file):
-    '''Given a logistic regression model and a file makes a prediction.
-    If prediction is 1 means its double, if it's 0 means it isn't.'''
+    '''
+    Given a logistic regression model and a file makes a prediction.
+    If prediction is 1 means its double, if it's 0 means it isn't.
+    '''
     # read the data
     X = load(file)
     # return the prediction
     return model.predict(X)
 
 
-def run(input, output, stop_event):
-    '''Infinite loop executing loop_step()'''
-    logger.info('Running logistic regression')
-    # setup history logging
-    logging_setup()
-
-    while not stop_event.is_set():
-        loop_step(input, output, stop_event)
-        show = False
-
-
-def loop_step(input, output, stop_event):
-    '''For every csv file in input make a prediction, if predicted as posible double
-    the name is stored in output file.'''
-    # input directory check
+def loop_step(input, input2, output, stop_event):
+    '''
+    For every csv file in input make a prediction, if predicted as posible
+    double the name is stored in output file.
+    '''
+    # directory/file check
     if not os.path.isdir(input):
         return 0
 
-    if not os.path.isfile(settings.model):
+    if not os.path.isfile(input2):
         if show:
-            logger.critical('Model, {0}, not found.'.format(settings.model))
+            logger.critical('Model, {0}, not found.'.format(input2))
         return 0
 
     # load the logistic regression model
-    model = joblib.load(settings.model)
+    model = joblib.load(input2)
     # encrypt input directory file
     encinput = os.fsencode(input)
     # loop through every element in input directory
@@ -84,7 +76,7 @@ def loop_step(input, output, stop_event):
         if not fname.endswith(".csv"):
             continue
         # ignore file if it has been processed before
-        if fname in open(histfile).read():
+        if fname in open(settings.logpath(histfile)).read():
             continue
         # make a prediction
         p = predict(model, '{0}/{1}'.format(input, fname))
@@ -103,10 +95,23 @@ def loop_step(input, output, stop_event):
             return 0
 
 
+def run(input, input2, output, stop_event):
+    '''
+    Executes loop_step() until thread is stopped.
+    '''
+    logger.info('Running logistic regression')
+    # setup history logging
+    logging_setup()
+
+    while not stop_event.is_set():
+        loop_step(input, input2, output, stop_event)
+        show = False
+
+
 if __name__ == '__main__':
     try:
         settings.init()
-        run(settings.dcsv, Event())
+        run(settings.d_csv, settings.f_model, settings.d_to_recolor, Event())
     except Keyboarinputterrupt:  # preven Ctrl+C exceptions
         print('Interruption detected, closing...')
         try:

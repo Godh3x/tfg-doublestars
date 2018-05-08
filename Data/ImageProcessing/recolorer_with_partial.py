@@ -11,21 +11,18 @@ logger = logging.getLogger('{0}.recolorer'.format(settings.logger_name))
 # history file to prevent duplicates
 histfile = 'recolorer_history.log'
 hist = logging.getLogger('recolorer_history')
-
+histformat = '%(message)s'
 
 show = True
 
 
-def logging_setup():
+def setup():
     '''
     Sets up the logger format
     '''
-    # define history file
-    histformat = '%(message)s'
-    # format history file
-    settings.logging_setup(hist, histfile, histformat)
+    hist = settings.logging_setup(hist, histfile, histformat)
     # ensure this function is only used once
-    logging_setup.__code__ = (lambda: None).__code__
+    setup.__code__ = (lambda: None).__code__
 
 
 def colorgroup(pixel):
@@ -42,7 +39,7 @@ def colorgroup(pixel):
         'white': (255, 255, 255)
         }
     # distance between every color group and the pixel
-    dist = lambda p1, p2: abs(p1[0] - p2[0]) + abs(p1[1] - p2[1]) + abs(p1[2] - p2[2])
+    dist = lambda p1, p2: return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1]) + abs(p1[2] - p2[2])
     # store the distance results in a dictorionary, key is the color group name and value is the distance
     res = {}
     for c, v in groups.items():
@@ -58,16 +55,20 @@ def colorgroup(pixel):
     return color
 
 
-def process(file, dimages, dout):
+def process(file, dimages, dout, dout2):
     '''
     Recolor a given jpg file to pure colors
     '''
     # open the jpg file
     im = Image.open('{0}/{1}'.format(dimages, file)).convert('RGB')
-    # create the recolored canvas for the image
+    # create the recolored canvas for the three images
     imtrans = Image.new('RGB', im.size)
-    # get the drawing context
+    imtransf = Image.new('RGB', im.size)
+    imtransl = Image.new('RGB', im.size)
+    # get their drawing context
     d = ImageDraw.Draw(imtrans)
+    df = ImageDraw.Draw(imtransf)
+    dl = ImageDraw.Draw(imtransl)
     # loop through every pixel recoloring
     width, height = im.size
     for w in range(width):
@@ -75,14 +76,28 @@ def process(file, dimages, dout):
             color = colorgroup(im.getpixel((w, h)))
             # set color to the normal recolored image
             d.point((w, h), color)
-    # store the result in dout directory
+            # color to f image only with red, white or black
+            if color in ['red', 'white']:
+                df.point((w, h), color)
+            else:
+                df.point((w, h), 'black')
+            # set color to l image only with blue, white or black
+            if color in ['blue', 'white']:
+                dl.point((w, h), color)
+            else:
+                dl.point((w, h), 'black')
+    # store the normal result in dout directory
     logger.debug('{0} full recolor stored in {1}/{2}.png'.format(file, dout, file[:-4]))
     imtrans.save('{0}/{1}.png'.format(dout, file[:-4]), "PNG")
+    # store the partial recolor results in dout2 directory
+    logger.debug('{0} red and blue recolors stored in {1}/{2}_f.png and {1}/{2}_l.png'.format(file, dout2, file[:-4]))
+    imtransf.save('{0}/{1}_f.png'.format(dout2, file[:-4]), "PNG")
+    imtransl.save('{0}/{1}_l.png'.format(dout2, file[:-4]), "PNG")
     # register file in history log to prevent future processing
     hist.info('{0}'.format(file))
 
 
-def loop_list(input, dimages, dout, stop_event):
+def loop_list(input, dimages, dout, dout2, stop_event):
     '''
     Loop through every element in input list
     '''
@@ -92,17 +107,17 @@ def loop_list(input, dimages, dout, stop_event):
             # take only the name without the '\n
             fname = file[:-1]
             # ignore file if it has been processed before
-            if fname in open(settings.logpath(histfile)).read():
+            if fname in open(histfile).read():
                 continue
             # recolor the picture
-            process(fname, dimages, dout)
+            process(fname, dimages, dout, dout2)
             # remove the original picture
             os.remove('{0}/{1}'.format(dimages, fname))
             # this check will allow stop events to break the execution sooner
             if stop_event.is_set():
                 return 0
 
-def loop_all(dimages, dout, stop_event):
+def loop_all(dimages, dout, dout2, stop_event):
     '''
     Loop through every element in dimages
     '''
@@ -124,7 +139,7 @@ def loop_all(dimages, dout, stop_event):
             return 0
 
 
-def loop_step(input, dimages, dout, stop_event):
+def loop_step(input, dimages, dout, dout2, stop_event):
     '''
     Recolors every jpg file listed in input file or all, if stated by setting
     input to 'all',taking the images from  dimages, for each file creates a png
@@ -142,32 +157,37 @@ def loop_step(input, dimages, dout, stop_event):
         logger.warning(
             'Output directory, {0}, not found. Creating...'.format(dout))
         os.makedirs(dout)
+    # output directory2 check
+    if not os.path.isdir(dout2):
+        logger.warning(
+            'Output directory, {0}, not found. Creating...'.format(dout2))
+        os.makedirs(dout2)
     # input check
     if input == 'all':
-        loop_all(dimages, dout, stop_event)
-    elif not os.path.isfile(input):
+        loop_all()
+    else if not os.path.isfile(input):
         return 0
     else:
-        loop_list(input, dimages, dout, stop_event)
+        loop_list()
 
 
-def run(input, dimages, dout, stop_event):
+def run(input, dimages, dout, dout2, stop_event):
     '''
     Executes loop_step() until thread is stopped.
     '''
     logger.info('Running recolorer')
     # setup history logging
-    logging_setup()
+    setup()
 
     while not stop_event.is_set():
-        loop_step(input, dimages, dout, stop_event)
+        loop_step(input, dimages, dout, dout2, stop_event)
         show = False
 
 
 if __name__ == '__main__':
     try:
         settings.init()
-        run(settings.f_to_recolor, settings.d_pics, settings.d_recolor, Event())
+        run(settings.f_to_recolor, settings.d_pics, settings.d_recolor, settings.d_precolor, Event())
     except Keyboardimagesterrupt:  # preven Ctrl+C exceptions
         print('Interruption detected, closing...')
         try:

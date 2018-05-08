@@ -1,17 +1,19 @@
 import os
 import sys
 import logging
+from threading import Thread, Event
+from time import sleep
+
 # Own imports
 import settings
 import pixel_counter
 import recolorer
 import logistic_regression
 import crop
-from threading import Thread, Event
-from time import sleep
+import parser
 
 # create logger with 'workflow'
-logger = logging.getLogger('workflow')
+logger = logging.getLogger(settings.logger_name)
 
 # workflow intput-output dictionary
 flow = {}
@@ -22,67 +24,72 @@ stop_events = []
 
 
 def define_flow():
-    '''Defines the input, output and run method for every step in the workflow.
+    '''
+    Defines the input, output and run method for every step in the workflow.
     The arguments for the callback function will be the result of concatenating
-    the every input and output in the given order and a threading event.'''
+    the every input and output in the given order and a threading event.
+    '''
     flow['dummy'] = {
         'input': [
             None
         ],
         'output': [
-            settings.dpics
+            settings.d_pics
         ],
         'callback': lambda: None,
     }
-    '''
+
     flow['crop'] = {
-        'input': [
-            flow['dummy']['output'][0],
-        ],
-        'output': [
-            settings.dcrop
-        ],
-        'callback': crop.run,
-    }
-    '''
-    flow['pixel_counter'] = {
         'input': [
             flow['dummy']['output'][0]
         ],
         'output': [
-            settings.dcsv
+            settings.d_crop
+        ],
+        'callback': crop.run,
+    }
+    
+    flow['pc'] = {
+        'input': [
+            flow['crop']['output'][0]
+        ],
+        'output': [
+            settings.d_csv
         ],
         'callback': pixel_counter.run,
     }
 
-    flow['logistic_regression'] = {
+    flow['lr'] = {
         'input': [
-            flow['pixel_counter']['output'][0]
+            flow['pc']['output'][0],
+            settings.f_model
         ],
         'output': [
-            settings.accepted
+            settings.f_to_recolor
         ],
-        'callback': logistic_regression.run,
+        'callback':  logistic_regression.run,
     }
 
     flow['recolorer'] = {
         'input': [
-            flow['dummy']['output'][0],
-            flow['logistic_regression']['output'][0]
+            flow['lr']['output'][0],
+            flow['dummy']['output'][0]
         ],
         'output': [
-            settings.drecolor,
-            settings.dprecolor
+            settings.d_recolor
         ],
         'callback': recolorer.run,
     }
+    
 
 
 def prepare_threads():
-    '''Use define_flow function and loops through the resulting dictionary to
+    '''
+    Use define_flow function and loops through the resulting dictionary to
     creating a thread for each step, once done threads will contain the list of
     threads to launch and stop_events the list of events to raise in order to
-    stop each thread.'''
+    stop each thread.
+    '''
     define_flow()
     for item in flow:
         if item == 'dummy':
@@ -106,7 +113,9 @@ def prepare_threads():
 
 
 def steps():
-    '''Executes every step in the workflow.'''
+    '''
+    Executes every step in the workflow.
+    '''
     # prepare the thread for every step
     prepare_threads()
     # launch them
@@ -115,6 +124,9 @@ def steps():
 
 
 def main():
+    '''
+    Launch the desired steps and oops until a keyboard interruption is detected.
+    '''
     try:
         settings.init()
         steps()
