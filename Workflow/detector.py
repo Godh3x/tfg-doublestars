@@ -208,7 +208,7 @@ def process(originals, file, input, output):
                                             # STAR SYSTEM DETECTED AS DOUBLE
                                             doublecount += 1
                                             if doublecount > settings.maxdoubles:
-                                                log.info('Rejected {0}: too many double stars')
+                                                logger.info('Rejected {0}: too many double stars')
                                                 break
                                             results[doublecount] = {
                                                 'Angle difference': dang,
@@ -228,6 +228,13 @@ def process(originals, file, input, output):
                                             #cv2.imshow("imagen", image)
                                             #cv2.waitKey(0)
                                             #cv2.destroyAllWindows()
+                # the following breaks prevent the loops from iterating if the execution was aborted by the inner loop
+                if doublecount > settings.maxdoubles:
+                    break
+            if doublecount > settings.maxdoubles:
+                    break
+        if doublecount > settings.maxdoubles:
+                    break
     ###
     # store the results
     if doublecount <= settings.maxdoubles:
@@ -243,6 +250,10 @@ def process(originals, file, input, output):
         with open('{0}/{1}/data.json'.format(output,file[:-4]), 'w') as out:
             json.dump(results, out, indent=2)
         #print(results)
+    # if the picture was rejected remove associated files
+    else:
+        os.remove('{0}/{1}.jpg'.format(originals,file[:-4]))
+        os.remove('{0}/{1}'.format(input,file))
     # register file in history log to prevent future processing
     hist.info(file)
 
