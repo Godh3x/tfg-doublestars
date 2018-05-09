@@ -208,7 +208,7 @@ def process(originals, file, input, output):
                                             # STAR SYSTEM DETECTED AS DOUBLE
                                             doublecount += 1
                                             if doublecount > settings.maxdoubles:
-                                                logger.info('Rejected {0}: too many double stars')
+                                                logger.info('Rejected {0}: too many double stars'.format(file[:-4]))
                                                 break
                                             results[doublecount] = {
                                                 'Angle difference': dang,
@@ -238,6 +238,8 @@ def process(originals, file, input, output):
     ###
     # store the results
     if doublecount <= settings.maxdoubles:
+        # Picture has a double star!
+        logger.info('Double star system dectected in {0}!'.format(file[:-4]))
         if os.path.isdir('{0}/{1}'.format(output,file[:-4])):
             shutil.rmtree('{0}/{1}'.format(output,file[:-4]))
         os.makedirs('{0}/{1}'.format(output,file[:-4]))
