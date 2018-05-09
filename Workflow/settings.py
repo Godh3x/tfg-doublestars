@@ -76,5 +76,42 @@ def init(crlogger=True):
     global d_accepted
     d_accepted = 'detected_doubles'
 
+    #### Recolor options
+    # maximum distance to pick a red or blue over black
+    global recolor_threshold
+    recolor_threshold = 150
+
+    #### Parser options
+    # maximum error in the angle between two different stars
+    global angdiff
+    angdiff =  5
+    # maximum angle difference between two stars, red and blue, to be considered the same one
+    global vangdiff
+    vangdiff =  15
+    # maximum separation % to be considered a double star
+    global sepdiff
+    sepdiff = 7 # %
+    # maximum area difference to be considered a double star
+    global arearatio
+    arearatio =  2
+    # maximum velocity difference to be considered a double star
+    global velocityratio
+    velocityratio = 1.3
+    # maximum velocity
+    global maxv
+    maxv=80
+    # maximum separation
+    global maxsep
+    maxsep = 200
+    # proper motion conversion factor
+    global pmfactor
+    pmfactor = 6.8;
+    # separation conversion factor
+    global sepfactor
+    sepfactor  = 1 / 3.95
+    # if the number of doubles detected in a picture exceeds this number, the picture is rejected
+    global maxdoubles
+    maxdoubles = 2
+
     if crlogger:
         create_logger()

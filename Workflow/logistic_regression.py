@@ -112,7 +112,7 @@ if __name__ == '__main__':
     try:
         settings.init()
         run(settings.d_csv, settings.f_model, settings.d_to_recolor, Event())
-    except Keyboarinputterrupt:  # preven Ctrl+C exceptions
+    except KeyboardInterrupt:  # preven Ctrl+C exceptions
         print('Interruption detected, closing...')
         try:
             sys.exit(0)

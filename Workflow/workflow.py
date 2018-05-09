@@ -10,7 +10,7 @@ import pixel_counter
 import recolorer
 import logistic_regression
 import crop
-import parser
+import detector
 
 # create logger with 'workflow'
 logger = logging.getLogger(settings.logger_name)
@@ -39,40 +39,9 @@ def define_flow():
         'callback': lambda: None,
     }
 
-    flow['crop'] = {
-        'input': [
-            flow['dummy']['output'][0]
-        ],
-        'output': [
-            settings.d_crop
-        ],
-        'callback': crop.run,
-    }
-    
-    flow['pc'] = {
-        'input': [
-            flow['crop']['output'][0]
-        ],
-        'output': [
-            settings.d_csv
-        ],
-        'callback': pixel_counter.run,
-    }
-
-    flow['lr'] = {
-        'input': [
-            flow['pc']['output'][0],
-            settings.f_model
-        ],
-        'output': [
-            settings.f_to_recolor
-        ],
-        'callback':  logistic_regression.run,
-    }
-
     flow['recolorer'] = {
         'input': [
-            flow['lr']['output'][0],
+            'all',
             flow['dummy']['output'][0]
         ],
         'output': [
@@ -80,7 +49,18 @@ def define_flow():
         ],
         'callback': recolorer.run,
     }
-    
+
+    flow['detector'] = {
+        'input': [
+            flow['dummy']['output'][0],
+            flow['recolorer']['output'][0]
+        ],
+        'output': [
+            settings.d_accepted
+        ],
+        'callback': detector.run,
+    }
+
 
 
 def prepare_threads():

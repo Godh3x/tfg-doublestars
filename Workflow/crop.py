@@ -102,7 +102,7 @@ if __name__ == '__main__':
     try:
         settings.init()
         run(settings.d_pics, settings.d_crop, Event())
-    except Keyboarinputterrupt:  # preven Ctrl+C exceptions
+    except KeyboardInterrupt:  # preven Ctrl+C exceptions
         print('Interruption detected, closing...')
         try:
             sys.exit(0)

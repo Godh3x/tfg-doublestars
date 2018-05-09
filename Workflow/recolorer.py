@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 import logging
 from PIL import Image, ImageDraw
 import settings
@@ -49,11 +50,11 @@ def colorgroup(pixel):
         res[c] = dist(pixel, v)
     # select the color whose distance is the minimum
     color = min(res, key=res.get)
-    # if the color selected is black check if the distance to blue or red is 150 or less, if it is
+    # if the color selected is black check if the distance to blue or red is recolor_threshold or less, if it is
     # the assigned color will be blue or red. This is done to prevent ignoring dark red and blue pixels
     if color == 'black' and res['red'] != res['blue']:
         minc = 'red' if res['red'] < res['blue'] else 'blue'
-        if res[minc] - res['black'] <= 150:
+        if res[minc] - res['black'] <= settings.recolor_threshold:
             return minc
     return color
 
@@ -77,7 +78,8 @@ def process(file, dimages, dout):
             d.point((w, h), color)
     # store the result in dout directory
     logger.debug('{0} full recolor stored in {1}/{2}.png'.format(file, dout, file[:-4]))
-    imtrans.save('{0}/{1}.png'.format(dout, file[:-4]), "PNG")
+    imtrans.save('{0}_temp/{1}.png'.format(dout, file[:-4]), "PNG")
+    os.rename('{0}_temp/{1}.png'.format(dout, file[:-4]), '{0}/{1}.png'.format(dout, file[:-4]))
     # register file in history log to prevent future processing
     hist.info('{0}'.format(file))
 
@@ -97,7 +99,7 @@ def loop_list(input, dimages, dout, stop_event):
             # recolor the picture
             process(fname, dimages, dout)
             # remove the original picture
-            os.remove('{0}/{1}'.format(dimages, fname))
+            #os.remove('{0}/{1}'.format(dimages, fname))
             # this check will allow stop events to break the execution sooner
             if stop_event.is_set():
                 return 0
@@ -112,13 +114,16 @@ def loop_all(dimages, dout, stop_event):
     for file in os.listdir(encinput):
         # decrypt file name
         fname = os.fsdecode(file)
+        # ignore file if it isnt a picture
+        if not fname.endswith('.jpg'):
+            continue
         # ignore file if it has been processed before
-        if fname in open(histfile).read():
+        if fname in open(settings.logpath(histfile)).read():
             continue
         # recolor the picture
-        process(fname, dimages, dout, dout2)
+        process(fname, dimages, dout)
         # remove the original picture
-        os.remove('{0}/{1}'.format(dimages, fname))
+        #os.remove('{0}/{1}'.format(dimages, fname))
         # this check will allow stop events to break the execution sooner
         if stop_event.is_set():
             return 0
@@ -139,9 +144,12 @@ def loop_step(input, dimages, dout, stop_event):
         return 0
     # output directory check
     if not os.path.isdir(dout):
-        logger.warning(
-            'Output directory, {0}, not found. Creating...'.format(dout))
+        logger.warning('Output directory, {0}, not found. Creating...'.format(dout))
         os.makedirs(dout)
+    # temporal output directory check
+    if not os.path.isdir('{0}_temp'.format(dout)):
+        logger.warning('Temporal output directory, {0}_temp, not found. Creating...'.format(dout))
+        os.makedirs('{0}_temp'.format(dout))
     # input check
     if input == 'all':
         loop_all(dimages, dout, stop_event)
@@ -162,13 +170,16 @@ def run(input, dimages, dout, stop_event):
     while not stop_event.is_set():
         loop_step(input, dimages, dout, stop_event)
         show = False
+    # remove temporal directory
+    if os.path.isdir('{0}_temp'.format(dout)):
+        shutil.rmtree('{0}_temp'.format(dout))
 
 
 if __name__ == '__main__':
     try:
         settings.init()
         run(settings.f_to_recolor, settings.d_pics, settings.d_recolor, Event())
-    except Keyboardimagesterrupt:  # preven Ctrl+C exceptions
+    except KeyboardInterrupt:  # preven Ctrl+C exceptions
         print('Interruption detected, closing...')
         try:
             sys.exit(0)
