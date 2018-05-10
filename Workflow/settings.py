@@ -50,7 +50,7 @@ def init(crlogger=True):
     '''
     # original pictures directory
     global d_pics
-    d_pics = 'images'
+    d_pics = 'images/testNo'
     # csv storage
     global d_csv
     d_csv = 'csv'
@@ -74,7 +74,7 @@ def init(crlogger=True):
     f_model = 'model.pkl'
     # output directory for stars detected as doubles
     global d_accepted
-    d_accepted = 'detected_doubles'
+    d_accepted = 'detected_doubles/testNo'
 
     #### Recolor options
     # maximum distance to pick a red or blue over black
