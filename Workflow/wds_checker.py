@@ -34,12 +34,14 @@ def logging_setup():
 
 
 def process(e, input, data):
-    '''
-    Reads the data from input/e/data.json, then stores the desired data, also
-    compares both.
-    '''
-    with open('{0}/{1}/data.json'.format(input,e), 'r') as inp:
-        datajson = json.load(inp)
+  '''
+  Reads the data from input/e/data.json, then stores the desired data, also
+  compares both.
+  '''
+  with open('{0}/{1}/data.json'.format(input,e), 'r') as inp:
+    datajson = json.load(inp)
+  datajson_save = datajson
+  try:
     datajson['wds'] = {
       'PA': (int(data[38:41])+int(data[42:45]))/2,
       'Separation': (float(data[46:51]) + float(data[52:57]))/2,
@@ -56,10 +58,15 @@ def process(e, input, data):
     }
     # store result data in json file
     with open('{0}/{1}/data.json'.format(input,e), 'w') as out:
-        json.dump(datajson, out, indent=2)
+      json.dump(datajson, out, indent=2)
+  except ValueError:
+    # store result data in json file
+    with open('{0}/{1}/data.json'.format(input,e), 'w') as out:
+      json.dump(datajson_save, out, indent=2)
+    logger.warning('Error retrieving {0} data, skipping...'.format(e))
 
 
-def loop_step(input, stop_event):
+def loop_step(input, data, stop_event):
   '''
   Crops every jpg file inside input, for each file creates a jpg file in output.
   '''
@@ -67,34 +74,40 @@ def loop_step(input, stop_event):
   if not os.path.isdir(input):
       logger.critical('input directory, {0}, not found.'.format(input))
       return 0
-  # found
-  # Try to get the data from the url
-  try:
-    data = req.urlopen(url).readlines()
-    # encrypt input directory file
-    encinput = os.fsencode(input)
-    # loop through every element in input directory
-    for e in os.listdir(encinput):
-      # decrypt element name
-      ename = os.fsdecode(e)
-      # remove whitespaces to match wds
-      ejoin = ''.join(ename.split())
-      # ignore file if it has been processed before
-      if ename in open(settings.logpath(histfile)).read():
-          continue
-      # process the element if theres any data about it
+
+  # encrypt input directory file
+  encinput = os.fsencode(input)
+  # loop through every element in input directory
+  for e in os.listdir(encinput):
+    # decrypt element name
+    ename = os.fsdecode(e)
+    # remove whitespaces to match wds
+    ejoin = ''.join(ename.split())
+    # ignore file if it has been processed before
+    if ename in open(settings.logpath(histfile)).read():
+        continue
+    # ignore all folder
+    if ename == 'all':
+      continue
+    # process the element if theres any data about it
+    if ejoin in data:
       for line in data:
         dline = os.fsdecode(line)
         if ejoin in dline:
-          process(ename, input, dline)
-          break
+          try:
+            process(ename, input, dline)
+            # register file in history log to prevent future processing
+            hist.info(ename)
+            break
+          except FileNotFoundError:
+            break
+    else:
       # register file in history log to prevent future processing
-      hist.info(e)
-      # this check will allow stop events to break the execution sooner
-      if stop_event.is_set():
-          return 0
-  except req.HTTPError:
-      logger.warning('URL not found: {0}'.format(url))
+      hist.info(ename)
+    # this check will allow stop events to break the execution sooner
+    if stop_event.is_set():
+        return 0
+
 
 def run(input, stop_event):
   '''
@@ -104,8 +117,13 @@ def run(input, stop_event):
   # setup history logging
   logging_setup()
 
-  while not stop_event.is_set():
-      loop_step(input, stop_event)
+  # Try to get the data from the url
+  try:
+    data = req.urlopen(url).readlines()
+    while not stop_event.is_set():
+      loop_step(input, data, stop_event)
+  except req.HTTPError:
+    logger.warning('URL not found: {0}'.format(url))
 
 
 if __name__ == '__main__':
