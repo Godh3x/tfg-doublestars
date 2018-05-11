@@ -147,93 +147,101 @@ def process(originals, file, input, output):
     matrix = matrixCenter(centerFirst,centerLast)
     # dictionary to store the results in
     results = {}
-    # Parser
-    for x0 in range(len(centerFirst)):
-        for y0 in range(len(centerLast)):
-            # velocity and velocity angle for the first star pair
-            v0,vang0 = matrix[x0][y0]
-            for x1 in range(x0+1,len(centerFirst)):
-                for y1 in range(y0+1,len(centerLast)):
-                    # velocity and velocity angle for the second star pair
-                    v1,vang1 = matrix[x1][y1]
-                    # areas
-                    areaA0 = centerFirst[x0][2]
-                    areaA1 = centerFirst[x1][2]
-                    areaB0 = centerLast[y0][2]
-                    areaB1 = centerLast[y1][2]
-                    # calculate the angle taken the brightest as reference
-                    if (areaA0>areaA1):
-                        ang0=math.atan2(centerFirst[x0][0]-centerFirst[x1][0],centerFirst[x0][1]-centerFirst[x1][1]) * (180.0 / math.pi)
-                        ang1=math.atan2(centerLast[y0][0]-centerLast[y1][0], centerLast[y0][1]-centerLast[y1][1]) * (180.0 / math.pi)
-                    else:
-                        ang0=math.atan2(centerFirst[x1][0]-centerFirst[x0][0], centerFirst[x1][1]-centerFirst[x0][1]) * (180.0 / math.pi)
-                        ang1=math.atan2(centerLast[y1][0]-centerLast[y0][0], centerLast[y1][1]-centerLast[y0][1]) * (180.0 / math.pi)
-                    # proper motion
-                    pmAx = centerFirst[x0][0]-centerLast[y0][0]
-                    pmAy = centerFirst[x0][1]-centerLast[y0][1]
-                    pmBx = centerFirst[x1][0]-centerLast[y1][0]
-                    pmBy = centerFirst[x1][1]-centerLast[y1][1]
-                    # separation between both star pairs
-                    sep0 =math.sqrt((centerFirst[x0][0]-centerFirst[x1][0])**2+(centerFirst[x0][1]-centerFirst[x1][1])**2)
-                    sep1 =math.sqrt((centerLast[y0][0]-centerLast[y1][0])**2+(centerLast[y0][1]-centerLast[y1][1])**2)
-                    # separation difference in the system
-                    dsep = abs(sep0-sep1)
-                    # maximum separation in the system
-                    sepmax = max(sep0,sep1)
-                    # angle diference in the system
-                    dang = abs(ang1-ang0)
-                    # velocity angle difference
-                    dvang = abs(vang1-vang0)
-                    '''
-                    print(" dang: ",dang," dsep: ",dsep," sepmap: ",sepmax, "%: ",((dsep*100)/sepmax)," es menor:", (((dsep*100)/sepmax) <= settings.sepdiff))
-                    print("dist0: ",dist0," ang0: ",ang0," dist1: ",dist1, "ang1: ",ang1, "areaA0: ",centerFirst[x0][2],
-                        "areaA1",centerFirst[x1][2], " areaB0: ",centerLast[y0][2], " areaB1: ",centerLast[y1][2])
-                    '''
-                    ### check criteria
-                    # is the maximum separation below threshold?
-                    if sepmax <= settings.maxsep:
-                        # is the maximum velocity below threshold?
-                        # and the minimum is above 0?
-                        # is the system ratio below the maximum allowed value?
-                        if max(v0,v1) <= settings.maxv and min(v0,v1) > 0 and max(v0,v1)/min(v0,v1) <= settings.velocityratio:
-                            # are all areas over 0?
-                            # are both system pairs below the maximum allowed value?
-                            if min(areaA0,areaA1,areaB0,areaB1) > 0 and max(areaA0,areaB0)/min(areaA0,areaB0) <= settings.arearatio and max(areaA1,areaB1)/min(areaA1,areaB1) <= settings.arearatio:
-                                # is system angle difference allowed?
-                                if dang <= settings.angdiff:
-                                    # is velocity angle difference allowed?
-                                    if dvang <= settings.vangdiff:
-                                        # does the system separation differ at maximum in the allowed %?
-                                        if ((dsep*100)/sepmax) <= settings.sepdiff:
-                                            # STAR SYSTEM DETECTED AS DOUBLE
-                                            doublecount += 1
-                                            if doublecount > settings.maxdoubles:
-                                                break
-                                            results[doublecount] = {
-                                                'Angle difference': dang,
-                                                'Separation difference': dsep,
-                                                'Maximum separation': sepmax,
-                                                'Separation %': ((dsep*100)/sepmax),
-                                                'PA': (ang0+ang1)/2,
-                                                'Separation': (sep1+sep0)/2*settings.sepfactor,
-                                                'Proper Motion A (brightest)': (pmAx*settings.pmfactor,pmAy*settings.pmfactor),
-                                                'Proper Motion B': (pmBx*settings.pmfactor,pmBy*settings.pmfactor)
-                                            }
-                                            # mark the star pairs in the image
-                                            cv2.circle(image, (centerFirst[x0][0],centerFirst[x0][1]), 4, (255, 175, 0), -1)
-                                            cv2.circle(image, (centerLast[y0][0],centerLast[y0][1]), 4, (255, 150,0 ), -1)
-                                            cv2.circle(image, (centerFirst[x1][0],centerFirst[x1][1]), 4, (0, 175, 255), -1)
-                                            cv2.circle(image, (centerLast[y1][0],centerLast[y1][1]), 4, (0, 150, 255), -1)
-                                            #cv2.imshow("imagen", image)
-                                            #cv2.waitKey(0)
-                                            #cv2.destroyAllWindows()
-                # the following breaks prevent the loops from iterating if the execution was aborted by the inner loop
+    # Reject if the picture star count is greater than allowed
+    if len(matrix) <= settings.maxstars:
+        # Parser
+        for x0 in range(len(centerFirst)):
+            for y0 in range(len(centerLast)):
+                # velocity and velocity angle for the first star pair
+                v0,vang0 = matrix[x0][y0]
+                for x1 in range(x0+1,len(centerFirst)):
+                    for y1 in range(y0+1,len(centerLast)):
+                        # velocity and velocity angle for the second star pair
+                        v1,vang1 = matrix[x1][y1]
+                        # areas
+                        areaA0 = centerFirst[x0][2]
+                        areaA1 = centerFirst[x1][2]
+                        areaB0 = centerLast[y0][2]
+                        areaB1 = centerLast[y1][2]
+                        # calculate the angle taken the brightest as reference
+                        if (areaA0>areaA1):
+                            ang0=math.atan2(centerFirst[x0][0]-centerFirst[x1][0],centerFirst[x0][1]-centerFirst[x1][1]) * (180.0 / math.pi)
+                            ang1=math.atan2(centerLast[y0][0]-centerLast[y1][0], centerLast[y0][1]-centerLast[y1][1]) * (180.0 / math.pi)
+                        else:
+                            ang0=math.atan2(centerFirst[x1][0]-centerFirst[x0][0], centerFirst[x1][1]-centerFirst[x0][1]) * (180.0 / math.pi)
+                            ang1=math.atan2(centerLast[y1][0]-centerLast[y0][0], centerLast[y1][1]-centerLast[y0][1]) * (180.0 / math.pi)
+                        # proper motion
+                        pmAx = centerFirst[x0][0]-centerLast[y0][0]
+                        pmAy = centerFirst[x0][1]-centerLast[y0][1]
+                        pmBx = centerFirst[x1][0]-centerLast[y1][0]
+                        pmBy = centerFirst[x1][1]-centerLast[y1][1]
+                        # separation between both star pairs
+                        sep0 =math.sqrt((centerFirst[x0][0]-centerFirst[x1][0])**2+(centerFirst[x0][1]-centerFirst[x1][1])**2)
+                        sep1 =math.sqrt((centerLast[y0][0]-centerLast[y1][0])**2+(centerLast[y0][1]-centerLast[y1][1])**2)
+                        # separation difference in the system
+                        dsep = abs(sep0-sep1)
+                        # maximum separation in the system
+                        sepmax = max(sep0,sep1)
+                        # angle diference in the system
+                        dang = abs(ang1-ang0)
+                        # velocity angle difference
+                        dvang = abs(vang1-vang0)
+                        '''
+                        print(" dang: ",dang," dsep: ",dsep," sepmap: ",sepmax, "%: ",((dsep*100)/sepmax)," es menor:", (((dsep*100)/sepmax) <= settings.sepdiff))
+                        print("dist0: ",dist0," ang0: ",ang0," dist1: ",dist1, "ang1: ",ang1, "areaA0: ",centerFirst[x0][2],
+                            "areaA1",centerFirst[x1][2], " areaB0: ",centerLast[y0][2], " areaB1: ",centerLast[y1][2])
+                        '''
+                        ### check criteria
+                        # is the maximum separation below threshold?
+                        if sepmax <= settings.maxsep:
+                            # is the maximum velocity below threshold?
+                            # and the minimum is above 0?
+                            # is the system ratio below the maximum allowed value?
+                            if max(v0,v1) <= settings.maxv and min(v0,v1) > 0 and max(v0,v1)/min(v0,v1) <= settings.velocityratio:
+                                # are all areas over 0?
+                                # are both system pairs below the maximum allowed value?
+                                if min(areaA0,areaA1,areaB0,areaB1) > 0 and max(areaA0,areaB0)/min(areaA0,areaB0) <= settings.arearatio and max(areaA1,areaB1)/min(areaA1,areaB1) <= settings.arearatio:
+                                    # is system angle difference allowed?
+                                    if dang <= settings.angdiff:
+                                        # is velocity angle difference allowed?
+                                        if dvang <= settings.vangdiff:
+                                            # does the system separation differ at maximum in the allowed %?
+                                            if ((dsep*100)/sepmax) <= settings.sepdiff:
+                                                # is the pm of both stars below the defined threshold
+                                                if (pmAx*settings.pmfactor)**2 + (pmAy*settings.pmfactor)**2 > settings.pmthreshold and (pmBx*settings.pmfactor)**2 + (pmBy*settings.pmfactor)**2 > settings.pmthreshold:
+                                                    # STAR SYSTEM DETECTED AS DOUBLE
+                                                    doublecount += 1
+                                                    if doublecount > settings.maxdoubles:
+                                                        break
+                                                    if ang0 < 0:
+                                                        ang0 = 360 + ang0
+                                                    if ang1 < 0:
+                                                        ang1 = 360 + ang1
+                                                    results[doublecount] = {
+                                                        'Angle difference': dang,
+                                                        'Separation difference': dsep,
+                                                        'Maximum separation': sepmax,
+                                                        'Separation %': ((dsep*100)/sepmax),
+                                                        'PA': (ang0+ang1)/2,
+                                                        'Separation': (sep1+sep0)/2*settings.sepfactor,
+                                                        'Proper Motion A (brightest)': (pmAx*settings.pmfactor,pmAy*settings.pmfactor),
+                                                        'Proper Motion B': (pmBx*settings.pmfactor,pmBy*settings.pmfactor)
+                                                    }
+                                                    # mark the star pairs in the image
+                                                    cv2.circle(image, (centerFirst[x0][0],centerFirst[x0][1]), 4, (255, 175, 0), -1)
+                                                    cv2.circle(image, (centerLast[y0][0],centerLast[y0][1]), 4, (255, 150,0 ), -1)
+                                                    cv2.circle(image, (centerFirst[x1][0],centerFirst[x1][1]), 4, (0, 175, 255), -1)
+                                                    cv2.circle(image, (centerLast[y1][0],centerLast[y1][1]), 4, (0, 150, 255), -1)
+                                                    #cv2.imshow("imagen", image)
+                                                    #cv2.waitKey(0)
+                                                    #cv2.destroyAllWindows()
+                    # the following breaks prevent the loops from iterating if the execution was aborted by the inner loop
+                    if doublecount > settings.maxdoubles:
+                        break
                 if doublecount > settings.maxdoubles:
-                    break
+                        break
             if doublecount > settings.maxdoubles:
-                    break
-        if doublecount > settings.maxdoubles:
-                    break
+                        break
     ###
     # store the results
     if doublecount > 0 and doublecount <= settings.maxdoubles:
@@ -247,13 +255,14 @@ def process(originals, file, input, output):
         os.rename('{0}/{1}'.format(input,file), '{0}/{1}/recolor.png'.format(output,file[:-4]))
         # store the colored picture
         cv2.imwrite('{0}/{1}/centers.png'.format(output,file[:-4]),image)
+        cv2.imwrite('{0}/all/{1}.png'.format(output,file[:-4]),image)
         # store result data in json file
         with open('{0}/{1}/data.json'.format(output,file[:-4]), 'w') as out:
             json.dump(results, out, indent=2)
         #print(results)
     # if the picture was rejected remove associated files
     else:
-        logger.info('Rejected {0}: too many double stars'.format(file[:-4]))
+        logger.info('Rejected {0}'.format(file[:-4]))
         os.remove('{0}/{1}.jpg'.format(originals,file[:-4]))
         os.remove('{0}/{1}'.format(input,file))
     # register file in history log to prevent future processing
@@ -274,6 +283,9 @@ def loop_step(originals, input, output, stop_event):
     if not os.path.isdir(output):
         logger.warning('Output directory, {0}, not found. Creating...'.format(output))
         os.makedirs(output)
+    # output all directory check
+    if not os.path.isdir('{0}/all'.format(output)):
+        os.makedirs('{0}/all'.format(output))
     # encrypt input directory
     encinput = os.fsencode(input)
     # loop through every element in input directory

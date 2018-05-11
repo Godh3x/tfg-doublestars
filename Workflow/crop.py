@@ -13,9 +13,6 @@ histfile = 'crop_history.log'
 hist = logging.getLogger('crop_history')
 
 
-show = True
-
-
 def logging_setup():
     '''
     Sets up the logger
@@ -50,8 +47,7 @@ def loop_step(input, output, stop_event, only_center):
     '''
     # input directory check
     if not os.path.isdir(input):
-        if show:
-            logger.critical('input directory, {0}, not found.'.format(input))
+        logger.critical('input directory, {0}, not found.'.format(input))
         return 0
     # output directory check
     if not os.path.isdir(output):
@@ -78,7 +74,7 @@ def loop_step(input, output, stop_event, only_center):
             logger.debug('Deleted {0} because file size is 0'.format(fname))
             os.remove('{0}/{1}'.format(input, fname))
             continue
-        # count the pixels in the file
+        # process the file
         process(fname, input, output, only_center)
         # this check will allow stop events to break the execution sooner
         if stop_event.is_set():
@@ -95,7 +91,6 @@ def run(input, output, stop_event, only_center=True):
 
     while not stop_event.is_set():
         loop_step(input, output, stop_event, only_center)
-        show = False
 
 
 if __name__ == '__main__':

@@ -50,16 +50,13 @@ def init(crlogger=True):
     '''
     # original pictures directory
     global d_pics
-    d_pics = 'images/testNo'
+    d_pics = 'images'
     # csv storage
     global d_csv
     d_csv = 'csv'
     # images recolors
     global d_recolor
     d_recolor = 'recolor'
-    # partial images recolors
-    global d_precolor
-    d_precolor = 'p_recolor'
     # recolorer list file
     global f_to_recolor
     f_to_recolor = 'recolor.list'
@@ -74,7 +71,7 @@ def init(crlogger=True):
     f_model = 'model.pkl'
     # output directory for stars detected as doubles
     global d_accepted
-    d_accepted = 'detected_doubles/testNo'
+    d_accepted = 'detected_doubles'
 
     #### Recolor options
     # maximum distance to pick a red or blue over black
@@ -111,7 +108,13 @@ def init(crlogger=True):
     sepfactor  = 1 / 3.95
     # if the number of doubles detected in a picture exceeds this number, the picture is rejected
     global maxdoubles
-    maxdoubles = 2
+    maxdoubles = 1
+    # if the number of stars detected in a picture exceeds this number, the picture is rejected
+    global maxstars
+    maxstars = 60
+    # proper motion threshold
+    global pmthreshold
+    pmthreshold = 2500
 
     if crlogger:
         create_logger()

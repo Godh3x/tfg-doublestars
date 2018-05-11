@@ -11,6 +11,7 @@ import recolorer
 import logistic_regression
 import crop
 import detector
+import wds_checker
 
 # create logger with 'workflow'
 logger = logging.getLogger(settings.logger_name)
@@ -59,6 +60,15 @@ def define_flow():
             settings.d_accepted
         ],
         'callback': detector.run,
+    }
+
+    flow['wds'] = {
+        'input': [
+            flow['detector']['output'][0]
+        ],
+        'output': [
+        ],
+        'callback': wds_checker.run,
     }
 
 
