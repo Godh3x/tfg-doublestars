@@ -1,0 +1,30 @@
+RESUMEN
+
+INTRODUCCIÓN
+	Problema
+		-Detección de dobles
+		-Dobles con movimiento apreciable
+		-Parejas de fotos vieja/nueva
+		-Poner fotos (Aladin)
+		-Estado del arte
+			-WDS manualmente
+	Nuestra propuesta
+		-Localizar nuevas doble de manera semiautomática
+		-Generar coordenadas
+
+		-Bajar imagenes POSSI, POSII, Serc...
+2) BAJAR DATOS
+	-Aladin
+	-Descarga de imagenes
+	-WDS
+
+3) PROCESAMIENTO
+	-Recoloreado
+	-Detectar ----------------------------------,
+	-Comprobación 								|
+                                                |
+4) SELECCIÓN DE PARAMETROS PARA EL DETECTOR	<---´
+
+5) PROBLEMAS ENCONTRADOS
+
+6) CONCLUSIONES
