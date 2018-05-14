@@ -38,6 +38,9 @@ process.
  3. Run workflow.py
 
 ## Steps
- 1. _Pixel counter_: create a csv for every picture
- 2. _Logistic regression_: discard pictures based on csv data
- 3. _Recolorer_: create png's recoloring the pictures approved by the logistic regression
+ 1. _[Pixel counter](https://github.com/Godh3x/tfg-doublestars/blob/master/Workflow/pixel_counter.py)_: create a csv for every picture containen the % of pixels of each color.
+ 2. _[Logistic regression](https://github.com/Godh3x/tfg-doublestars/blob/master/Workflow/logistic_regression.py)_: discard pictures based on csv data.
+ 3. _[Recolorer]()_: create png's recoloring the pictures approved by the logistic regression
+ 4. _[Crop](https://github.com/Godh3x/tfg-doublestars/blob/master/Workflow/crop.py)_: for each jpg in input create a jpg in output, the output jpg corresponds to the middle sector of the original picture if we divide it in 9.
+ 5. _[Detector](https://github.com/Godh3x/tfg-doublestars/blob/master/Workflow/detector.py)_: Given a folder of recolored pictures tries to match certain criteria, the pictures that match it will be stored in output. In addition to the recolored picture this step will store the original one and a json with important data about the double star system detected.
+ 6. _[wds_detector](https://github.com/Godh3x/tfg-doublestars/blob/master/Workflow/wds_checker.py)_: Takes the json given by the detector and tries to find the system in wds, if found will sotre also the data from wds and calculate the error in the detector data.
