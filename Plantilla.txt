@@ -20,10 +20,10 @@ INTRODUCCIÓN
 
 3) PROCESAMIENTO
 	-Recoloreado
-	-Detectar ----------------------------------,
-	-Comprobación 								|
-                                                |
-4) SELECCIÓN DE PARAMETROS PARA EL DETECTOR	<---´
+	-Detectar -------------------------------,
+	-Comprobación 	       		         |
+                                                 |
+4) SELECCIÓN DE PARAMETROS PARA EL DETECTOR  <---´
 
 5) PROBLEMAS ENCONTRADOS
 
