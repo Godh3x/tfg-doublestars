@@ -1,50 +1,145 @@
 %---------------------------------------------------------------------
 %
-%                          Capítulo 2
+%                          Capítulo 5
 %
 %---------------------------------------------------------------------
 % !TEX root = ../Tesis.tex
 
-\chapter{Parametrización del detector}
-
-\begin{resumen}
-...
-\end{resumen}
-
+\chapter{Workflow}
+\label{cap5}
 
 %-------------------------------------------------------------------
 \section{Introducción}
 %-------------------------------------------------------------------
-\label{cap1:sec:introduccion}
+\label{cap5:sec:introduccion}
 
-...
+En los capitulos \ref{cap3} y \ref{cap4} se describe diferentes procesos por los
+que una fotografía ha de pasar para poder detectar sistemas de estrellas dobles,
+cada una de estas etapas viene definida por un numero arbitrario de entradas y
+salidas y un evento que al abortar la ejecución permita al programa salir de
+forma segura.
+
+\medskip
+
+Cada etapa por tanto puede ser configurada por sepado y lanzada puesto que para
+conectarlas solo es necesario que la salida de una etapa sea la entrada de la
+siguiente, de esta forma todas las etapas pueden trabajar de forma simultanea.
+Sin embargo, creemos que esta tarea puede simplificarse mediante la creacion
+de un controlador que se encarge de lanzar las etapas en diferentes hilos, para
+que sigan ejecutandose a la vez, y pararlas cuando el usuario lo requiera.
+
+%-------------------------------------------------------------------
+\section{Estructura}
+%-------------------------------------------------------------------
+\label{cap5:sec:estructura}
+
+La idea es generar una estructura que permita al usuario definir el orden de las
+etapas de manera sencilla, y una vez definidas las lance en diferentes hilos.
+Una posible representación del workflow sería un grafo acíclico dirigido, es
+importante que sea acíclico puesto que de otro modo la información nunca
+llegaría a un estado definitivo en el cual se acepte o rechace.
+
+\medskip
+
+Podemos entonces definir cada fase como una entrada en un diccionario en la cual
+podemos almacenar la entrada y la salida, de este modo conectar una etapa con
+otra tan solo implica igualar la entrada de una a la salida de la otra. A la
+hora de lanzar el hilo es necesario sabar a que función llamar para lo cual nos
+encontramos con dos opciones: llamar siempre a una funcion con un nombre
+determinado o simplemente incluir otro dato en el diccionario. En este caso se
+ha optado por que además de lo que ya guardaba se almacene la función a la que
+se debe llamar, esta opción da libertad a la hora de crear los pasos además de
+facilitar la posterior creación de los hilos.
+
+\medskip
+
+Existe un último problema, algunas etapas del workflow pueden tener más de una
+entrada o salida por lo que en el diccionario se almacenara un array de entradas
+y otro de salidas, debido a esto también será necesario especificar el numero de
+entrada o salida a la que se hace referencia al conectar los pasos.
+
+\medskip
+
+Una entrada del diccionario tendría por tanto el siguiente formato.
+
+\begin{lstlisting}[language=Python]
+flow['step'] = {
+  'input': [
+    flow['other']['output'][0],
+    settings.directory
+  ],
+  'output': [
+    settings.directory2
+  ],
+  'callback': step.run,
+}
+\end{lstlisting}
+
+Además se hace uso de una etapa \textit{dummy} que tan solo define la entrada
+del primer paso en su salida. Una vez creadas las entradas en el diccionario
+para todas las etapas solo será necesario ejecutar el workflow.
+
+%-------------------------------------------------------------------
+\section{Etapas}
+%-------------------------------------------------------------------
+\label{cap5:sec:etapas}
+
+Si bien es cierto que el workflow esta pensado para dar libertad a la hora de
+implementar las etapas tiene dos requisitos que se han de cumplir. El primero es
+a la hora de definir el metodo que se utilizara como callback en el diccionario,
+sus parametros deben estar ordenados de modo que reciba primero todas las
+entradas, luego todas las salidas y por ultimo un evento de las clase
+\textit{threading}, este orden ha de ser tenido en cuenta a la hora de crear
+la entrada del diccionario descrita en la sección \ref{cap5:sec:estructura}. En
+segundo lugar se debe asegurar que la etapa se mantendrá a la espera de nuevos
+datos que procesar hasta que se active el evento que se recibe por parámetro y
+que una vez recibido no se abortara la ejecución del paso hasta que sea seguro.
+
+\medskip
+
+Para poder saber que está pasando el workflow también monta un sistema de log,
+utilizando la libreria \textit{logging} de python, al cual las etapas pueden
+acceder para escribir mensajes de error o información de debug que le pueda ser
+de utilidad al usuario para conocer que ha ocurrido.
+
+\medskip
+
+Debido a que las etapas se encuentran en continua ejecución podría darse el caso
+en el que los mismos datos se procesen varias veces, para prevenir esto las
+etapas que hemos implementado mantienen un log de historia que solo modifican
+ellas en el cual almacenan el identificador de los datos al acabar de
+procesarlos, una de las primeras comprobaciones al recoger datos de la entrada
+es comprobar si el id se encuentra en la historia del paso, de ser así los datos
+no se procesan.
+
+%-------------------------------------------------------------------
+\section{Uso}
+%-------------------------------------------------------------------
+\label{cap5:sec:uso}
+
+Para utilizar el workflow son necesarios tres pasos.
+
+\medskip
+
+En primer lugar modificar el fichero de configuración, \textit{settings.py},
+en el cual se encuentran almacenados todos los directorios de los pasos que
+hemos creado y los parametros de procesamiento que pueden modificarse de cada
+etapa.
+
+\medskip
+
+Ir al workflow, \textit{workflow.py}, y editar la función
+\textbf{define\_flow()} para crear el diccionario de etapas tal y como se ha
+explicado en la sección \ref{cap5:sec:estructura}.
+
+\medskip
+
+Por último, ejecutar el workflow. Para parar el procesamiento basta con enviar
+una interrupción, Ctrl+C, en la consola en la cual se haya lanzado.
 
 %-------------------------------------------------------------------
 \section*{\NotasBibliograficas}
 %-------------------------------------------------------------------
 \TocNotasBibliograficas
 
-Citamos algo para que aparezca en la bibliografía\ldots
-\citep{ldesc2e}
-
-\medskip
-
-Y también ponemos el acrónimo \ac{CVS} para que no cruja.
-
-Ten en cuenta que si no quieres acrónimos (o no quieres que te falle la compilación en ``release'' mientras no tengas ninguno) basta con que no definas la constante \verb+\acronimosEnRelease+ (en \texttt{config.tex}).
-
-
-%-------------------------------------------------------------------
-\section*{\ProximoCapitulo}
-%-------------------------------------------------------------------
-\TocProximoCapitulo
-
 ...
-
-% Variable local para emacs, para  que encuentre el fichero maestro de
-% compilación y funcionen mejor algunas teclas rápidas de AucTeX
-%%%
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../Tesis.tex"
-%%% End:
