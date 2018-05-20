@@ -1,0 +1,125 @@
+%---------------------------------------------------------------------
+%
+%                          Capítulo 2
+%
+%---------------------------------------------------------------------
+% !TEX root = ../Tesis.tex
+
+\chapter{Recolección de datos}
+
+%-------------------------------------------------------------------
+\section{Aladin}
+%-------------------------------------------------------------------
+\label{cap2:sec:aladin}
+
+\textbf{Aladin Sky Atlas} es un programa interactivo desarrollado por
+el \textbf{CDS}, Centro de Datos Astronómicos de Estrasburgo, que permite
+acceder recursos astronómicos digitalizados.
+
+\medskip
+
+Esta herramienta no solo permite visualizar imagenes de cuerpos celestes a lo
+largo de los años, también permite realizar una superposicion de las mismas para
+facilitar su comparación.
+
+%-------------------------------------------------------------------
+\section{Obtención de imagenes}
+%-------------------------------------------------------------------
+\label{cap2:sec:imgdownload}
+
+Como se describe la sección \ref{cap2:sec:aladin} es posible obtener imagenes
+que muestren la evolucion de los cuerpos celestes en coordenadas concretas con
+años de diferencia.
+
+\begin{figure}[t]
+  \centering
+  %
+  \subfloat[][]{
+    \includegraphics[width=0.42\textwidth]%
+    {Imagenes/Vectorial/TODO}
+    \label{cap2:fig:star1}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.42\textwidth]%
+    {Imagenes/Vectorial/TODO}
+    \label{cap2:fig:star2}
+  }
+  \caption{Imagenes descargadas de las bases astronómicas\label{cap2:fig:astro}}
+\end{figure}
+
+
+\figura{Vectorial/TODO}{width=.5\textwidth}{cap2:fig:superpos}%
+{Superposición de las imagenes}
+
+\medskip
+
+Como se puede apreciar, figura \ref{cap2:fig:superpos}, Aladin no solo superpone
+las imagenes, también las rota para tratar de encajarlas y colorea cada imagen
+de un tono de modo que las estrellas pueden ser rojas o azules, dependiendo de
+la imagen en que aparezcan, si el cuerpo coincide, no se ha movido, será blanca.
+
+\medskip
+
+Para facilitar el proceso de descarga aladin permite emplear scripts en
+combinación con ficheros de parametros. Puesto que no existe ninguna fuente que
+tenga fotos de todas las coordenadas celestes son necesarios dos scripts que
+emplean las siguientes fuentes.
+
+\begin{itemize}
+  \item \textbf{POSSI} y \textbf{POSSII} para descargar imagenes de coordenadas
+  positivas.
+  \item \textbf{POSSI} y \textbf{SERC} para las negativas.
+\end{itemize}
+
+Además de ejecutar la superposición el script hace zoom en la coordenada
+proporcionada como parámetro y almacena la imagen resultante.
+
+
+%-------------------------------------------------------------------
+\section{WDS}
+%-------------------------------------------------------------------
+\label{cap2:sec:wds}
+
+La obtención de recursos de trabajo ya ha sido resuelta en la seccion
+\ref{cap2:sec:imgdownload}, sin embargo, es necesario obtener un listado de
+sistemas de estrellas dobles ya reconocidas que poder analizar con el fin de
+semi-automatizar su reconocimiento.
+
+\medskip
+
+\textbf{WDS}, Washington Double Star Catalog, es un catalogo mantenido por
+el Observatorio Naval de los Estados Unidos que recopila información sobre
+sistemas de estrellas múltiples.
+
+\medskip
+
+El problema es que el catalogo almacena gran cantidad de estrellas, y nosotros
+queremos casos de sistemas de estrellas dobles de movimiento rápido. Con el fin
+de obtener la información que nos interesa hemos creado un programa que filtra
+dichos datos basandose en los siguientes criterios:
+
+\begin{itemize}
+\item La última vez que se vió el sistema debe ser como mínimo 1975, esto
+asegura que en los catalogos existiran almenos dos imagenes, una relativamente
+actual y una de los años 50.
+\item La magnitud de las estrellas que componen el sistema deben ser a lo
+sumo 19, de este modo las estrellas seran apreciables a simple vista.
+\item La separación debe pertenecer al rango entre 2 y 180, las estrellas con
+valores mayores están demasiado alejadas y desvirtuarian los resultados.
+\item El desplazamiento ha de ser superior a 60 para que el movimiento sea
+apreciable.
+\end{itemize}
+
+\medskip
+
+Las coordenadas de todos los sistemas que sigan dichos criterios serán
+almacenadas en un fichero que puede usarse como parametro de los scripts
+descritos en la seccion \ref{cap2:sec:imgdownload}.
+
+%-------------------------------------------------------------------
+\section*{\NotasBibliograficas}
+%-------------------------------------------------------------------
+\TocNotasBibliograficas
+
+...
