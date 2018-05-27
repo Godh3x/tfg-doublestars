@@ -5,19 +5,138 @@
 %---------------------------------------------------------------------
 % !TEX root = ../Tesis.tex
 
-\chapter{Parametrización del detector}
+\chapter{Detector}
 \label{cap4}
 
-%-------------------------------------------------------------------
-\section{Introducción}
-%-------------------------------------------------------------------
-\label{cap4:sec:introduccion}
+\begin{resumen}
+La detección es el paso que sigue al recoloreado y está dividida en dos partes.
+La primera parte de la detección se basa en el análisis  de la imagen obtenida
+en el recoloreado. Este análisis se lleva a cabo separando la imagen en dos que
+representan los cambios a lo largo del tiempo y calculando las diferencias entre
+cada posible pareja de estrellas. Con los resultados de este análisis se procede
+a la fase de decisión la cual se encarga de procesar los resultados de la etapa
+posterior y decidir, para cada pareja de estrellas, si forman o no una estrella
+doble. Esto se realizará mediante un árbol de decisión.
+\end{resumen}
 
-...
-
 %-------------------------------------------------------------------
-\section*{\NotasBibliograficas}
+\section{Análisis}
 %-------------------------------------------------------------------
-\TocNotasBibliograficas
+\label{cap4:sec:analisis}
 
-...
+Hemos programado esta fase en el lenguaje Python, debido a la gran cantidad de
+bibliotecas que permiten tratar imágenes.ç
+
+\medskip
+
+En particular, para la detección de estrellas dobles se decidió utilizar la
+biblioteca de tratamiento de imágenes OpenCV. El desarrollo de esta fase se
+realizó en varias etapas.
+
+\medskip
+
+Después de analizar cientos de imágenes de estrellas dobles, se decidió recrear
+el mismo procedimiento que se realiza mentalmente a la hora de decidir si son
+dobles o no. Para decidirlo hay que fijarse en que sus trayectorias sean
+paralelas y la distancia recorrida sea aproximadamente la misma.
+
+\medskip
+
+Para llevar a cabo este procedimiento necesitamos encontrar un centro aproximado
+de cada una de las estrellas del recoloreado para poder así buscar relaciones,
+de distancia y ángulo, entre parejas de estrellas cuyo movimiento haya sido
+similar a lo largo de los años.
+
+\medskip
+
+Una primera aproximación se basó en la búsqueda de los contornos de las diversas
+estrellas en función de sus colores y el uso de estos contornos para obtener el
+centro de la estrella. Esta aproximación permitió relacionar aquellas estrellas
+cuyo movimiento hubiese sido lo suficientemente rápido como para que no
+compartan ningún punto entre la primera foto y la segunda.
+
+\figura{Vectorial/Detector/1}{width=.5\textwidth}{cap4:fig:1}%
+{Estrella binaria con movimiento veloz}
+
+\medskip
+
+El movimiento de la estrella de la figura \ref{cap4:fig:1} es suficientemente
+rápido como para que entre la primera foto y la segunda no exista ningún punto
+en común por lo que la obtención del centro para su posterior análisis no
+requiere de ningún cambio en la foto. El problema de este método radica en que
+si la estrella no se ha movido lo suficientemente rápido, existirán puntos
+comunes, representados en color blanco. Debido a esto, se obtendrían tres
+centros distintos para una misma pareja de  estrellas y ninguno de ellos serían
+los centros reales de las dos estrellas.
+
+\medskip
+
+El problema de este método radica en que si la estrella no se ha movido lo
+suficientemente rápido. Se obtendrían tres centros distintos para una misma
+pareja de estrellas y ninguno de ellos serían los centros reales de las dos
+estrellas.
+
+\figura{Vectorial/Detector/2}{width=.5\textwidth}{cap4:fig:2}%
+{Estrella binaria cuyo movimiento no es tan apreciable debido a su menor velocidad}
+
+\medskip
+
+Para subsanar el error se decidió realizar el análisis de contornos por
+separado. Para ello se filtran la imagen en dos imágenes de manera que una tiene
+el color rojo y el blanco, y la otra el azul y el blanco. De esta manera se
+obtienen los centros y áreas de las estrellas en origen y los centros de las
+estrellas en el destino y se pueden relacionar de manera directa.
+
+\figura{Vectorial/Detector/3}{width=.5\textwidth}{cap4:fig:3}%
+{Estrella binaria con bajo movimiento propio}
+
+\begin{figure}[t]
+  \centering
+  %
+  \subfloat[][]{
+    \includegraphics[width=0.42\textwidth]%
+    {Imagenes/Vectorial/Detector/4}
+    \label{cap4:fig:red}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.42\textwidth]%
+    {Imagenes/Vectorial/Detector/5}
+    \label{cap4:fig:blue}
+  }
+  \caption{A partir de la imágen recoloreada, figura \ref{cap4:fig:3}, se obtienen dos imágenes}
+\end{figure}
+
+\medskip
+
+Una vez obtenidos los centros y áreas de todas las estrellas se procede a
+especificar cuál sería la estrella primaria, la de mayor área, y cuál sería la
+estrella secundaria, de menor área. Y calculamos los valores necesarios para su
+clasificación, figura \ref{cap4:fig:6}.
+
+\figura{Vectorial/Detector/6}{width=.5\textwidth}{cap4:fig:6}%
+{Representación de valores calculados}
+
+\medskip
+
+Los valores representados en la figura \ref{cap4:fig:6} corresponden a:
+
+\begin{enumerate}[label=(\alph*)]
+  \item Separación entre las estrellas en la segunda foto tomada.
+  \item Distancia recorrida por la estrella secundaria.
+  \item Separación entre las estrellas en la primera foto tomada.
+  \item Distancia recorrida por la estrella primaria.
+  \item Ángulo de la trayectoria de la estrella secundaria.
+  \item Ángulo de la trayectoria de la estrella primaria.
+  \item Ángulo de la posición de la estrella secundaria con respecto a la
+  primaria en la primera foto.
+  \item Ángulo de la posición de la estrella secundaria con respecto a la
+  primaria en la segunda foto.
+\end{enumerate}
+
+\medskip
+
+Una vez obtenidos los datos de la figura \ref{cap4:fig:6} se procede a
+procesarlos para calcular los valores que se utilizan para clasificar estrellas
+dobles (ver capítulo estrellas dobles). Por último, un árbol de decisión se
+encargará de procesar estos datos y clasificar la pareja de estrellas.
