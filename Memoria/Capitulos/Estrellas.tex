@@ -41,13 +41,107 @@ brillantes, con un contorno difuso (figura \ref{cap7:fig:creal}).
 \end{figure}
 
 %-------------------------------------------------------------------
-\section{Conceptos}
+\section{Coordenadas}
 %-------------------------------------------------------------------
-\label{cap7:sec:conceptos}
+\label{cap7:sec:coordenadas}
+
+Un sistema de coordenadas celestes no es más que un modo de especificar
+la posición de un cuerpo en el espacio. Existen varios sistemas de este tipo
+pero en este trabajo nos quedaremos con el sistema de coordenadas equatorial,
+que es el usado por nuestros generadores de coordenadas.
+
+\medskip
+
+Antes de explicar que compone este sistema vamos a introducir dos conceptos.
+En primer lugar el circulo horario de un objeto es aquel que pasa por ambos
+polos e intersecta al objeto. En segundo lugar el equinocio de primavera se da
+en Marzo, exactamente en el momento en que los rayos solares golpean el ecuador
+perpendicularmente. Este equinocio es el momento cero del tiempo sideral, usado
+por los astrónomos para localizar objetos en el espacio, y por tanto el momento
+cero de el sistema ecuatorial.
+
+\medskip
+
+En este sistema una coordenada tiene dos componentes: la ascensión recta, RA, y
+la declinación, Dec. La ascensión recta, figura \ref{cap7:fig:ra}, mide la
+distancia angular, calculada hacia el este sobre la proyección del ecuador
+terrestre, entre el equinocio de primavera y el circulo horario del objeto. La
+declinación mide la distancia angular de un objeto perpendicularmente respecto
+de la proyección del ecuador, positiva hacia el norte. Por ejemplo la proyección
+del polo norte tiene una declinación de +90º y la del sur de -90º.
+
+\figura{Vectorial/Coordenadas/ra}{width=.6\textwidth}{cap7:fig:ra}%
+{Vista cenital de la tierra, sobre el polo norte. $\Upsilon$ representa el
+equinocio de primavera.\\Fuente:
+\url{https://en.wikipedia.org/wiki/File:Hour_angle_still1.png}}
+
+\medskip
+
+Para generar grandes cantidades de coordenadas equatoriales hemos creado dos
+generadores de coordenadas, uno continuo y otro aleatorio. Ambos generadores
+necesitan que se especifiquen los rangos en los que trabajar, que oscilan entre
+los siguientes valores, ambos en grados.
+
+\begin{itemize}
+  \item RA $\in$ [0, 360].
+  \item Dec $\in$ [-90, 90].
+\end{itemize}
+
+\medskip
+
+Además de estos rangos el generador aleatorio necesita el número de coordenadas
+deseadas, se asegurará de que no existan repetidas, en cambio el continuo
+necesita dos valores uno para el desplazamiento de la ascensión recta y otro
+para la declinación. Teniendo en cuenta que posteriormente usaremos un zoom x4
+los valores que permiten solapar las fotos sin perder información son los
+siguientes.
+
+\begin{itemize}
+  \item Desplazamiento RA: 0.02
+  \item Desplazamiento Dec: 0.01
+\end{itemize}
+
+\medskip
+
+Al usar el generador continuo se puede ver que la diferencia en la ascensión
+recta no se corresponde al desplazamiento especificado, esto se debe a que
+estamos trabajando en un sistema esférico por lo cual debemos ajustar el
+desplazamiendo en base a la declinación.
+
+\begin{itemize}
+  \item Desplazamiento RA ajustado: Desplazamiento RA * cos(Dec)
+\end{itemize}
+
 
 %-------------------------------------------------------------------
-\section*{\NotasBibliograficas}
+\section{Atributos}
 %-------------------------------------------------------------------
-\TocNotasBibliograficas
+\label{cap7:sec:atributos}
 
-...
+\url{http://www.asociacionhubble.org/portal/modules/grupos/estrellasdobles/guiaobs/guiaobs.pdf}
+
+
+Un sistema de estrellas binarias viene definido por una serie de parámetros que
+veremos a continuacion. En el sistema una de las componentes es principal y la
+otra secundaria, el criterio para definir cual es cual es simple, la más
+brillante es la principal.
+
+\medskip
+
+La separación indica la distancia entre las estrellas que conforman el sistema.
+
+\medskip
+
+El angulo de posición marca la posición de la secundaria respecto de la
+principal.
+
+\medskip
+
+La magnitud es el brillo de cada estrella, cuanto más bajo es el valor más
+brillante es la estrella. Como se comentaba al principio de la sección es este
+parámetro el que determina que componente es principal.
+
+\medskip
+
+Y, por último, su espectro o color que esta directamente relacionado con la
+temperatura de la estrella.
