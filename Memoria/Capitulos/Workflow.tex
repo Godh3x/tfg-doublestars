@@ -8,22 +8,28 @@
 \chapter{Workflow}
 \label{cap5}
 
+\begin{resumen}
+Una vez resuelta la recolección de datos es necesario ver que tratamientos
+aplicarles para alcanzar nuestro objetivo, pero antes vamos a definir una
+plataforma genérica sobre la cuál desarrollar dichos procesos.
+\end{resumen}
+
 %-------------------------------------------------------------------
 \section{Introducción}
 %-------------------------------------------------------------------
 \label{cap5:sec:introduccion}
 
-En los capitulos \ref{cap3} y \ref{cap4} se describe diferentes procesos por los
+En los capitulos \ref{cap3} y \ref{cap4} se describen diferentes procesos por los
 que una fotografía ha de pasar para poder detectar sistemas de estrellas dobles,
-cada una de estas etapas viene definida por un numero arbitrario de entradas y
+cada una de estas etapas viene definida por un número arbitrario de entradas y
 salidas y un evento que al abortar la ejecución permita al programa salir de
 forma segura.
 
 \medskip
 
-Cada etapa por tanto puede ser configurada por sepado y lanzada puesto que para
+Cada etapa por tanto puede ser configurada y lanzada por separado puesto que para
 conectarlas solo es necesario que la salida de una etapa sea la entrada de la
-siguiente, de esta forma todas las etapas pueden trabajar de forma simultanea.
+siguiente, de esta forma todas las etapas pueden trabajar de forma simultánea.
 Sin embargo, creemos que esta tarea puede simplificarse mediante la creacion
 de un controlador que se encarge de lanzar las etapas en diferentes hilos, para
 que sigan ejecutandose a la vez, y pararlas cuando el usuario lo requiera.
@@ -137,9 +143,3 @@ explicado en la sección \ref{cap5:sec:estructura}.
 Por último, ejecutar el workflow. Para parar el procesamiento basta con enviar
 una interrupción, Ctrl+C, en la consola en la cual se haya lanzado.
 
-%-------------------------------------------------------------------
-\section*{\NotasBibliograficas}
-%-------------------------------------------------------------------
-\TocNotasBibliograficas
-
-...

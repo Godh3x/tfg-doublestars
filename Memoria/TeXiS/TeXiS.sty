@@ -34,7 +34,7 @@
 \ProvidesPackage{TeXiS/TeXiS}
 
 \RequirePackage{verbatim}  % Se necesita para el comando "example".
-                           % Si el paquete por alguna razón no es
+                           % Si el paquete por alguna razï¿½n no es
                            % compatible con alguno otro utilizado
                            % puedes quitar el comando example y
                            % eliminar la dependencia; el comando
@@ -46,7 +46,7 @@
 % Constante:
 % \texisVer
 % Resultado:
-% Versión de la plantilla.
+% Versiï¿½n de la plantilla.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\texisVer{1.0+}
 
@@ -76,7 +76,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-%% COMANDOS GENERALES NO DEPENDIENTES DEL MODO DE COMPILACIóN
+%% COMANDOS GENERALES NO DEPENDIENTES DEL MODO DE COMPILACIï¿½N
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,8 +86,8 @@
 % \imagen{nombre-fich}{argumentos}
 % Resultado:
 % Inserta una figura, utilizando \includegraphics.
-% Es conveniente utilizar esta macro, porque ahorra la indicación
-% explícita del directorio Imagenes, en el que se asume que estará
+% Es conveniente utilizar esta macro, porque ahorra la indicaciï¿½n
+% explï¿½cita del directorio Imagenes, en el que se asume que estarï¿½
 % la figura.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\imagen}[2]{%
@@ -96,16 +96,16 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comando:
-% \figura{nombre-fichero}{argumentos}{etiqueta}{título}
+% \figura{nombre-fichero}{argumentos}{etiqueta}{tï¿½tulo}
 % Resultado:
 % Inserta una figura. "La figura~\ref{etiqueta} muestra..." permite
 % referenciar la figura desde el texto.
 % argumentos: width=Xcm,height=Ycm,angle=Z
-% No se debe poner extensión en el nombre del fichero. Si si está
-% compilando con LaTeX se asumirá .eps. Si se está usando pdflatex
-% se asumirá que es .pdf.
+% No se debe poner extensiï¿½n en el nombre del fichero. Si si estï¿½
+% compilando con LaTeX se asumirï¿½ .eps. Si se estï¿½ usando pdflatex
+% se asumirï¿½ que es .pdf.
 %
-% Nota: Si se quiere incluir un título más corto para el índice,
+% Nota: Si se quiere incluir un tï¿½tulo mï¿½s corto para el ï¿½ndice,
 % utilizar el comando \figuraEx
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\figura}[4]{%
@@ -119,15 +119,15 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comando:
-% \figuraEx{nombre-fich}{argumentos}{etiqueta}{título}{titulo_corto}
+% \figuraEx{nombre-fich}{argumentos}{etiqueta}{tï¿½tulo}{titulo_corto}
 % Resultado:
 % Inserta una figura. "La figura~\ref{etiqueta} muestra..." permite
 % referenciar la figura desde el texto.
 % argumentos: width=Xcm,height=Ycm,angle=Z
-% No se debe poner extensión en el nombre del fichero. Si si está
-% compilando con LaTeX se asumirá .eps. Si se está usando pdflatex
-% se asumirá que es .pdf.
-% El último parámetro define el título que aparecerá en el índice de
+% No se debe poner extensiï¿½n en el nombre del fichero. Si si estï¿½
+% compilando con LaTeX se asumirï¿½ .eps. Si se estï¿½ usando pdflatex
+% se asumirï¿½ que es .pdf.
+% El ï¿½ltimo parï¿½metro define el tï¿½tulo que aparecerï¿½ en el ï¿½ndice de
 % figuras.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\figuraEx}[5]{%
@@ -144,11 +144,19 @@
 % Entorno:
 % resumen
 % Uso:
-% Sirve para marcar los resúmenes que aparecen al principio de cada
-% capítulo.
+% Sirve para marcar los resï¿½menes que aparecen al principio de cada
+% capï¿½tulo.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newenvironment{resumen}{%
 \begin{quotation}\noindent\begin{small}\textbf{\textsc{Resumen:}}%
+}%
+{%
+\end{small}\end{quotation}%
+\bigskip%
+}
+
+\newenvironment{abstract}{%
+\begin{quotation}\noindent\begin{small}\textbf{\textsc{Abstract:}}%
 }%
 {%
 \end{small}\end{quotation}%
@@ -160,7 +168,7 @@
 %
 %       \begin{FraseCelebre}
 %             \begin{Frase}
-%                Y así, del mucho leer y del poco dormir...
+%                Y asï¿½, del mucho leer y del poco dormir...
 %             \end{Frase}
 %             \begin{Fuente}
 %                Don Quijote de la Mancha
@@ -171,21 +179,21 @@
 %
 % Resultado:
 %
-% Añade la frase célebre del principio de un capítulo.
+% Aï¿½ade la frase cï¿½lebre del principio de un capï¿½tulo.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newenvironment{FraseCelebre}% Definición del entorno de FraseCelebre
+\newenvironment{FraseCelebre}% Definiciï¿½n del entorno de FraseCelebre
  {\begin{list}{}{%
      \setlength{\leftmargin}{0.5\textwidth}% Desplazamos el inicio de
-                                 % los párrafos a la derecha la mitad
-                                 % de la anchura de la línea de texto.
+                                 % los pï¿½rrafos a la derecha la mitad
+                                 % de la anchura de la lï¿½nea de texto.
                                  % Puede que quieras cambiar esto
                                  % por otra cantidad como '5cm'.
-     \setlength{\parsep}{0cm}% La separación entre párrafos de la
+     \setlength{\parsep}{0cm}% La separaciï¿½n entre pï¿½rrafos de la
                              % frase o de la fuente es normal, sin
                              % espacio extra.
-     \addtolength{\topsep}{0.5cm}% Aumentamos un poco la separación
-                                 % entre la parte de la fase célebre
-                                 % y los párrafos de alrededor
+     \addtolength{\topsep}{0.5cm}% Aumentamos un poco la separaciï¿½n
+                                 % entre la parte de la fase cï¿½lebre
+                                 % y los pï¿½rrafos de alrededor
    }
  }
  {\unskip \end{list}}
@@ -202,36 +210,36 @@
 % El entorno FraseCelebre es un entorno de lista. Uno de esos entornos
 % sirve para hacer tus \begin{enumerate} o \begin{itemize}
 % particulares.  Se definen cosas como el margen izquierdo y derecho
-% de cada párrafo, la separación entre cada párrafo dentro del mismo
-% \item, la separación entre items y cosas así. Todo eso se hace en la
-% definición del entorno de la lista, en nuestro caso en FraseCelebre.
-% Hay información sobre las cosas parametrizables en la página 62 del
+% de cada pï¿½rrafo, la separaciï¿½n entre cada pï¿½rrafo dentro del mismo
+% \item, la separaciï¿½n entre items y cosas asï¿½. Todo eso se hace en la
+% definiciï¿½n del entorno de la lista, en nuestro caso en FraseCelebre.
+% Hay informaciï¿½n sobre las cosas parametrizables en la pï¿½gina 62 del
 % libro "The LaTeX companion".  Luego para la frase y el autor
-% podríamos poner \item y el texto y listo.  Pero en lugar de eso he
+% podrï¿½amos poner \item y el texto y listo.  Pero en lugar de eso he
 % creado otros dos entornos para poderlos alinear a la derecha (no he
-% conseguido crearlo directamente en la definición de la lista de
-% FraseCelebre... a parte de que haciendolo así podría decidir no
-% alinear el autor y funcionaría ;-))
+% conseguido crearlo directamente en la definiciï¿½n de la lista de
+% FraseCelebre... a parte de que haciendolo asï¿½ podrï¿½a decidir no
+% alinear el autor y funcionarï¿½a ;-))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Comando:
 %
 %       \begin{example}
-%       Algún código LaTeX
+%       Algï¿½n cï¿½digo LaTeX
 %       \begin{example}
 %
 % Resultado:
 %
-% Divide en dos columnas la salida; en la izquierda añade el código
+% Divide en dos columnas la salida; en la izquierda aï¿½ade el cï¿½digo
 % LaTeX literal contenido en el entorno, y en el derecho el resultado
-% de su compilación.
+% de su compilaciï¿½n.
 %
 % Fuente:
 %
-% Este comando es una adaptación del utilizado en el libro "The not so
-% short introduction to LaTeX2e" cuyo código fuente está
-% disponible. Se han invertido las columnas (en el libro el código
-% LaTeX aparecía a la derecha), y se ha añadido algún comentario.
+% Este comando es una adaptaciï¿½n del utilizado en el libro "The not so
+% short introduction to LaTeX2e" cuyo cï¿½digo fuente estï¿½
+% disponible. Se han invertido las columnas (en el libro el cï¿½digo
+% LaTeX aparecï¿½a a la derecha), y se ha aï¿½adido algï¿½n comentario.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newwrite\example@out
@@ -283,18 +291,18 @@
 %
 % Resultado: 
 %
-% Modifica el margen de la página en los párrafos que estén dentro del
-% entorno. Los dos parámetros indican el _desplazamiento_ del margen
+% Modifica el margen de la pï¿½gina en los pï¿½rrafos que estï¿½n dentro del
+% entorno. Los dos parï¿½metros indican el _desplazamiento_ del margen
 % respecto al margen original. Un valor positivo en ambos hace que las
-% líneas sean más cortas, y uno negativo las alarga.
+% lï¿½neas sean mï¿½s cortas, y uno negativo las alarga.
 %
 % El funcionamiento se basa en utilizar un entorno lista, que permite
-% especificar directamente los desplazamientos respecto a los márgenes
-% originales de los extremos de sus párrafos. Pero la variable
+% especificar directamente los desplazamientos respecto a los mï¿½rgenes
+% originales de los extremos de sus pï¿½rrafos. Pero la variable
 % \textwidth _no_ cambia, por lo que no cuentes con ella internamente
-% para, por ejemplo, ajustar tablas o algo así.
+% para, por ejemplo, ajustar tablas o algo asï¿½.
 %
-% Para más información sobre los márgenes, consulta el fichero de la
+% Para mï¿½s informaciï¿½n sobre los mï¿½rgenes, consulta el fichero de la
 % portada, TeXiS_cover.tex
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -313,35 +321,35 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-%% COMANDOS DEPENDIENTES DEL MODO DE COMPILACIóN
+%% COMANDOS DEPENDIENTES DEL MODO DE COMPILACIï¿½N
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %
-% Definición  de las  constantes  que  se arrastran  en  el resto  del
+% Definiciï¿½n  de las  constantes  que  se arrastran  en  el resto  del
 % documento para configurar el modo en el que se compila.
 %
 
 \ifx\release\undefined
-    % Símbolos a definir en modo debug
+    % Sï¿½mbolos a definir en modo debug
     \def\debug{1}
     \def\printtodos{1}
     \def\printcoments{1}
     %\psdraft
-    %  Si  se descomenta,  las  imágenes  no  se incluirán  en  el
-    % documento  (por lo  que compilará más  rápido); en  su lugar
-    % aparece  el recuadro  que ocuparán (de  esa forma  puede uno
-    % hacerse  a la idea  de su tamaño  y situación en  el texto).
+    %  Si  se descomenta,  las  imï¿½genes  no  se incluirï¿½n  en  el
+    % documento  (por lo  que compilarï¿½ mï¿½s  rï¿½pido); en  su lugar
+    % aparece  el recuadro  que ocuparï¿½n (de  esa forma  puede uno
+    % hacerse  a la idea  de su tamaï¿½o  y situaciï¿½n en  el texto).
     % Para que este funcione, tiene que incluirse antes el paquete
     % ps
 
     % Para que  los comentarios salgan en un  recuadro en lugar de
-    % en un párrafo normal
+    % en un pï¿½rrafo normal
     \def\comsdestacados{1}
 \else
-    % Símbolos a definir en modo release
+    % Sï¿½mbolos a definir en modo release
     \def\generaindice{1}
     \def\generatoc{1}
     \ifx\acronimosEnRelease\undefined
@@ -352,47 +360,47 @@
 
 %%%%%
 %%
-%% Explicación de los símbolos que cambian el comportamiento
+%% Explicaciï¿½n de los sï¿½mbolos que cambian el comportamiento
 %%
 %%%%%
 %%
 %
 % \generatoc
 %
-% Si está definido, se genera la tabla de contenidos
+% Si estï¿½ definido, se genera la tabla de contenidos
 %
 %%%
 %
 % \generaindice
 %
-% Si está definido, se "genera" el índice de palabras.  En realidad el
-% soporte para el  índice de palabras es embrionario,  por lo que esta
-% constante en la práctica  *no* se utiliza. Consulta la documentación
-% en TeXiS_pream.tex  para más información.
+% Si estï¿½ definido, se "genera" el ï¿½ndice de palabras.  En realidad el
+% soporte para el  ï¿½ndice de palabras es embrionario,  por lo que esta
+% constante en la prï¿½ctica  *no* se utiliza. Consulta la documentaciï¿½n
+% en TeXiS_pream.tex  para mï¿½s informaciï¿½n.
 %
 %%%
 %
 % \generaacronimos
 %
-% Si está definido, se genera la lista de acrónimos
+% Si estï¿½ definido, se genera la lista de acrï¿½nimos
 %
 %%%
 %
 % \printtodos
 %
-% Si está definido, se escriben los 'TODOs'
+% Si estï¿½ definido, se escriben los 'TODOs'
 %
 %%%
 %
 % \printcoments
 %
-% Si está definido, se escriben los comentarios
+% Si estï¿½ definido, se escriben los comentarios
 %
 %%%
 %
 % \comsdestacados
 %
-% Hace que los comentarios (si se están imprimiendo),
+% Hace que los comentarios (si se estï¿½n imprimiendo),
 % aparezcan resaltados.
 %
 %%%
@@ -416,9 +424,9 @@
 % Comando:
 % \com{texto}
 % Resultado:
-% Usado para marcar comentarios que en fases de revisión deben
+% Usado para marcar comentarios que en fases de revisiï¿½n deben
 % imprimirse. Para versiones ``definitivas'', en vez
-% de borrarlos, se cambia la definición del comando.
+% de borrarlos, se cambia la definiciï¿½n del comando.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ifx\printcoments\undefined
 \newcommand{\com}[1]{}
@@ -440,9 +448,9 @@
 % Comando:
 % \comp{texto}
 % Resultado:
-% Usado para marcar  comentarios _dentro de párrafos_ que  en fases de
-% revisión deben imprimirse. Para versiones ``definitivas'', en vez de
-% borrarlos, se cambia la definición del comando.
+% Usado para marcar  comentarios _dentro de pï¿½rrafos_ que  en fases de
+% revisiï¿½n deben imprimirse. Para versiones ``definitivas'', en vez de
+% borrarlos, se cambia la definiciï¿½n del comando.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ifx\printcoments\undefined
 \newcommand{\comp}[1]{}
@@ -460,7 +468,7 @@
 \include{TeXiS/TeXiS_pream}
 
 % Incluimos el fichero que define la cabecera utilizada, y macros
-% útiles utilizadas en capítulos y secciones especiales
+% ï¿½tiles utilizadas en capï¿½tulos y secciones especiales
 \include{TeXiS/TeXiS_cab}
 
 % Fichero con las macros para crear las portadas
@@ -476,7 +484,7 @@
 \include{TeXiS/TeXiS_bib}
 
 % Variable local para emacs, para que encuentre el fichero
-% maestro de compilación
+% maestro de compilaciï¿½n
 %%%
 %%% Local Variables:
 %%% mode: latex

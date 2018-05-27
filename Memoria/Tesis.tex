@@ -106,6 +106,15 @@ constantes,guionado,Cascaras/bibliografia,config%
     \pdfinfo{/CreationDate (\today)}
 \fi
 
+%%% LST language definition
+
+% found in https://tex.stackexchange.com/questions/336919/simple-coloring-of-json-attributes?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+\lstdefinelanguage{json}{
+    string=[s]{"}{"},
+    stringstyle=\color{blue},
+    comment=[l]{:},
+    commentstyle=\color{black},
+}
 
 %- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 %                        Documento
@@ -139,17 +148,19 @@ constantes,guionado,Cascaras/bibliografia,config%
 \restauraCabecera
 
 %\include{Capitulos/Parte1}
-\include{Capitulos/01Capitulo1}
-\include{Capitulos/02Capitulo2}
-\include{Capitulos/03Capitulo3}
-\include{Capitulos/04Capitulo4}
-\include{Capitulos/05Capitulo5}
-\include{Capitulos/06Capitulo6}
+\include{Capitulos/Introduccion}
+\include{Capitulos/Introduction}
+\include{Capitulos/Estrellas}
+\include{Capitulos/Datos}
+\include{Capitulos/Workflow}
+\include{Capitulos/Procesamiento}
+\include{Capitulos/Detector}
+\include{Capitulos/Problemas}
 
 % Ap�ndices
-\appendix
-\include{Apendices/ParteApendices}
-\include{Apendices/01ApendiceA}
+%\appendix
+%\include{Apendices/ParteApendices}
+%\include{Apendices/01ApendiceA}
 %\include{...}
 %\include{...}
 %\include{...}

@@ -1,0 +1,302 @@
+%---------------------------------------------------------------------
+%
+%                          Capítulo 3
+%
+%---------------------------------------------------------------------
+% !TEX root = ../Tesis.tex
+
+\chapter{Procesamiento}
+\label{cap3}
+
+\begin{resumen}
+A lo largo de este capítulo se presentaran los diferentes procesos a los que
+se pueden someter los datos, entre ellos se encuentran transformaciones que ya
+no se emplean en nuestro detector pero que podrían ser útiles si se exploran
+nuevas formas de detección.
+\end{resumen}
+
+%-------------------------------------------------------------------
+\section{Recoloreado}
+%-------------------------------------------------------------------
+\label{cap3:sec:recolor}
+
+Esta etapa emplea la biblioteca PIL, Python Imaging Library, para cargar las
+imagenes y crear el canvas sobre el que guardar el resultado.
+
+\medskip
+
+A simple vista las imagenes obtenidas en la sección \ref{cap2:sec:imgdownload}
+están coloreadas y nos permiten apreciar las diferencias fácilmente. El problema
+surge cuando queremos que el programa haga las misma extrapolaciones que hace
+nuestro cerebro.
+
+\medskip
+
+Con el fin de facilitar la comparación de los pixels la imágen pasa por un
+proceso de recoloreado que la transforma pixel a pixel.
+
+\medskip
+
+Los colores que reconoce este proceso se definen mediante un diccionario que
+almacena el nombre y composición del mismo. Esto facilita la modificación de los
+grupos reconocidos de modo que un cambio en el coloreado inicial de las imagenes
+no supone un problema.
+
+\medskip
+
+El problema de este proceso es definir cómo ha de interpretar la tonalidad del
+pixel, para atajarlo hemos empleado la distancia Manhanttan. Se trata de
+medir la distancia entre la composición del pixel y la del grupo, asumiendo
+que ambas tonalidades son RGB y que están almacenadas en triplas, de la forma
+(R, G, B), tan solo hemos de restar cada componente con su homóloga y sumar los
+resultados para obtener un valor. El grupo que resulte con menor valor será
+aquel al que pertenezca el pixel.
+
+\begin{figure}[t]
+  \centering
+  %
+  \subfloat[][]{
+    \includegraphics[width=0.42\textwidth]%
+    {Imagenes/Vectorial/Recoloreado/no_recolor}
+    \label{cap3:fig:norec}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.42\textwidth]%
+    {Imagenes/Vectorial/Recoloreado/recolor}
+    \label{cap3:fig:rec}
+  }
+  \caption{Recoloreado usando la distancia Manhattan\label{cap3:fig:dManh}}
+\end{figure}
+
+\medskip
+
+Tal y como muestra la imágen \ref{cap3:fig:rec} hay información que se pierde
+durante el proceso debido a que las estrellas están muy apagadas haciendo que
+la distancia al negro sea menor que al azul o rojo. Para poder atajar este
+problema se realiza una comprobación posterior, si el grupo asignado es negro
+pero la distancia al azul o al rojo es inferior a un cierto umbral se reasigna
+el grupo del pixel, imagen \ref{cap3:fig:rthresh}.
+
+\figura{Vectorial/Recoloreado/recolor_thresh}{width=.5\textwidth}{cap3:fig:rthresh}%
+{Recoloreado de la imagen \ref{cap3:fig:norec} con un umbral de 150}
+
+\medskip
+
+Cuando se ha obtenido el grupo del pixel se pinta del color de grupo en un
+canvas, una vez se han procesado todos los pixel se almacena el resultado en un
+fichero png.
+
+%-------------------------------------------------------------------
+\section{Comprobación}
+%-------------------------------------------------------------------
+\label{cap3:sec:check}
+
+Aún cuando el detector acepta un sistema de estrellas dobles existe un problema,
+puede no tratarse de un sistema nuevo. Para solventar esto existe una
+fase de comprobación que se puede activar para todos los sistemas aceptados.
+
+\medskip
+
+Si se ha solicitado esta fase se realiza un primer paso que consiste en
+conectarse a WDS y descargar los datos de los sistemas conocidos, este paso solo
+se hace una vez por ejecución, al comienzo, para no saturar los servidores. El
+hecho de emplear los mismos datos durante una ejecución completa no supone un
+problema puesto que la base de datos no se altera habitualmente.
+
+\medskip
+
+Cuando un sistema es aceptado esta fase toma sus coordenadas y busca
+coincidencias en todas las entradas descargadas, si no hay ninguna se ignora el
+sistema detectado. Dejando por tanto un documento json de la siguiente forma.
+
+\medskip
+
+\begin{lstlisting}[language=json]
+{
+  "1": {
+    "Angle difference": 0.5332939070674456,
+    "Separation difference": 6.23413572082471,
+    "Maximum separation": 117.64777940955791,
+    "Separation %": 5.298982906530099,
+    "PA": 151.86140052006294,
+    "Separation": 28.995116847884947,
+    "Proper Motion A (brightest)": [
+      163.2,
+      -258.4
+    ],
+    "Proper Motion B": [
+      176.79999999999998,
+      -299.2
+    ]
+  }
+}
+\end{lstlisting}
+
+\medskip
+
+Si por el contrario existen datos asociados al sistema se almacenan en el
+archivo json junto con los datos proporcionados por el detector y el calculo del
+error entre ambos, dando lugar a un archivo con el siguiente formato.
+
+\begin{lstlisting}[language=json]
+{
+  "1": {
+    "Angle difference": 1.419208447017608,
+    "Separation difference": 3.3066248088095165,
+    "Maximum separation": 123.22743201089601,
+    "Separation %": 2.683351226955,
+    "PA": 15.760824216099781,
+    "Separation": 30.77825812822563,
+    "Proper Motion A (brightest)": [
+      136.0,
+      0.0
+    ],
+    "Proper Motion B": [
+      122.39999999999999,
+      27.2
+    ]
+  },
+  "wds": {
+    "PA": 18.0,
+    "Separation": 30.55,
+    "Proper Motion A (brightest)": [
+      93,
+      15
+    ],
+    "Proper Motion B": [
+      91,
+      10
+    ]
+  },
+  "error": {
+    "PA": 2.239175783900219,
+    "Separation": -0.22825812822562952,
+    "Proper Motion A (brightest)": [
+      -43.0,
+      15.0
+    ],
+    "Proper Motion B": [
+      -31.39999999999999,
+      -17.2
+    ]
+  }
+}
+\end{lstlisting}
+
+\medskip
+
+Si bien esta fase es una primera comprobación sus resultados no son definitivos
+en el caso del no, puesto que solo se comprueban las coordenadas centrales de la
+imágen. Si la estrella no se encuentra en el centro es imposible para este
+programa determinar si el sistema ya se conocía o no.
+
+%-------------------------------------------------------------------
+\section{Contador de pixels}
+%-------------------------------------------------------------------
+\label{cap3:sec:pixel_counter}
+
+Al igual que la etapa definida en la seccion \ref{cap3:sec:recolor} se emplea
+la libreria PIL. Esto no es lo único que comparten, el proceso al que se
+someten las imagenes es muy similar.
+
+\medskip
+
+La idea de aplicar este proceso es obtener la composición de colores de cada
+fotografía. Una vez obtenida se almacena el resultado en un fichero CSV que
+se puede analizar posteriormente. La gama de colores se define mediante un
+diccionario en el que se almacenan los colores puros que se quieren reconocer.
+
+\medskip
+
+Una vez cargada la ímágen se analiza cada pixel que la compone, para conocer
+el color, de entre los definidos en el diccionario, al que más se asemeja. como
+el nombre de la etapa indica el objetivo es contar los pixels, por lo tanto
+existe un contador por cada color en el cual se almacena el número de pixels de
+la imágen que pertenecen a dicha tonalidad.
+
+\medskip
+
+Al terminar de procesar es posible guardar el valor de dichos contadores o
+transformarlos para obtener otros datos. En nuestro caso, decidimos almacenar
+los porcentajes de pixels rojos, azules y blancos, y las proporciones tanto de
+blancos como de azules con respecto de los rojos.
+
+%-------------------------------------------------------------------
+\section{Corte}
+%-------------------------------------------------------------------
+\label{cap3:sec:crop}
+
+En esta etapa empleamos la libreria image\_slicer de Python, distribuida bajo
+licencia MIT. Esta libreria permiter dividir una fotografía en n piezas del
+mismo tamaño.
+
+\medskip
+
+En este caso decidimos que las imagenes se dividieran en 9 sectores, lo cual
+permite reducir el nivel de ruido en la fotografía pero dejando datos
+suficientes en ella para posteriores análisis. En la figura \ref{cap3:fig:uncrop}
+se puede observar que existe mucha información, sin embargo, si la dividimos en
+9 fragmentos, figura \ref{cap3:fig:crop}, las imágenes resultantes tienen menos
+ruido.
+
+\medskip
+
+Este proceso tan solo almacena el cuadrante central para reducir la carga de
+memoria, debido a esto solo la imágen de la figura \ref{cap3:fig:qcenter}
+aparecería en la salida. Si esto quisiese modificarse tan solo habria que
+desactivar el parámetro 'only\_center' del método run.
+
+\figura{Vectorial/Corte/Original}{width=.5\textwidth}{cap3:fig:uncrop}%
+{Imágen sin recortar}
+
+\begin{figure}[t]
+  \centering
+  %
+  \subfloat[][]{
+    \includegraphics[width=0.26\textwidth]%
+    {Imagenes/Vectorial/Corte/Q1}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.26\textwidth]%
+    {Imagenes/Vectorial/Corte/Q2}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.26\textwidth]%
+    {Imagenes/Vectorial/Corte/Q3}
+  }
+
+  \subfloat[][]{
+    \includegraphics[width=0.26\textwidth]%
+    {Imagenes/Vectorial/Corte/Q4}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.26\textwidth]%
+    {Imagenes/Vectorial/Corte/Q5}%
+    \label{cap3:fig:qcenter}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.26\textwidth]%
+    {Imagenes/Vectorial/Corte/Q6}
+  }
+
+  \subfloat[][]{
+    \includegraphics[width=0.26\textwidth]%
+    {Imagenes/Vectorial/Corte/Q7}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.26\textwidth]%
+    {Imagenes/Vectorial/Corte/Q8}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.26\textwidth]%
+    {Imagenes/Vectorial/Corte/Q9}
+  }
+  \caption{Imagenes resultantes de la división\label{cap3:fig:crop}}
+\end{figure}
