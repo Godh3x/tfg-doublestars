@@ -9,12 +9,64 @@
 \label{cap9}
 
 \begin{resumen}
-...
+En este último capítulo vamos a ver los resultados obtenidos y analizar
+el mótivo de los mismos.
 \end{resumen}
 
-%-------------------------------------------------------------------
-\section{Introducción}
-%-------------------------------------------------------------------
-\label{cap9:sec:introduccion}
+Como ya adelantó el título de este proyecto, el sistema es semi-automático
+debido a que requiere del apoyo externo de una persona con experiencia
+suficiente en la detección de estrellas binarias. El proyecto se diseñó de tal
+manera que, dada una foto, fuera capaz de decidir con casi un 100\% de acierto
+que, si no había una estrella doble, dijera que no. Esto se decidió debido a que
+lo más importante era no perder ninguna estrella, aunque esto provocará una
+mayor carga de trabajo a la hora de revisar las fotografías en las que nuestra
+aplicación detectara una estrella doble.
 
-...
+\medskip
+
+Los resultados de nuestro sistema son un 97\% de acierto en las imágenes en las
+que no existe ninguna estrella binaria y un 33\% de acierto a la hora de
+encontrar una estrella binaria en las que sí exista una. Volviendo a la idea
+inicial que mencionamos, hemos obtenido un resultado satisfactorio cuando se
+trata de rechazar fotografías que no contienen esta tipología sitemas, un
+porcentaje tan elevado de acierto reducirá en gran medida la carga de trabajo
+de los expertos.
+
+\medskip
+
+En lo que a los sistemas binarios se refiere, el 33\% de los marcados contienen
+realmente una doble esto es debido a una decisión inicial en el diseño del
+sistema. Concretamente a que la detección se realiza con imágenes que han sido
+modificadas en la fase de recoloreado. En la cual los colores se llevan a su
+máxima intensidad por lo que si dos estrellas están muy próximas, al recolorear,
+nuestro sistema las detectará como una estrella única, figura
+\ref{cap9:fig:comp}. Los sistemas binarios con estrellas tan cercanas son muy
+comunes y, por tanto, el porcentaje de aciertos se ve drásticamente reducido.
+
+\begin{figure}[t]
+  \centering
+  %
+  \subfloat[][]{
+    \includegraphics[width=0.3\textwidth]%
+    {Imagenes/Vectorial/Conclusiones/star}
+    \label{cap9:fig:star}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.3\textwidth]%
+    {Imagenes/Vectorial/Conclusiones/recolor}
+    \label{cap9:fig:recolor}
+  }
+  \caption{Comparativa fotografía original y recoloreada\label{cap9:fig:comp}}
+\end{figure}
+
+\medskip
+
+Como posible medida que se podría tomar para incrementar el porcentaje
+de acierto se encuentra un cambio al sistema de detección de centroides, de
+manera que se realizase un estudio de la intensidad y densidad de los pixels
+en la fotografía, y se determinase con estos datos que conforma un centro de
+estrella. De esta manera ejemplos como el de la figura \ref{cap9:fig:star}
+podrían estudiarse como dos estrellas separadas, puesto que entre ambas es
+posible apreciar a simple vista un cambio de intensidad, y se vería que, en
+realidad, forman un sistema binario.
