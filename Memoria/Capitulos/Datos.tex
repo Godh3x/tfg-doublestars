@@ -75,7 +75,7 @@ la imagen en que aparezcan, si el cuerpo coincide, no se ha movido, será blanca.
 \medskip
 
 Para facilitar el proceso de descarga aladin permite emplear scripts en
-combinación con ficheros de parametros. Puesto que no existe ninguna fuente que
+combinación con ficheros de parámetros. Puesto que no existe ninguna fuente que
 tenga fotos de todas las coordenadas celestes son necesarios dos scripts que
 emplean las siguientes fuentes.
 
@@ -134,5 +134,41 @@ apreciable.
 \medskip
 
 Las coordenadas de todos los sistemas que sigan dichos criterios serán
-almacenadas en un fichero que puede usarse como parametro de los scripts
+almacenadas en un fichero que puede usarse como parámetro de los scripts
 descritos en la seccion \ref{cap2:sec:imgdownload}.
+
+%-------------------------------------------------------------------
+\section{Datasets}
+%-------------------------------------------------------------------
+\label{cap2:sec:dsets}
+
+Usando las coordenadas obtenidas al filtrar el catálogo WDS, sección
+\ref{cap2:sec:wds}, como parámetro de los scripts de Aladin descargamos las
+imagenes que conforman el espectro positivo del dataset. Para poder formarlo
+completamente se emplearon los generadores de coordenadas para obtener un
+número equivalente de casos en los que no hay estrella doble. Con el dataset
+completo se decidió aplicar una división común en machine learning que consiste
+en partir un dataset en tres, training, test y validation, correspondientes al
+60\%, 20\% y 20\%, respectivamente, de los datos.
+
+\medskip
+
+En primer lugar tenemos el training set, estos datos serán los empleados para
+generar un módelo que, a priori, funciona. El problema es que, si solo se usa un
+set, no hay una forma de comprobar si el modelo funciona, debido a esto se crea
+la partición de validación que será empleada para ajustar los parámetros de
+decisión. Una vez se han obtenido los resultados esperados es necesaria una
+comprobación externa, esto se debe a que el modelo se ha entrenado para acertar
+especificamente los datos del set de validación. Este último motivo es el que
+justifica la existencia de test set, al examinar los resultados con estos datos
+pueden ocurrir dos cosas: si los resultados son buenos el modelo entrenado
+funciona, si por el contrario no son los esperados es necesario reentrenar el
+modelo desde cero, no vale con modificar los parametros.
+
+\medskip
+
+Esta técnica es muy útil debido a que si los datos del training set están
+viciados, por ejemplo, si todas las estrellas dobles están a la misma distancia,
+una vez se evalúe sobre el test set podremos comprobar que el modelo no es
+válido pues tiene en cuenta una distancia que no tiene por qué ser la misma
+siempre.
