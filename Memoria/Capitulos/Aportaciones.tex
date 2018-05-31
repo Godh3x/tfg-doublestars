@@ -222,3 +222,45 @@ Memoria:
   \item Edición de figuras mediante gimp para facilitar la comprensión de
     conceptos de la fase de análisis del capítulo \ref{cap4} y conclusiones.
 \end{itemize}
+
+
+\newpage
+%-------------------------------------------------------------------
+\section{Daniel redactado}
+%-------------------------------------------------------------------
+\label{cap10:sec:daniel2}
+
+Una vez tuvimos el proyecto definitivo, me dediqué al estudio de qué es una estrella doble y cuáles son su características mediante el análisis de decenas de fotografías de estrellas, la lectura de distintos artículos al respecto y la visualización de varios videos sobre el tema.
+
+\medskip
+
+Paralelamente, junto con mis compañeros, creamos dos programas para generar coordenadas y así facilitar la descarga de imágenes, uno con las coordenadas en un rango dado y otro con coordenadas aleatorias. Una vez que David obtuvo las coordenadas del WDS, estudiamos el uso de la herramienta Aladin  y creamos un script, para dicha herramienta, que nos permitiría dada una lista de coordenadas, descargar imágenes automáticamente. Debido a que el primer script no permitía descargar las imágenes con coordenadas negativas, tuvimos que crear un segundo script. 
+
+\medskip
+
+Una vez descargadas las imágenes del WDS y varios miles de fotografías sin estrellas dobles, creé un programa para dividirlas en los distintos datasets y descartar las imágenes sin estrellas binarias sobrantes. Esto lo realicé porque mis compañeros iban a intentar desarrollar el proyecto mediante machine learning.
+
+\medskip
+
+Por mi cuenta, estudié distintas técnicas de procesado de imágenes y reconocimiento de objetos para encontrar la manera adecuada de reconocer y analizar las estrellas en nuestras imágenes. Aprovechando que mi compañero David recoloreaba las imágenes de manera que el número de colores se simplificó a rojo, azul, blanco y negro, decidí  utilizar la búsqueda de contornos de las estrellas para su análisis. Para llevar a cabo la búsqueda de contornos, investigué distintas bibliotecas dedicadas al tratamiento de imágenes hasta dar con OpenCV. Una vez decidida que biblioteca iba a utilizar, experimenté con ella y encontré numerosas funcionalidades que podríamos utilizar en nuestro proyecto.
+
+\medskip
+
+Para realizar la detección de estrellas binarias empecé desarrollando un programa  que fuera capaz de encontrar los centros de las estrellas a través de sus contornos. Como mis compañeros pretendían utilizar machine learning, una vez obtenidos los centros, desarrollé un programa que permitiera clasificar los distintos tipos de estrellas en función de los cambios producidos a lo largo de los años. Este programa sería usado para limpiar las imágenes de elementos que solo provocan ruido para aplicaciones de machine learning, como tensorFlow. Esta limpieza se llevaría a cabo mediante el borrado de estrellas que, por ejemplo, no se hubieran movido a lo largo de los años. Como posteriormente comprobamos, las aplicaciones de machine learning no nos servían debido a que el número de imágenes no es suficiente como para entrenar correctamente un modelo.
+
+\medskip
+
+Para poder aprovechar el trabajo realizado y en vistas de que no íbamos a poder aplicar machine learning, decidí diseñar una aplicación que fuera comparando parejas de estrellas antes y después. Para ello fue necesario que el programa permitiera separar cada imagen en dos imágenes de manera que una imagen representa la disposición de las estrellas en la primera fotografía tomada y la segunda representa la disposición en la segunda fotografía. También aproveché para calcular los áreas de cada estrella de manera que podamos averiguar cuál es la estrella principal y la estrella secundaria.
+
+\medskip
+
+Una vez obtenidos los centros correctamente, mis compañeros y yo creamos el algoritmo que permite calcular los valores que utiliza el WDS para catalogar las estrellas. También comprobamos que los valores calculados a través de nuestra aplicación eran similares a los del catálogo.
+
+\medskip
+
+Una vez obtenidos todos los valores,  junto con mis compañeros, estudiamos e implementamos las diferentes comprobaciones que son necesarias para, con los datos calculados, discernir si se trata, o no, de una estrella binaria.
+
+\medskip
+
+Para la redacción de esta memoria redacte el capítulo dedicado a la fase de análisis del detector, el capítulo dedicado a las conclusiones del proyecto y con David, redactamos el capítulo de recolección de datos y de estrellas dobles. También edité mediante GIMP figuras de la memoria para facilitar la comprensión de conceptos de la fase de análisis del capítulo 7 y de las conclusiones. Y la modificación de programas de la etapa de detección, capítulo 7, para guardar las imágenes que se han añadido a la memoria a fin de clarificar el desarrollo de dicha fase.
+
