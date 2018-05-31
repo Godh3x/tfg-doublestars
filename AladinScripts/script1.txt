@@ -7,4 +7,6 @@ get aladin(POSSII,F) $1
 sync
 RGB 1 2
 sync
-export "RGB img" /media/rafael/OS/rafa/repos/git/tfg-doublestars/Workflow/images/$1.jpg
+zoom 4
+sync
+save /media/rafael/OS/rafa/repos/git/tfg-doublestars/Workflow/images/$1.jpg
