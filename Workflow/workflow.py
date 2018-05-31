@@ -39,17 +39,7 @@ def define_flow():
         ],
         'callback': lambda: None,
     }
-    flow['crop'] = {
-        'input': [
-            flow['dummy']['output'][0]
-        ],
-        'output': [
-            settings.d_crop
-        ],
-        'callback': crop.run,
-    }
 
-    '''
     flow['recolorer'] = {
         'input': [
             'all',
@@ -80,7 +70,7 @@ def define_flow():
         ],
         'callback': wds_checker.run,
     }
-    '''
+
 
 
 

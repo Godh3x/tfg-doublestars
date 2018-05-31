@@ -1,0 +1,12 @@
+#AJS
+reset
+reticle off
+overlay off
+get aladin(POSSI,O) $1
+get aladin(SERC,ER) $1
+sync
+RGB 1 2
+sync
+zoom 4
+sync
+save C:\rafa\docencia\1718\tfg\astro\images2\$1.jpg
