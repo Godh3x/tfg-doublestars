@@ -12,7 +12,7 @@
 En este capítulo cada integrante del grupo va ha exponer su aportación al
 trabajo y el desarrollo de esta.
 \end{resumen}
-
+\newpage
 %-------------------------------------------------------------------
 \section{David}
 %-------------------------------------------------------------------
@@ -82,7 +82,10 @@ estructura que se le daba al grafo de trabajo. Con la simpleza como objetivo
 modifiqué el formato, dando lugar a la estructura explicada en esta memoria
 gracias a la cual no es necesario tener ningún conocimiento del funcionamiento
 del workflow, tan solo es necesario saber que etapas se quieren y como se
-interconectan.
+interconectan. Además del desarrollo me encargue de adaptar las etapas que ya
+estaban programadas y todas las que se crearon a posteriori a un formato
+estándar y añadirle a todas la capacidad de usar un logging para informar en
+todo momento del estado de la ejecución.
 
 \medskip
 
@@ -109,7 +112,14 @@ En lo referente al detector que empleamos, ideado por mi compañero Daniel,
 todos colaboramos en la definición de los parámetros que se calcularian de los
 posibles sistemas y en la implementación de las decisiones referentes a estos,
 incluidas las cotas en las que han de estar para que se considere el sistema
-como candidato para albergar una estrella binaria.
+como candidato para albergar una estrella binaria. Además se me ocurrió que,
+para poner a prueba el nivel de error de nuestras mediciones podría crear un
+paso que dada una coordenada la busque en el catálogo de WDS y, caso de
+encontrarla, usando sus datos como referencia calculase cuanto distaban nuestros
+datos de los originales, fue en este punto cuando implementé la etapa de
+comprobación.
+
+\medskip
 
 \medskip
 
@@ -118,7 +128,7 @@ e inglés, el workflow, el procesamiento, y traduje el capítulo de conclusiones a
 inglés. Además colabore con Daniel en la redacción del capítulo de estrellas
 dobles y recolección de datos. Como mis compañeros no saben utilizar \LaTeX{}
 también me he encargado de incluir sus aportaciones a este documento.
-
+\newpage
 %-------------------------------------------------------------------
 \section{Daniel}
 %-------------------------------------------------------------------
@@ -141,7 +151,7 @@ Obtención de imágenes:
   \item Junto a mis compañeros, creamos dos programas para generar coordenadas
     y así facilitar la descarga de imágenes, uno con las coordenadas en un rango
     dado y otro de coordenadas aleatorias. También estudiamos el uso de la
-    herramienta Aladin para la creación de distintos scrips encargados de la
+    herramienta Aladin para la creación de distintos scripts encargados de la
     descarga de imágenes. Uno para el hemisferio norte y otro para el hemisferio
     sur.
   \item Una vez descargadas las imágenes, hice un programa para crear los
@@ -176,7 +186,7 @@ Desarrollo de fase de detección:
 \begin{itemize}
   \item Primero, desarrollé un programa que fuera capaz de encontrar los
     contornos de las estrellas  y sus centros.
-  \item Una vez creado el programa lo amplíe de manera que fuera capaz de
+  \item Una vez creado el programa lo amplié de manera que fuera capaz de
     clasificar las distintas estrellas para poder borrar las que no tuvieran
     valor a la hora de encontrar estrellas binarias, por ejemplo, estrellas que
     no se hubieran movido. Esta ampliación fue pensada para poder eliminar el
@@ -185,9 +195,13 @@ Desarrollo de fase de detección:
     imágenes con estrellas dobles es demasiado pequeño como para que pueda
     aprender correctamente.
   \item Para aprovechar el primer programa creado, y en vistas de que no íbamos
-    a poder aplicar técnicas de machine learning, utilicé los contornos y los
-    centros para poder calcular los valores que utiliza el WDS para catalogar
-    las estrellas.
+    a poder aplicar técnicas de machine learning, decidí mejorar el primer
+    programa y hacer que calculara los centros antes y después para lo que tuve
+    que añadirle una nueva funcionalidad que permitiera crear dos imágenes que
+    representaran la disposición de las estrellas antes y después.
+  \item Una vez tuve los centros correctamente calculados cree el algoritmo que
+    permite calcular los valores necesarios para la calcular los valores que
+    utiliza el WDS para catalogar las estrellas.
   \item También participé, junto a mis compañeros, en el estudio e
     implementación de las diferentes comprobaciones que son necesarias para, con
     los datos calculados, discernir si se trata de una estrella binaria o no.
@@ -202,6 +216,10 @@ Memoria:
   \item Redacción de las conclusiones.
   \item Colaboración en la redacción de la sección \ref{cap2:sec:dsets} sobre
     datasets.
+  \item Redacción de la sección \ref{cap7:sec:centroides} sobre centroides.
+  \item Modificación de los programas de la etapa de detección, capítulo 7, para
+    guardar las imágenes que se han añadido a la memoria a fin de clarificar el
+    desarrollo de dicha fase.
   \item Edición de figuras mediante gimp para facilitar la comprensión de
     conceptos de la fase de análisis del capítulo \ref{cap4} y conclusiones.
 \end{itemize}
