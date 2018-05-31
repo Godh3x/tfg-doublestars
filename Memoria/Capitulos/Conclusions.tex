@@ -9,12 +9,61 @@
 \label{en:cap9}
 
 \begin{abstract}
-...
+In this last chapter we are going to discuss the results and analyze the reason
+behind them.
 \end{abstract}
 
-%-------------------------------------------------------------------
-\section{Introduction}
-%-------------------------------------------------------------------
-\label{en:cap9:sec:introduccion}
+As already advanced by the title of this project the system is semi-automatic
+because it needs external support from a person with enough experience in the
+detection of binary stars. The project was designed to, given a picture, be able
+to determine with almost a 100\% accuracy that, if there was not a double star,
+the sector does not contain a double star. The reason behind this decision lays
+in the fact that the top priority for us is not to lose any star, even though
+this will mean a higher workload at the time of reviewing the photographs in
+which our application detected a possible double star.
 
-...
+\medskip
+
+The results of our system are a 97\% success rejecting pictures with no binary
+star present and a 33\% of the pictures containing a possible double actually
+had one. Going back to our initial idea, this outcome is satisfying when it
+comes to refuse pictures that do not contain this type of systems, such a high
+percentage of success in the no will indeed lighten up the amount of work
+requiered.
+
+\medskip
+
+As far as binary systems are concerned, the 33\% of the systems detected as
+possible doubles were indeed one, this is because of a desing decision. To be
+precise the problem is the intensity of the stars in the recolored picture in
+which colors are intensified so if two stars are very close the detector will
+only notice one, \ref{en:cap9:fig:comp}. This kind of close binary systems are
+pretty common so the success rate is drastically reduced.
+
+\begin{figure}[t]
+  \centering
+  %
+  \subfloat[][]{
+    \includegraphics[width=0.3\textwidth]%
+    {Imagenes/Vectorial/Conclusiones/star}
+    \label{en:cap9:fig:star}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.3\textwidth]%
+    {Imagenes/Vectorial/Conclusiones/recolor}
+    \label{en:cap9:fig:recolor}
+  }
+  \caption{Comparativa fotografía original y recoloreada\label{en:cap9:fig:comp}}
+\end{figure}
+
+\medskip
+
+A possible measure to prevent this kind of problem in the future, and
+consequently the success rate, would be to change the centroid detection. This
+new method would conduct a study of pixel intensity and density in the
+picture, and use this data to decide what really is the center of a star. In
+this way systems such as the one see in the example, figure
+\ref{en:cap9:fig:star}, could be studied as two separate stars since between
+both it is possible to appreciate an intensity variation at first sight, and it
+would be seen that, in reality, they form a binary system.
