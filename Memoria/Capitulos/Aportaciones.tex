@@ -1,0 +1,207 @@
+%---------------------------------------------------------------------
+%
+%                          Capítulo
+%
+%---------------------------------------------------------------------
+% !TEX root = ../Tesis.tex
+
+\chapter{Aportaciones}
+\label{cap10}
+
+\begin{resumen}
+En este capítulo cada integrante del grupo va ha exponer su aportación al
+trabajo y el desarrollo de esta.
+\end{resumen}
+
+%-------------------------------------------------------------------
+\section{David}
+%-------------------------------------------------------------------
+\label{cap10:sec:david}
+
+Lo primero que necesitabamos para poder empezar a trabajar era obtener los sets
+de entrenamiento, asi que comencé investigando el catálogo de estrellas dobles,
+WDS, tanto los datos que almacena para hacernos una idea de que ibamos a
+encontrarnos como el formato que les dan. Con estos dos puntos claros cree
+el programa que se conecta al catálogo para descargar sus datos y obtiene la
+lista de coordenadas de las estrellas cuyos parámetros se ajustan a los
+deseados. Con este listado ya generado creamos el script para descargar
+fotografías de coordenadas positivas.
+
+\medskip
+
+Puesto que ya teníamos las componentes positivas del set de trabajo, investigue
+los distintos tipos de coordenadas celestiales que se emplean y me decanté por
+el modelo ecuatorial, una vez decidido el sistema de representación de
+coordenadas, hablé con mis compañeros y creamos ambos generadores, aleatorio y
+continuo, que utilizamos para obtener un fichero de coordenadas aleatorias. Con
+este fichero descubrimos que no se podían descargar coordenadas negativas con el
+primer script e hicimos un segundo que nos permitiese obtenerlas de otros
+repositorios.
+
+\medskip
+
+Cuando teniamos las imágenes descargadas nos dimos cuenta de un fallo en los
+sets de entrenamiento, hay imágenes que no se pueden descargar bien sea porque
+el repositorio está caido o porque no tiene recursos almacenados para esa
+coordenada, esto daba lugar a fotos sin superponer o archivos corruptos puesto
+que mediante Aladin no se pueden gestionar estos errores. Para solventarlo
+limpié los sets a mano. Al mismo tiempo estaba desarrollando el algoritmo que
+contaba y recoloreaba los pixels de las fotografías, en este punto se hacian
+ambos procesos a la vez y no por separado, tuve problemas para decidir cómo
+determinar el color de los pixels pero por suerte recordaba una medida de la
+distancia que, al menos en nuestro grado, aprendemos en inteligencia artificial,
+la distancia Manhattan. Se me ocurrió aplicarla a este problema concreto puesto
+que lo que quería determinar realmente era la distancia entre dos colores, el
+que tiene el pixel y los colores puros a los que se puede atribuir, tan solo
+me fue necesaria una pequeña modificación para intentar "aclarar" los pixels, es
+decir, que cuando dijera que el pixel era negro compruebe aún así si podría ser
+azul o rojo. Como esta etapa la desarrollé con la idea de que fuera el primer
+proceso al que se sometieran las imágenes decidí que sería el encargado de
+limpiar las fotos cuya descarga sea errónea.
+
+\medskip
+
+Mi compañero Javier estaba aplicando regresión logística sobre los datos que la
+etapa de recoloreado/conteo proporcionaba, sin embargo, el recoloreado no le
+aprotaba nada a su programa por lo que se estaban duplicando la cantidad de
+imágenes almacenadas sin motivo alguno, fue en este punto donde decidí separar
+ambas funcionalidades, este es el motivo de su similitud, la etapa de
+recoloreado no se desechó debido al trabajo de Daniel, su programa necesitaba
+fotografías con un menor numero de canales, es decir, menos deferencias en las
+tonalidades de los pixels.
+
+\medskip
+
+En este punto las etapas no funcionaban de manera fluida, era necesario que la
+etapa previa hubiera procesado todos los datos de entrada antes de que la
+siguiente se pusiera en marcha, esto era claramente un mal diseño, por lo que
+ideé un primer concepto del workflow que ahora se emplea, en este punto las
+etapas se añadian creando manualmente el thread que las controla, pero, como
+me hizo ver nuestro director, el tener que programar el thread oscurecía la
+estructura que se le daba al grafo de trabajo. Con la simpleza como objetivo
+modifiqué el formato, dando lugar a la estructura explicada en esta memoria
+gracias a la cual no es necesario tener ningún conocimiento del funcionamiento
+del workflow, tan solo es necesario saber que etapas se quieren y como se
+interconectan.
+
+\medskip
+
+Volviendo al trabajo de mi compañero Javier surgió un problema con las
+predicciones que realizaba el modelo de regresión logística, en un primer
+momento lo achacamos al zoom en los sets de trabajo y, por tanto, los volvimos a
+descargar pero esta vez sin zoom. A pesar de esto seguía fallando y ante la
+posibilidad de que hubiera demasiado "ruido" en las fotografías cree la etapa
+crop para reducir tan solo el tamaño de las fotos, pensamos que este recorte
+podría funcionar aun cuando las imágenes con zoom no funcionaban puesto que
+al hacer zoom en Aladin no solo aumenta el tamaño, tambien ajusta las
+intensidades en los pixels lo cual podría desvirtuar las mediciones y dar lugar
+al error. En vistas de que este modelo no tenía arreglo aparente investigue
+sobre el posible uso de TensorFlow en nuestro proyecto pero las pruebas que
+hice, empleando tan solo los datos de los pixels, no dieron resultados
+superiores que los que ya teniamos. Tuve que desechar la idea de emplear esta
+herramienta de machine learning puesto que la cantidad de imágenes de
+entrenamiento de que disponemos es muy limitada y las que se requieren para
+entrenar una red de tensores grande es muy elevada.
+
+\medskip
+
+En lo referente al detector que empleamos, ideado por mi compañero Daniel,
+todos colaboramos en la definición de los parámetros que se calcularian de los
+posibles sistemas y en la implementación de las decisiones referentes a estos,
+incluidas las cotas en las que han de estar para que se considere el sistema
+como candidato para albergar una estrella binaria.
+
+\medskip
+
+De la memoria redacté en solitario los capítulos de la introducción, en español
+e inglés, el workflow, el procesamiento, y traduje el capítulo de conclusiones a
+inglés. Además colabore con Daniel en la redacción del capítulo de estrellas
+dobles y recolección de datos. Como mis compañeros no saben utilizar \LaTeX{}
+también me he encargado de incluir sus aportaciones a este documento.
+
+%-------------------------------------------------------------------
+\section{Daniel}
+%-------------------------------------------------------------------
+\label{cap10:sec:daniel}
+
+Una vez tuvimos el proyecto definitivo, me dediqué al estudio de qué es una
+estrella doble y cuáles son su características mediante la visualización de
+decenas de fotografías de estrellas y la lectura de distintos artículos al
+respecto.
+
+\medskip
+
+Mis aportaciones a las distintas fases del proyecto han consistido en:
+
+\medskip
+
+Obtención de imágenes:
+
+\begin{itemize}
+  \item Junto a mis compañeros, creamos dos programas para generar coordenadas
+    y así facilitar la descarga de imágenes, uno con las coordenadas en un rango
+    dado y otro de coordenadas aleatorias. También estudiamos el uso de la
+    herramienta Aladin para la creación de distintos scrips encargados de la
+    descarga de imágenes. Uno para el hemisferio norte y otro para el hemisferio
+    sur.
+  \item Una vez descargadas las imágenes, hice un programa para crear los
+    distintos datasets: training, validation y test, acordes a las necesidades de
+    mis compañeros. Este programa divide las fotografías que sí tienen estrella
+    binaria en los distintos dataset en función de los porcentajes vistos en el
+    sección \ref{cap2:sec:dsets} y añade el mismo número de fotografías sin
+    estrella binaria de manera que los dataset estén equilibrados.
+\end{itemize}
+
+\medskip
+
+Diseño de fase de detección:
+
+\begin{itemize}
+  \item Por mi cuenta, estudié distintas técnicas de procesamiento de imágenes y
+    reconocimiento de objetos para encontrar la manera adecuada de reconocer las
+    estrellas en las imágenes.
+  \item Una vez decidida la búsqueda de contornos para encontrar estrellas,
+    investigué distintas bibliotecas dedicadas procesamiento de imágenes hasta
+    encontrar OpenCV, que es la que se utiliza en el proyecto.
+  \item Exploré las distintas posibilidades que ofrece la biblioteca OpenCv y,
+    en base a sus características, diseñé e implementé la aplicación que
+    dedicada al análisis de las características que permiten catalogar a una
+    estrella binaria.
+\end{itemize}
+
+\medskip
+
+Desarrollo de fase de detección:
+
+\begin{itemize}
+  \item Primero, desarrollé un programa que fuera capaz de encontrar los
+    contornos de las estrellas  y sus centros.
+  \item Una vez creado el programa lo amplíe de manera que fuera capaz de
+    clasificar las distintas estrellas para poder borrar las que no tuvieran
+    valor a la hora de encontrar estrellas binarias, por ejemplo, estrellas que
+    no se hubieran movido. Esta ampliación fue pensada para poder eliminar el
+    ruido que provocan elementos inútiles en aplicaciones de machine learning
+    como tensorFlow. Esta ampliación fue desechada debido a que el número de
+    imágenes con estrellas dobles es demasiado pequeño como para que pueda
+    aprender correctamente.
+  \item Para aprovechar el primer programa creado, y en vistas de que no íbamos
+    a poder aplicar técnicas de machine learning, utilicé los contornos y los
+    centros para poder calcular los valores que utiliza el WDS para catalogar
+    las estrellas.
+  \item También participé, junto a mis compañeros, en el estudio e
+    implementación de las diferentes comprobaciones que son necesarias para, con
+    los datos calculados, discernir si se trata de una estrella binaria o no.
+\end{itemize}
+
+\medskip
+
+Memoria:
+
+\begin{itemize}
+  \item Redacción del apartado de análisis del capítulo \ref{cap4}.
+  \item Redacción de las conclusiones.
+  \item Colaboración en la redacción de la sección \ref{cap2:sec:dsets} sobre
+    datasets.
+  \item Edición de figuras mediante gimp para facilitar la comprensión de
+    conceptos de la fase de análisis del capítulo \ref{cap4} y conclusiones.
+\end{itemize}
