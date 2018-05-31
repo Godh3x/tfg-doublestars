@@ -37,7 +37,7 @@ brillantes, con un contorno difuso (figura \ref{cap7:fig:creal}).
     {Imagenes/Vectorial/Centroides/real}
     \label{cap7:fig:creal}
   }
-  \caption{Estrella ideal vs Estrella real}
+  \caption{Estrella ideal vs. Estrella real}
 \end{figure}
 
 %-------------------------------------------------------------------
@@ -47,16 +47,16 @@ brillantes, con un contorno difuso (figura \ref{cap7:fig:creal}).
 
 Un sistema de coordenadas celestes no es más que un modo de especificar
 la posición de un cuerpo en el espacio. Existen varios sistemas de este tipo
-pero en este trabajo nos quedaremos con el sistema de coordenadas equatorial,
+pero en este trabajo nos quedaremos con el sistema de coordenadas ecuatorial,
 que es el usado por nuestros generadores de coordenadas.
 
 \medskip
 
 Antes de explicar que compone este sistema vamos a introducir dos conceptos.
 En primer lugar el circulo horario de un objeto es aquel que pasa por ambos
-polos e intersecta al objeto. En segundo lugar el equinocio de primavera se da
+polos e intersecta al objeto. En segundo lugar el equinoccio de primavera se da
 en Marzo, exactamente en el momento en que los rayos solares golpean el ecuador
-perpendicularmente. Este equinocio es el momento cero del tiempo sideral, usado
+perpendicularmente. Este equinoccio es el momento cero del tiempo sideral, usado
 por los astrónomos para localizar objetos en el espacio, y por tanto el momento
 cero de el sistema ecuatorial.
 
@@ -65,7 +65,7 @@ cero de el sistema ecuatorial.
 En este sistema una coordenada tiene dos componentes: la ascensión recta, RA, y
 la declinación, Dec. La ascensión recta, figura \ref{cap7:fig:ra}, mide la
 distancia angular, calculada hacia el este sobre la proyección del ecuador
-terrestre, entre el equinocio de primavera y el circulo horario del objeto. La
+terrestre, entre el equinoccio de primavera y el circulo horario del objeto. La
 declinación mide la distancia angular de un objeto perpendicularmente respecto
 de la proyección del ecuador, positiva hacia el norte. Por ejemplo la proyección
 del polo norte tiene una declinación de +90º y la del sur de -90º.
@@ -77,7 +77,7 @@ equinocio de primavera.\\Fuente:
 
 \medskip
 
-Para generar grandes cantidades de coordenadas equatoriales hemos creado dos
+Para generar grandes cantidades de coordenadas ecuatoriales hemos creado dos
 generadores de coordenadas, uno continuo y otro aleatorio. Ambos generadores
 necesitan que se especifiquen los rangos en los que trabajar, que oscilan entre
 los siguientes valores, ambos en grados.
@@ -106,7 +106,7 @@ siguientes.
 Al usar el generador continuo se puede ver que la diferencia en la ascensión
 recta no se corresponde al desplazamiento especificado, esto se debe a que
 estamos trabajando en un sistema esférico por lo cual debemos ajustar el
-desplazamiendo en base a la declinación.
+desplazamiento en base a la declinación.
 
 \begin{itemize}
   \item Desplazamiento RA ajustado: Desplazamiento RA * cos(Dec)
@@ -122,7 +122,7 @@ desplazamiendo en base a la declinación.
 
 
 Un sistema de estrellas binarias viene definido por una serie de parámetros que
-veremos a continuacion. En el sistema una de las componentes es principal y la
+veremos a continuación. En el sistema una de las componentes es principal y la
 otra secundaria, el criterio para definir cual es cual es simple, la más
 brillante es la principal.
 

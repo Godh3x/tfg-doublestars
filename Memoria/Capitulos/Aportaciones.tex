@@ -18,9 +18,9 @@ trabajo y el desarrollo de esta.
 %-------------------------------------------------------------------
 \label{cap10:sec:david}
 
-Lo primero que necesitabamos para poder empezar a trabajar era obtener los sets
-de entrenamiento, asi que comencé investigando el catálogo de estrellas dobles,
-WDS, tanto los datos que almacena para hacernos una idea de que ibamos a
+Lo primero que necesitábamos para poder empezar a trabajar era obtener los sets
+de entrenamiento, así que comencé investigando el catálogo de estrellas dobles,
+WDS, tanto los datos que almacena para hacernos una idea de que íbamos a
 encontrarnos como el formato que les dan. Con estos dos puntos claros cree
 el programa que se conecta al catálogo para descargar sus datos y obtiene la
 lista de coordenadas de las estrellas cuyos parámetros se ajustan a los
@@ -40,13 +40,13 @@ repositorios.
 
 \medskip
 
-Cuando teniamos las imágenes descargadas nos dimos cuenta de un fallo en los
+Cuando teníamos las imágenes descargadas nos dimos cuenta de un fallo en los
 sets de entrenamiento, hay imágenes que no se pueden descargar bien sea porque
-el repositorio está caido o porque no tiene recursos almacenados para esa
+el repositorio está caído o porque no tiene recursos almacenados para esa
 coordenada, esto daba lugar a fotos sin superponer o archivos corruptos puesto
 que mediante Aladin no se pueden gestionar estos errores. Para solventarlo
 limpié los sets a mano. Al mismo tiempo estaba desarrollando el algoritmo que
-contaba y recoloreaba los pixels de las fotografías, en este punto se hacian
+contaba y recoloreaba los pixels de las fotografías, en este punto se hacían
 ambos procesos a la vez y no por separado, tuve problemas para decidir cómo
 determinar el color de los pixels pero por suerte recordaba una medida de la
 distancia que, al menos en nuestro grado, aprendemos en inteligencia artificial,
@@ -63,7 +63,7 @@ limpiar las fotos cuya descarga sea errónea.
 
 Mi compañero Javier estaba aplicando regresión logística sobre los datos que la
 etapa de recoloreado/conteo proporcionaba, sin embargo, el recoloreado no le
-aprotaba nada a su programa por lo que se estaban duplicando la cantidad de
+aportaba nada a su programa por lo que se estaban duplicando la cantidad de
 imágenes almacenadas sin motivo alguno, fue en este punto donde decidí separar
 ambas funcionalidades, este es el motivo de su similitud, la etapa de
 recoloreado no se desechó debido al trabajo de Daniel, su programa necesitaba
@@ -76,7 +76,7 @@ En este punto las etapas no funcionaban de manera fluida, era necesario que la
 etapa previa hubiera procesado todos los datos de entrada antes de que la
 siguiente se pusiera en marcha, esto era claramente un mal diseño, por lo que
 ideé un primer concepto del workflow que ahora se emplea, en este punto las
-etapas se añadian creando manualmente el thread que las controla, pero, como
+etapas se añadían creando manualmente el thread que las controla, pero, como
 me hizo ver nuestro director, el tener que programar el thread oscurecía la
 estructura que se le daba al grafo de trabajo. Con la simpleza como objetivo
 modifiqué el formato, dando lugar a la estructura explicada en esta memoria
@@ -96,12 +96,12 @@ descargar pero esta vez sin zoom. A pesar de esto seguía fallando y ante la
 posibilidad de que hubiera demasiado "ruido" en las fotografías cree la etapa
 crop para reducir tan solo el tamaño de las fotos, pensamos que este recorte
 podría funcionar aun cuando las imágenes con zoom no funcionaban puesto que
-al hacer zoom en Aladin no solo aumenta el tamaño, tambien ajusta las
+al hacer zoom en Aladin no solo aumenta el tamaño, también ajusta las
 intensidades en los pixels lo cual podría desvirtuar las mediciones y dar lugar
 al error. En vistas de que este modelo no tenía arreglo aparente investigue
 sobre el posible uso de TensorFlow en nuestro proyecto pero las pruebas que
 hice, empleando tan solo los datos de los pixels, no dieron resultados
-superiores que los que ya teniamos. Tuve que desechar la idea de emplear esta
+superiores que los que ya teníamos. Tuve que desechar la idea de emplear esta
 herramienta de machine learning puesto que la cantidad de imágenes de
 entrenamiento de que disponemos es muy limitada y las que se requieren para
 entrenar una red de tensores grande es muy elevada.
@@ -109,7 +109,7 @@ entrenar una red de tensores grande es muy elevada.
 \medskip
 
 En lo referente al detector que empleamos, ideado por mi compañero Daniel,
-todos colaboramos en la definición de los parámetros que se calcularian de los
+todos colaboramos en la definición de los parámetros que se calcularían de los
 posibles sistemas y en la implementación de las decisiones referentes a estos,
 incluidas las cotas en las que han de estar para que se considere el sistema
 como candidato para albergar una estrella binaria. Además se me ocurrió que,
@@ -137,7 +137,7 @@ también me he encargado de incluir sus aportaciones a este documento.
 Una vez tuvimos el proyecto definitivo, me dediqué al estudio de qué es una
 estrella doble y cuáles son su características mediante el análisis de decenas
 de fotografías de estrellas, la lectura de distintos artículos al respecto y la
-visualización de varios videos sobre el tema.
+visualización de varios vídeos sobre el tema.
 
 \medskip
 
@@ -205,7 +205,7 @@ Desarrollo de fase de detección:
     programa y hacer que calculara los centros antes y después para lo que tuve
     que añadirle una nueva funcionalidad que permitiera crear dos imágenes que
     representaran la disposición de las estrellas antes y después. Además,
-    calcula el área de las estrellas de manera que podemos saber cúal es la
+    calcula el área de las estrellas de manera que podemos saber cuál es la
     primaria y cuál la secundaria.
   \item Una vez tuve los centros correctamente calculados creamos el algoritmo
     que permite calcular los valores que utiliza el WDS para catalogar las

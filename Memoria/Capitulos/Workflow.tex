@@ -19,7 +19,7 @@ plataforma genérica sobre la cuál desarrollar dichos procesos.
 %-------------------------------------------------------------------
 \label{cap5:sec:introduccion}
 
-En los capitulos \ref{cap3} y \ref{cap4} se describen diferentes procesos por los
+En los capítulos \ref{cap3} y \ref{cap4} se describen diferentes procesos por los
 que una fotografía ha de pasar para poder detectar sistemas de estrellas dobles,
 cada una de estas etapas viene definida por un número arbitrario de entradas y
 salidas y un evento que al abortar la ejecución permita al programa salir de
@@ -30,9 +30,9 @@ forma segura.
 Cada etapa por tanto puede ser configurada y lanzada por separado puesto que para
 conectarlas solo es necesario que la salida de una etapa sea la entrada de la
 siguiente, de esta forma todas las etapas pueden trabajar de forma simultánea.
-Sin embargo, creemos que esta tarea puede simplificarse mediante la creacion
-de un controlador que se encarge de lanzar las etapas en diferentes hilos, para
-que sigan ejecutandose a la vez, y pararlas cuando el usuario lo requiera.
+Sin embargo, creemos que esta tarea puede simplificarse mediante la creación
+de un controlador que se encargue de lanzar las etapas en diferentes hilos, para
+que sigan ejecutándose a la vez, y pararlas cuando el usuario lo requiera.
 
 %-------------------------------------------------------------------
 \section{Estructura}
@@ -50,8 +50,8 @@ llegaría a un estado definitivo en el cual se acepte o rechace.
 Podemos entonces definir cada fase como una entrada en un diccionario en la cual
 podemos almacenar la entrada y la salida, de este modo conectar una etapa con
 otra tan solo implica igualar la entrada de una a la salida de la otra. A la
-hora de lanzar el hilo es necesario sabar a que función llamar para lo cual nos
-encontramos con dos opciones: llamar siempre a una funcion con un nombre
+hora de lanzar el hilo es necesario saber a que función llamar para lo cual nos
+encontramos con dos opciones: llamar siempre a una función con un nombre
 determinado o simplemente incluir otro dato en el diccionario. En este caso se
 ha optado por que además de lo que ya guardaba se almacene la función a la que
 se debe llamar, esta opción da libertad a la hora de crear los pasos además de
@@ -92,8 +92,8 @@ para todas las etapas solo será necesario ejecutar el workflow.
 
 Si bien es cierto que el workflow esta pensado para dar libertad a la hora de
 implementar las etapas tiene dos requisitos que se han de cumplir. El primero es
-a la hora de definir el metodo que se utilizara como callback en el diccionario,
-sus parametros deben estar ordenados de modo que reciba primero todas las
+a la hora de definir el método que se utilizara como callback en el diccionario,
+sus parámetros deben estar ordenados de modo que reciba primero todas las
 entradas, luego todas las salidas y por ultimo un evento de las clase
 \textit{threading}, este orden ha de ser tenido en cuenta a la hora de crear
 la entrada del diccionario descrita en la sección \ref{cap5:sec:estructura}. En
@@ -104,7 +104,7 @@ que una vez recibido no se abortara la ejecución del paso hasta que sea seguro.
 \medskip
 
 Para poder saber que está pasando el workflow también monta un sistema de log,
-utilizando la libreria \textit{logging} de python, al cual las etapas pueden
+utilizando la biblioteca \textit{logging} de python, al cual las etapas pueden
 acceder para escribir mensajes de error o información de debug que le pueda ser
 de utilidad al usuario para conocer que ha ocurrido.
 
@@ -129,7 +129,7 @@ Para utilizar el workflow son necesarios tres pasos.
 
 En primer lugar modificar el fichero de configuración, \textit{settings.py},
 en el cual se encuentran almacenados todos los directorios de los pasos que
-hemos creado y los parametros de procesamiento que pueden modificarse de cada
+hemos creado y los parámetros de procesamiento que pueden modificarse de cada
 etapa.
 
 \medskip

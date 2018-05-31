@@ -10,7 +10,7 @@
 
 \begin{resumen}
 A lo largo de este capítulo veremos que herramientas hemos empleado para obtener
-imagenes astronómicas con las que trabajar, así como datos de estrellas
+imágenes astronómicas con las que trabajar, así como datos de estrellas
 dobles ya catalogadas.
 \end{resumen}
 
@@ -29,8 +29,8 @@ acceder recursos astronómicos digitalizados.
 
 \medskip
 
-Esta herramienta no solo permite visualizar imagenes de cuerpos celestes a lo
-largo de los años, también permite realizar una superposicion de las mismas para
+Esta herramienta no solo permite visualizar imágenes de cuerpos celestes a lo
+largo de los años, también permite realizar una superposición de las mismas para
 facilitar su comparación.
 
 %-------------------------------------------------------------------
@@ -38,8 +38,8 @@ facilitar su comparación.
 %-------------------------------------------------------------------
 \label{cap2:sec:imgdownload}
 
-Como se describe la sección \ref{cap2:sec:aladin} es posible obtener imagenes
-que muestren la evolucion de los cuerpos celestes en coordenadas concretas con
+Como se describe la sección \ref{cap2:sec:aladin} es posible obtener imágenes
+que muestren la evolución de los cuerpos celestes en coordenadas concretas con
 años de diferencia.
 
 \begin{figure}[t]
@@ -68,19 +68,19 @@ años de diferencia.
 \medskip
 
 Como se puede apreciar, figura \ref{cap2:fig:superpos}, Aladin no solo superpone
-las imagenes, también las rota para tratar de encajarlas y colorea cada imagen
+las imágenes, también las rota para tratar de encajarlas y colorea cada imagen
 de un tono de modo que las estrellas pueden ser rojas o azules, dependiendo de
 la imagen en que aparezcan, si el cuerpo coincide, no se ha movido, será blanca.
 
 \medskip
 
-Para facilitar el proceso de descarga aladin permite emplear scripts en
+Para facilitar el proceso de descarga Aladin permite emplear scripts en
 combinación con ficheros de parámetros. Puesto que no existe ninguna fuente que
 tenga fotos de todas las coordenadas celestes son necesarios dos scripts que
 emplean las siguientes fuentes.
 
 \begin{itemize}
-  \item \textbf{POSSI} y \textbf{POSSII} para descargar imagenes de coordenadas
+  \item \textbf{POSSI} y \textbf{POSSII} para descargar imágenes de coordenadas
   positivas.
   \item \textbf{POSSI} y \textbf{SERC} para las negativas.
 \end{itemize}
@@ -98,7 +98,7 @@ proporcionada como parámetro y almacena la imagen resultante.
 
 \medskip
 
-La obtención de recursos de trabajo ya ha sido resuelta en la seccion
+La obtención de recursos de trabajo ya ha sido resuelta en la sección
 \ref{cap2:sec:imgdownload}, sin embargo, es necesario obtener un listado de
 sistemas de estrellas dobles ya reconocidas que poder analizar con el fin de
 semi-automatizar su reconocimiento, figura \ref{cap2:fig:wds}.
@@ -117,16 +117,16 @@ sistemas de estrellas múltiples.
 El problema es que el catalogo almacena gran cantidad de estrellas, y nosotros
 queremos casos de sistemas de estrellas dobles de movimiento rápido. Con el fin
 de obtener la información que nos interesa hemos creado un programa que filtra
-dichos datos basandose en los siguientes criterios:
+dichos datos basándose en los siguientes criterios:
 
 \begin{itemize}
-\item La última vez que se vió el sistema debe ser como mínimo 1975, esto
-asegura que en los catalogos existiran almenos dos imagenes, una relativamente
+\item La última vez que se vio el sistema debe ser como mínimo 1975, esto
+asegura que en los catálogos existirán al menos dos imágenes, una relativamente
 actual y una de los años 50.
 \item La magnitud de las estrellas que componen el sistema deben ser a lo
-sumo 19, de este modo las estrellas seran apreciables a simple vista.
+sumo 19, de este modo las estrellas serán apreciables a simple vista.
 \item La separación debe pertenecer al rango entre 2 y 180, las estrellas con
-valores mayores están demasiado alejadas y desvirtuarian los resultados.
+valores mayores están demasiado alejadas y desvirtuarían los resultados.
 \item El desplazamiento ha de ser superior a 60 para que el movimiento sea
 apreciable.
 \end{itemize}
@@ -135,7 +135,7 @@ apreciable.
 
 Las coordenadas de todos los sistemas que sigan dichos criterios serán
 almacenadas en un fichero que puede usarse como parámetro de los scripts
-descritos en la seccion \ref{cap2:sec:imgdownload}.
+descritos en la sección \ref{cap2:sec:imgdownload}.
 
 %-------------------------------------------------------------------
 \section{Datasets}
@@ -144,7 +144,7 @@ descritos en la seccion \ref{cap2:sec:imgdownload}.
 
 Usando las coordenadas obtenidas al filtrar el catálogo WDS, sección
 \ref{cap2:sec:wds}, como parámetro de los scripts de Aladin descargamos las
-imagenes que conforman el espectro positivo del dataset. Para poder formarlo
+imágenes que conforman el espectro positivo del dataset. Para poder formarlo
 completamente se emplearon los generadores de coordenadas para obtener un
 número equivalente de casos en los que no hay estrella doble. Con el dataset
 completo se decidió aplicar una división común en machine learning que consiste
@@ -154,16 +154,16 @@ en partir un dataset en tres, training, test y validation, correspondientes al
 \medskip
 
 En primer lugar tenemos el training set, estos datos serán los empleados para
-generar un módelo que, a priori, funciona. El problema es que, si solo se usa un
+generar un modelo que, a priori, funciona. El problema es que, si solo se usa un
 set, no hay una forma de comprobar si el modelo funciona, debido a esto se crea
 la partición de validación que será empleada para ajustar los parámetros de
 decisión. Una vez se han obtenido los resultados esperados es necesaria una
 comprobación externa, esto se debe a que el modelo se ha entrenado para acertar
-especificamente los datos del set de validación. Este último motivo es el que
+específicamente los datos del set de validación. Este último motivo es el que
 justifica la existencia de test set, al examinar los resultados con estos datos
 pueden ocurrir dos cosas: si los resultados son buenos el modelo entrenado
-funciona, si por el contrario no son los esperados es necesario reentrenar el
-modelo desde cero, no vale con modificar los parametros.
+funciona, si por el contrario no son los esperados es necesario re-entrenar el
+modelo desde cero, no vale con modificar los parámetros.
 
 \medskip
 

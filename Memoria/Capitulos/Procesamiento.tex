@@ -21,25 +21,25 @@ nuevas formas de detección.
 \label{cap3:sec:recolor}
 
 Esta etapa emplea la biblioteca PIL, Python Imaging Library, para cargar las
-imagenes y crear el canvas sobre el que guardar el resultado.
+imágenes y crear el canvas sobre el que guardar el resultado.
 
 \medskip
 
-A simple vista las imagenes obtenidas en la sección \ref{cap2:sec:imgdownload}
+A simple vista las imágenes obtenidas en la sección \ref{cap2:sec:imgdownload}
 están coloreadas y nos permiten apreciar las diferencias fácilmente. El problema
 surge cuando queremos que el programa haga las misma extrapolaciones que hace
 nuestro cerebro.
 
 \medskip
 
-Con el fin de facilitar la comparación de los pixels la imágen pasa por un
+Con el fin de facilitar la comparación de los pixels la imagen pasa por un
 proceso de recoloreado que la transforma pixel a pixel.
 
 \medskip
 
 Los colores que reconoce este proceso se definen mediante un diccionario que
 almacena el nombre y composición del mismo. Esto facilita la modificación de los
-grupos reconocidos de modo que un cambio en el coloreado inicial de las imagenes
+grupos reconocidos de modo que un cambio en el coloreado inicial de las imágenes
 no supone un problema.
 
 \medskip
@@ -71,7 +71,7 @@ aquel al que pertenezca el pixel.
 
 \medskip
 
-Tal y como muestra la imágen \ref{cap3:fig:rec} hay información que se pierde
+Tal y como muestra la imagen \ref{cap3:fig:rec} hay información que se pierde
 durante el proceso debido a que las estrellas están muy apagadas haciendo que
 la distancia al negro sea menor que al azul o rojo. Para poder atajar este
 problema se realiza una comprobación posterior, si el grupo asignado es negro
@@ -188,7 +188,7 @@ error entre ambos, dando lugar a un archivo con el siguiente formato.
 
 Si bien esta fase es una primera comprobación sus resultados no son definitivos
 en el caso del no, puesto que solo se comprueban las coordenadas centrales de la
-imágen. Si la estrella no se encuentra en el centro es imposible para este
+imagen. Si la estrella no se encuentra en el centro es imposible para este
 programa determinar si el sistema ya se conocía o no.
 
 %-------------------------------------------------------------------
@@ -196,9 +196,9 @@ programa determinar si el sistema ya se conocía o no.
 %-------------------------------------------------------------------
 \label{cap3:sec:pixel_counter}
 
-Al igual que la etapa definida en la seccion \ref{cap3:sec:recolor} se emplea
-la libreria PIL. Esto no es lo único que comparten, el proceso al que se
-someten las imagenes es muy similar.
+Al igual que la etapa definida en la sección \ref{cap3:sec:recolor} se emplea
+la biblioteca PIL. Esto no es lo único que comparten, el proceso al que se
+someten las imágenes es muy similar.
 
 \medskip
 
@@ -209,11 +209,11 @@ diccionario en el que se almacenan los colores puros que se quieren reconocer.
 
 \medskip
 
-Una vez cargada la ímágen se analiza cada pixel que la compone, para conocer
+Una vez cargada la imagen se analiza cada pixel que la compone, para conocer
 el color, de entre los definidos en el diccionario, al que más se asemeja. como
 el nombre de la etapa indica el objetivo es contar los pixels, por lo tanto
 existe un contador por cada color en el cual se almacena el número de pixels de
-la imágen que pertenecen a dicha tonalidad.
+la imagen que pertenecen a dicha tonalidad.
 
 \medskip
 
@@ -227,13 +227,13 @@ blancos como de azules con respecto de los rojos.
 %-------------------------------------------------------------------
 \label{cap3:sec:crop}
 
-En esta etapa empleamos la libreria image\_slicer de Python, distribuida bajo
-licencia MIT. Esta libreria permiter dividir una fotografía en n piezas del
+En esta etapa empleamos la biblioteca image\_slicer de Python, distribuida bajo
+licencia MIT. Esta biblioteca permite dividir una fotografía en n piezas del
 mismo tamaño.
 
 \medskip
 
-En este caso decidimos que las imagenes se dividieran en 9 sectores, lo cual
+En este caso decidimos que las imágenes se dividieran en 9 sectores, lo cual
 permite reducir el nivel de ruido en la fotografía pero dejando datos
 suficientes en ella para posteriores análisis. En la figura \ref{cap3:fig:uncrop}
 se puede observar que existe mucha información, sin embargo, si la dividimos en
@@ -243,12 +243,12 @@ ruido.
 \medskip
 
 Este proceso tan solo almacena el cuadrante central para reducir la carga de
-memoria, debido a esto solo la imágen de la figura \ref{cap3:fig:qcenter}
-aparecería en la salida. Si esto quisiese modificarse tan solo habria que
+memoria, debido a esto solo la imagen de la figura \ref{cap3:fig:qcenter}
+aparecería en la salida. Si esto quisiese modificarse tan solo habría que
 desactivar el parámetro 'only\_center' del método run.
 
 \figura{Vectorial/Corte/Original}{width=.5\textwidth}{cap3:fig:uncrop}%
-{Imágen sin recortar}
+{Imagen sin recortar}
 
 \begin{figure}[t]
   \centering
@@ -298,5 +298,5 @@ desactivar el parámetro 'only\_center' del método run.
     \includegraphics[width=0.26\textwidth]%
     {Imagenes/Vectorial/Corte/Q9}
   }
-  \caption{Imagenes resultantes de la división\label{cap3:fig:crop}}
+  \caption{Imágenes resultantes de la división\label{cap3:fig:crop}}
 \end{figure}
