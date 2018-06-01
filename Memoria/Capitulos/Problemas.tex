@@ -23,14 +23,14 @@ una ilusión de funcionamiento correcto.
 
 Esta fase consistía en realizar un modelo de Regresión Logística que clasificara
 imágenes en dos clases: la que tiene estrellas dobles, que de ahora en adelante
-nos referiremos a ella como ?clase del sí? y las que no, que de ahora en
-adelante nos referiremos a ella como ?clase del no?.
+nos referiremos a ella como ``clase del sí'' y las que no, que de ahora en
+adelante nos referiremos a ella como ``clase del no''.
 
 \medskip
 
 La regresión logística, a pesar de su nombre, es un modelo lineal para la
 clasificación en lugar de la regresión. En la literatura el nombre más común por
-el que se encuentra a la Regresión logística el de ?logit?.
+el que se encuentra a la Regresión logística el de ``logit''.
 
 \medskip
 
@@ -130,8 +130,8 @@ en esa imagen, entonces no hay estrella doble.
 Una vez hubimos identificado el problema nos dispusimos a cambiar el programa de
 tal manera, que si la tras realizar el conteo de píxeles una imagen tenía una
 cantidad extremadamente alta de blanco, esta se eliminaba antes de llegar a esta
-fase y así evitar los problemas con el modelo. Una vez se hubieron ?limpiado? el
-conjunto de imágenes nos dispusimos a realizar de nuevo al los pasos de
+fase y así evitar los problemas con el modelo. Una vez se hubieron ``limpiado''
+el conjunto de imágenes nos dispusimos a realizar de nuevo al los pasos de
 entrenamiento del modelo, validación y test con los nuevos conjuntos y comprobar
 cómo se comportaba el modelo a la hora de realizar las predicciones.
 
@@ -166,15 +166,15 @@ es una de las razones por las que las predicciones no son buenas.
     {Imagenes/Vectorial/Problemas/leyenda}
     \label{cap6:fig:leyenda}
   }
-  \caption{En el eje x pertenece al atributo \%blue, el eje y pertenece al
-  atributo \%white. \label{cap6:fig:grafica}}
+  \caption{En el eje x pertenece al atributo ``\%blue'', el eje y pertenece al
+  atributo ``\%white''. \label{cap6:fig:grafica}}
 \end{figure}
 
 \medskip
 
 Entonces encontramos una documentación muy extensa y valiosa sobre una de los
 16 parámetros de los que dispone el la constructora del modelo de Regresión
-Lógica : ?class\_weight?. Con este parámetro se puede variar el peso que tiene
+Lógica : ``class\_weight''. Con este parámetro se puede variar el peso que tiene
 cada una de las clases y dar así más importancia a unas determinadas clases y
 menos a otras. Esto es realmente útil cuando se trabaja con modelos que están
 desbalanceados, y aunque en este caso nuestro modelo no tenía esta peculiaridad
