@@ -150,19 +150,19 @@ Obtención de imágenes:
 
 \begin{itemize}
   \item Junto a mis compañeros, creamos dos programas para generar coordenadas
-    y así facilitar la descarga de imágenes, uno con las coordenadas en un rango
-    dado y otro de coordenadas aleatorias. También estudiamos el uso de la
-    herramienta Aladin para la creación de distintos scripts encargados de la
-    descarga de imágenes. Uno para el hemisferio norte y otro para el hemisferio
-    sur.
+  y así facilitar la descarga de imágenes, uno con las coordenadas en un rango
+  dado y otro de coordenadas aleatorias. También estudiamos el uso de la
+  herramienta Aladin para la creación de distintos scripts encargados de la
+  descarga de imágenes. Uno para el hemisferio norte y otro para el hemisferio
+  sur.
   \item Una vez descargadas las imágenes del WDS y varios miles de fotografías
-    sin estrellas dobles, hice un programa para dividirlas en los distintos
-    datasets: training, validation y test, acordes a las necesidades de mis
-    compañeros. Este programa divide las fotografías que sí tienen estrella
-    binaria en los distintos dataset en función de los porcentajes vistos en el
-    apartado \ref{cap2:sec:dsets} y añade el mismo número de fotografías sin
-    estrella binaria de manera que los dataset estén equilibrados, descartando
-    las sobrantes.
+  sin estrellas dobles, hice un programa para dividirlas en los distintos
+  datasets: training, validation y test, acordes a las necesidades de mis
+  compañeros. Este programa divide las fotografías que sí tienen estrella
+  binaria en los distintos dataset en función de los porcentajes vistos en el
+  apartado \ref{cap2:sec:dsets} y añade el mismo número de fotografías sin
+  estrella binaria de manera que los dataset estén equilibrados, descartando
+  las sobrantes.
 \end{itemize}
 
 \medskip
@@ -171,18 +171,18 @@ Diseño de fase de detección:
 
 \begin{itemize}
   \item Por mi cuenta, estudié distintas técnicas de procesamiento de imágenes y
-    reconocimiento de objetos para encontrar la manera adecuada de reconocer las
-    estrellas en las imágenes.
+  reconocimiento de objetos para encontrar la manera adecuada de reconocer las
+  estrellas en las imágenes.
   \item Aprovechando que mi compañero David recoloreaba las imágenes de manera
-    que el número de colores se simplificó a rojo, azul, blanco y negro, decidí
-    utilizar la búsqueda de contornos de las estrellas para su análisis.
+  que el número de colores se simplificó a rojo, azul, blanco y negro, decidí
+  utilizar la búsqueda de contornos de las estrellas para su análisis.
   \item Una vez decidida la búsqueda de contornos para encontrar estrellas,
-    investigué distintas bibliotecas dedicadas procesamiento de imágenes hasta
-    encontrar OpenCV, que es la que se utiliza en el proyecto.
+  investigué distintas bibliotecas dedicadas procesamiento de imágenes hasta
+  encontrar OpenCV, que es la que se utiliza en el proyecto.
   \item Exploré las distintas posibilidades que ofrece la biblioteca OpenCv y,
-    en base a sus características, diseñé e implementé la aplicación que
-    dedicada al análisis de las características que permiten catalogar a una
-    estrella binaria.
+  en base a sus características, diseñé e implementé la aplicación que
+  dedicada al análisis de las características que permiten catalogar a una
+  estrella binaria.
 \end{itemize}
 
 \medskip
@@ -191,29 +191,29 @@ Desarrollo de fase de detección:
 
 \begin{itemize}
   \item Primero, desarrollé un programa que fuera capaz de encontrar los
-    contornos de las estrellas  y sus centros.
+  contornos de las estrellas  y sus centros.
   \item Una vez creado el programa lo amplié de manera que fuera capaz de
-    clasificar las distintas estrellas para poder borrar las que no tuvieran
-    valor a la hora de encontrar estrellas binarias, por ejemplo, estrellas que
-    no se hubieran movido. Esta ampliación fue pensada para poder eliminar el
-    ruido que provocan elementos inútiles en aplicaciones de machine learning
-    como tensorFlow. Esta ampliación fue desechada debido a que el número de
-    imágenes con estrellas dobles es demasiado pequeño como para que pueda
-    aprender correctamente.
+  clasificar las distintas estrellas para poder borrar las que no tuvieran
+  valor a la hora de encontrar estrellas binarias, por ejemplo, estrellas que
+  no se hubieran movido. Esta ampliación fue pensada para poder eliminar el
+  ruido que provocan elementos inútiles en aplicaciones de machine learning
+  como tensorFlow. Esta ampliación fue desechada debido a que el número de
+  imágenes con estrellas dobles es demasiado pequeño como para que pueda
+  aprender correctamente.
   \item Para aprovechar el primer programa creado, y en vistas de que no íbamos
-    a poder aplicar técnicas de machine learning, decidí mejorar el primer
-    programa y hacer que calculara los centros antes y después para lo que tuve
-    que añadirle una nueva funcionalidad que permitiera crear dos imágenes que
-    representaran la disposición de las estrellas antes y después. Además,
-    calcula el área de las estrellas de manera que podemos saber cuál es la
-    primaria y cuál la secundaria.
+  a poder aplicar técnicas de machine learning, decidí mejorar el primer
+  programa y hacer que calculara los centros antes y después para lo que tuve
+  que añadirle una nueva funcionalidad que permitiera crear dos imágenes que
+  representaran la disposición de las estrellas antes y después. Además,
+  calcula el área de las estrellas de manera que podemos saber cuál es la
+  primaria y cuál la secundaria.
   \item Una vez tuve los centros correctamente calculados creamos el algoritmo
-    que permite calcular los valores que utiliza el WDS para catalogar las
-    estrellas y comprobamos que eran bastante similares a los obtenidos mediante
-    nuestra aplicación.
+  que permite calcular los valores que utiliza el WDS para catalogar las
+  estrellas y comprobamos que eran bastante similares a los obtenidos mediante
+  nuestra aplicación.
   \item También participé, junto a mis compañeros, en el estudio e
-    implementación de las diferentes comprobaciones que son necesarias para, con
-    los datos calculados, discernir si se trata de una estrella binaria o no.
+  implementación de las diferentes comprobaciones que son necesarias para, con
+  los datos calculados, discernir si se trata de una estrella binaria o no.
 \end{itemize}
 
 \medskip
@@ -224,11 +224,144 @@ Memoria:
   \item Redacción del apartado de análisis del capítulo \ref{cap4}.
   \item Redacción de las conclusiones.
   \item Colaboración en la redacción de la sección \ref{cap2:sec:dsets} sobre
-    datasets.
+  datasets.
   \item Redacción de la sección \ref{cap7:sec:centroides} sobre centroides.
   \item Modificación de los programas de la etapa de detección, capítulo 7, para
-    guardar las imágenes que se han añadido a la memoria a fin de clarificar el
-    desarrollo de dicha fase.
+  guardar las imágenes que se han añadido a la memoria a fin de clarificar el
+  desarrollo de dicha fase.
   \item Edición de figuras mediante gimp para facilitar la comprensión de
-    conceptos de la fase de análisis del capítulo \ref{cap4} y conclusiones.
+  conceptos de la fase de análisis del capítulo \ref{cap4} y conclusiones.
 \end{itemize}
+
+%-------------------------------------------------------------------
+\section{Javier}
+%-------------------------------------------------------------------
+\label{cap10:sec:javier}
+
+A lo largo de la ejecución de este proyecto yo me he encargado de la creación de
+los modelos de Machine Learning encargados de realizar las predicciones de
+estrellas dobles y encontrar los valores más apropiados de los atributos vistos
+en el capítulo \ref{cap4} que se utilizan para ajustar cuándo hay una estrella
+doble. Así mismo, de la memoria me encargué de redactar el capítulo \ref{cap6} y
+colaboré en la redacción de la sección \ref{cap4:sec:params}.
+
+\medskip
+
+En primera instancia colaboré junto a mis compañeros para crear un generador de
+coordenadas aleatorio y continuo para crear un fichero de coordenadas
+aleatorias. Con este fichero se descargaron las primeras imágenes, en ese
+momento mis compañeros y yo pensamos en los tipos de análisis que se podrían
+realizar, yo me decanté por realizar un análisis cromático de la imagen y
+realizar las predicciones sobre si había en una imagen o no un sistema binario
+de estrellas.
+
+\medskip
+
+Los objetivos que buscábamos con esta implementación es que cuando el programa
+global se ejecutara no siguieran adelante la mayor cantidad posible de imágenes
+que no tuvieran un sistema binario.Para la realización de este analizador
+cromático nos decantamos por el desarrollo de un modelo de Machine Learning,
+concretamente de Regresión Logística. Una vez decidido esto, me dispuse a buscar
+información acerca de Machine Learning y a investigar cómo podría realizar dicho
+modelo.
+
+\medskip
+
+Esta investigación me llevó a la biblioteca de Scikit-learn en Python, y mi
+investigación se centró en la realización de estos modelos en esta biblioteca y
+de sus posibilidades y limitaciones.
+
+\medskip
+
+Una vez hube asentado los conocimientos base me dispuse a diseñar un modelo, que
+a través de la información cromática de una determinada imagen, pudiera
+determinar si había un sistema binario en esa imagen o no.
+
+\medskip
+
+El diseño de este programa me llevó a decidir si la información cromática que
+iba a analizar debía ser absoluta o relativa(en porcentaje). A priori esta
+decisión podría parecer algo ingenua, pero el formato de los valores de entrada
+se acaban convirtiendo, en última instancia,  en un factor determinante en el
+comportamiento del modelo. Al final me decanté por utilizar la el formato
+relativo dado que evita el llamado ?overfitting? o sobreentrenamiento, que se
+produce cuando se entrena un modelo con exceso de información.
+
+\medskip
+
+Al disponer de los conjuntos de entrada proporcionado por mis compañero el
+siguiente trabajo consiste en realizar el entrenamiento del modelo. Este
+entrenamiento consiste en variar cada uno de los 16 parámetros de los que
+dispone el modelo hasta encontrar los que proporcionan los resultado más
+satisfactorios.
+
+\medskip
+
+Este proceso es uno de los más tediosos puesto que no sirve de nada variar los
+parámetros ?dando palos de ciego?, es mucho más efectivo investigar qué es y de
+qué se encarga cada parámetro para saber con mayor certeza cómo debes variar
+cada parámetro para obtener un mejor resultado. Investigué en la documentación
+qué función tenían cada uno de los parámetros del modelo cómo se afectaban entre
+sí y comprobé que importancia tenía en mi modelo cada uno de ellos y cómo
+interactuaban entre sí cada vez que se producía una variación en alguno de
+ellos. Después de mucho insistir, conseguí generar un modelo que satisfacía con
+creces nuestras expectativas.
+
+\medskip
+
+Como vimos en el apartado 8 este comportamiento que presentaba el programa fue
+sólo una ilusión, pues existía un error de fondo que hacía que, a pesar del
+excelente comportamiento en las predicciones, el programa no se comportaba como
+debía.
+
+\medskip
+
+Una vez hubimos detectado y solucionado el problema, volví a realizar el
+entrenamiento del modelo, ésta vez sin obtener buenos resultados. Pero tras
+volver a  investigar más cada parámetro de forma individual encontré la forma de
+mejorar el comportamiento final del programa aumentando la precisión a costa de
+la sensibilidad, y debido a que no cumplía con nuestros objetivos decidimos que
+desecharíamos esta fase del flujo del programa principal. Posteriormente, me
+dediqué a procesar los datos que identifican a las estrellas dobles mediante un
+modelo de Machine Learning que encontrara los valores más ajustados posibles que
+hacen característico a un sistema binario de estrellas.
+
+\medskip
+
+En esta fase, mi trabajo consistió en realizar un trabajo similar al de
+detección, pero con la particularidad de que los datos calculados para cada
+estrella en la imagen pasarían a ser introducidos en un modelo basado en árboles
+de decisión con la idea de aprovechar el árbol resultante para introducir en la
+fase de detección los valores concretos en la comprobación de si una estrella
+cumple con lo especificado que debe cumplir una estrella en un sistema binario.
+
+\medskip
+
+Para realizar esto debía trabajar con un conjunto de imágenes que contuvieran
+todas ellas estrellas dobles. Además debía identificar a las dos estrellas que
+formaban parte del sistema binario. Para ello hablé con mis compañeros y
+llegamos a la conclusión de que si utilizábamos los atributos del ángulo de
+posición y la separación, teniendo en cuenta un ligero margen de error, y los
+comparábamos con los mismos valores que nos proporciona wds en su catálogo para
+la coordenada en la que está situada el sistema binario, podíamos determinar qué
+dos estrellas formaban parte del sistema binario y añadirles la clase de
+estrella doble.
+
+\medskip
+
+Mientras tanto, estaba investigando cómo obtener el árbol de decisión para así
+poder identificar qué valor deben tener los atributos que identifican a las
+estrellas binarias del resto de estrellas. Este fue claramente el proceso más
+largo y complicado de todos, puesto que la información acerca de este atributo
+era muy escasa.
+
+\medskip
+
+Desgraciadamente descubrí que el árbol de decisión que se podía obtener no nos
+daba el valor de los atributos que separan en el hiperplano las muestras de
+estrellas que no son dobles de las que sí, en su lugar, proporcionaba un vector
+de matrices, una por cada estimador del modelo, la información que obtenías para
+cada muestra es si esta atravesaba un nodo concreto o no.
+Esta información puede ser útil en muchos casos, pero en el nuestro no, dado que
+nos proporcionaba la información que precisábamos con lo que desafortunadamente
+todo este desarrollo terminó resultando infructuoso al final.

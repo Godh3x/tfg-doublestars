@@ -9,7 +9,11 @@
 \label{cap6}
 
 \begin{resumen}
-...
+En este capítulo vamos a hablar de una de las fases que ha sido descartadas del
+programa final debido al funcionamiento inadecuado de la misma, así como las
+ideas de lo que se pretendía realizar con ella, a su vez, se expondrán tanto las
+causas por las cuales se ha descartado como los motivos por los cuales causaba
+una ilusión de funcionamiento correcto.
 \end{resumen}
 
 %-------------------------------------------------------------------
@@ -17,4 +21,171 @@
 %-------------------------------------------------------------------
 \label{cap6:sec:introduccion}
 
-...
+Esta fase consistía en realizar un modelo de Regresión Logística que clasificara
+imágenes en dos clases: la que tiene estrellas dobles, que de ahora en adelante
+nos referiremos a ella como ?clase del sí? y las que no, que de ahora en
+adelante nos referiremos a ella como ?clase del no?.
+
+\medskip
+
+La regresión logística, a pesar de su nombre, es un modelo lineal para la
+clasificación en lugar de la regresión. En la literatura el nombre más común por
+el que se encuentra a la Regresión logística el de ?logit?.
+
+\medskip
+
+El motivo por el cual decidimos utilizar la Regresión Logística, es debido al
+buen comportamiento que desempeña en los problemas de clasificación binarios.
+
+\medskip
+
+Para el desarrollo de esta sección, que tiene que ver con Machine Learning,
+hemos utilizado la biblioteca Scikit-learn que nos proporciona Python, dado que
+es una de las más usadas, completas y mejor documentadas que hay.
+
+\citet{scikit-learn}
+
+%-------------------------------------------------------------------
+\section{Idea principal}
+%-------------------------------------------------------------------
+\label{cap6:sec:idea}
+
+Este modelo de regresión logística estaba pensado para realizar predicciones
+sobre la información que proporcionaba la fase del conteo de píxeles, el color
+de los píxeles de la imagen, decidiendo si había o no una estrella doble. La
+información que utilizábamos de cada imagen era el porcentaje de rojo, azul,
+blanco y la división entre el porcentaje de azul y el de rojo, la del blanco
+entre el del rojo y si existía o no una estrella doble en la imagen.
+
+\medskip
+
+Al modelo se le entrena con un conjunto de datos pensado para realizar solamente
+el entrenamiento, las predicciones se realizan con otro conjunto de datos
+distinto llamado conjunto de validación y en base a estas predicciones se afinan
+a mano los distintos parámetros del modelo de Regresión Logística para mejorar
+la precisión de las mismas; por último una vez se hubieron ajustado al máximo
+los parámetros del modelo y las predicciones son lo suficientemente buenas, se
+realizan otras predicciones sobre otro conjunto de datos distinto llamado
+conjuntos de test, sobre el cual se verifica que la precisión de estas
+predicciones son igual de buenas que con el conjunto de validación. Si estas
+predicciones no fuesen tan buenas se debería realizar otra vez el proceso de
+separación en los distintos conjuntos y empezar de nuevo con el entrenamiento
+del modelo.
+
+\medskip
+
+Antes de continuar con esta exposición es necesario aclarar unos conceptos que aparecen a la hora de
+realizar las predicciones, estos son la precisión y la sensibilidad:
+
+\begin{itemize}
+  \item La precisión es la fracción de instancias relevantes entre las
+    instancias recuperadas.
+  \item La sensibilidad es la fracción de instancias relevantes que se han
+    recuperado sobre el total cantidad de instancias relevantes.
+\end{itemize}
+
+\medskip
+
+Por ejemplo, supongamos que  nuestro programa predice que 5 imágenes tienen
+estrellas dobles de un conjunto con 7 imágenes con estrellas dobles. De las 5
+imágenes identificadas sólo 3 tienen en realidad estrellas dobles y el resto no.
+La precisión sería entonces 3/5, mientras que la sensibilidad sería 3/7. Una vez
+aclarados estos conceptos podemos seguir con la exposición.
+
+\medskip
+
+La intención que teníamos era entrenar el modelo de tal manera, que nos
+predijera el caso del no una precisión casi absoluta consiguiendo además una
+sensibilidad lo suficientemente alta, de manera que para la siguiente fase ya se
+habrían descartado la mayor cantidad de imágenes en las que no existiera una
+estrella doble.
+
+Después de entrenar el modelo centrándonos en satisfacer estas restricciones
+observamos que está primera aproximación resultó funcionar extraordinariamente
+bien, superando incluso nuestras expectativas alcanzando una precisión y una
+sensibilidad que llegaban al 99\%. Pero esto era solo una ilusión, puesto que el
+programa no funcionaba tan bien como podía parecer a simple vista.
+
+%-------------------------------------------------------------------
+\section{Ilusión de funcionamiento correcto}
+%-------------------------------------------------------------------
+\label{cap6:sec:ilusion}
+
+En primera instancia, el modelo parecía funcionar realmente bien y no fue hasta
+que probamos el modelo junto al resto del workflow, cuando nos dimos cuenta que,
+como se ve en la figura \ref{cap6:fig:nodoble} la gran mayoría de las imágenes
+que el programa había predicho que no tenían estrella doble sólo tenían todas
+las estrellas blancas exclusivamente. Aunque es cierto que todas las imágenes
+que son como la figura \ref{cap6:fig:nodoble} no tienen estrella doble, esto no
+quiere decir que ninguna de las imágenes con colores rojo y azul no fueran
+imágenes sin estrellas dobles, y lo que ocurría entonces es que, lo que acababa
+aprendiendo el modelo era que si la imágen tiene una cierta cantidad de blanco
+en esa imagen, entonces no hay estrella doble.
+
+\figura{Vectorial/Problemas/imagen1}{width=.5\textwidth}{cap6:fig:nodoble}%
+{Ejemplo de imagen en la que no hay una estrella doble.}
+
+\medskip
+
+Una vez hubimos identificado el problema nos dispusimos a cambiar el programa de
+tal manera, que si la tras realizar el conteo de píxeles una imagen tenía una
+cantidad extremadamente alta de blanco, esta se eliminaba antes de llegar a esta
+fase y así evitar los problemas con el modelo. Una vez se hubieron ?limpiado? el
+conjunto de imágenes nos dispusimos a realizar de nuevo al los pasos de
+entrenamiento del modelo, validación y test con los nuevos conjuntos y comprobar
+cómo se comportaba el modelo a la hora de realizar las predicciones.
+
+%-------------------------------------------------------------------
+\section{Causas del descarte}
+%-------------------------------------------------------------------
+\label{cap6:sec:descarte}
+
+A pesar de la limpieza que realizamos en los conjuntos, el siguiente problema
+que encontramos es que el modelo no realizaba buenas predicciones para ninguna
+de las dos clases, la precisión era menor del 60\%. Nuestro modelo no era capaz
+de saber si en una imágen había o no una estrella doble sólamente con la
+información del color de sus píxeles. Está conclusión aunque decepcionante
+tampoco era del todo sorprendente, en la figura \ref{cap6:fig:grafica} se ve la
+relación que hay entre los atributos de píxeles blancos y los azules y si hay o
+no una estrella doble, se puede apreciar perfectamente que no hay una división
+posible en la que puedas separar las dos clases de una forma clara y coherente.
+Este es sólo un ejemplo pero este problema se da entre cada par de atributos y
+es una de las razones por las que las predicciones no son buenas.
+
+\begin{figure}[t]
+  \centering
+  %
+  \subfloat[][]{
+    \includegraphics[width=0.62\textwidth]%
+    {Imagenes/Vectorial/Problemas/imagen2}
+    \label{cap6:fig:puntos}
+  }
+  \qquad
+  \subfloat[][]{
+    \includegraphics[width=0.2\textwidth]%
+    {Imagenes/Vectorial/Problemas/leyenda}
+    \label{cap6:fig:leyenda}
+  }
+  \caption{En el eje x pertenece al atributo \%blue, el eje y pertenece al
+  atributo \%white. \label{cap6:fig:grafica}}
+\end{figure}
+
+\medskip
+
+Entonces encontramos una documentación muy extensa y valiosa sobre una de los
+16 parámetros de los que dispone el la constructora del modelo de Regresión
+Lógica : ?class\_weight?. Con este parámetro se puede variar el peso que tiene
+cada una de las clases y dar así más importancia a unas determinadas clases y
+menos a otras. Esto es realmente útil cuando se trabaja con modelos que están
+desbalanceados, y aunque en este caso nuestro modelo no tenía esta peculiaridad
+pensábamos que si dábamos más importancia a la clase del no, podríamos conseguir
+una mayor precisión en las predicciones de esta clase a costa de una pérdida en
+la sensibilidad. Y se consiguió que la precisión aumentara a un 83\% pero la
+sensibilidad disminuyó a un 2\%.
+
+\medskip
+
+Aunque el comportamiento final del modelo conseguimos que mejorara, no cumplía
+con nuestros requisitos de poder descartar con su uso un gran número de imágenes
+que no tuvieran estrellas dobles, con lo que finalmente decidimos descartar su
+uso.
