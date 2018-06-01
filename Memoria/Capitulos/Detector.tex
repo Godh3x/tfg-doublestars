@@ -16,7 +16,7 @@ representan los cambios a lo largo del tiempo y calculando las diferencias entre
 cada posible pareja de estrellas. Con los resultados de este análisis se procede
 a la fase de decisión la cual se encarga de procesar los resultados de la etapa
 posterior y decidir, para cada pareja de estrellas, si forman o no una estrella
-doble. Esto se realizará mediante un árbol de decisión.
+doble.
 \end{resumen}
 
 %-------------------------------------------------------------------
@@ -138,5 +138,54 @@ Los valores representados en la figura \ref{cap4:fig:6} corresponden a:
 
 Una vez obtenidos los datos de la figura \ref{cap4:fig:6} se procede a
 procesarlos para calcular los valores que se utilizan para clasificar estrellas
-dobles. Por último, un árbol de decisión se encargará de procesar estos datos y
-clasificar la pareja de estrellas.
+dobles.
+
+%-------------------------------------------------------------------
+\section{Decisión}
+%-------------------------------------------------------------------
+\label{cap4:sec:decision}
+
+Una vez obtenidos los valores de la sección \ref{cap4:sec:analisis} se procede
+al estudio de los mismos, para decidir si la pareja de estrellas es binaria o
+no. Previamente al diseño de nuestro algoritmo, se estudió qué similitudes hay
+entre las parejas de estrellas binarias ya catalogadas. Se llegó a la conclusión
+que estas mantienen entre sí su posición relativa a lo largo de los años.Es
+decir, la separación entre ellas, el ángulo de la una con la otra, el ángulo de
+su trayectoria debería ser aproximadamente iguales. Además, la relación entre el
+área de cada una de las estrellas debe mantenerse a lo largo del tiempo.
+
+\medskip
+
+Una vez decididos valores necesarios para tomar la decisión Procedimos a
+establecer unos valores críticos que marcaran el límite entre lo que podría
+considerarse estrella doble y lo que no. En caso de que la diferencia entre los
+valores antes y después, por ejemplo la distancia entre las estrellas, fuera
+superior al valor crítico decidido para la distancia, la estrella
+automáticamente sería descartada. En caso contrario se pasaría a comprobar el
+siguiente valor. Estas comprobaciones actuarían como un filtro por etapas, de
+manera que si la pareja de estrellas supera todas las etapas, sería considerada
+estrella doble.
+
+\medskip
+
+Estos valores críticos son:
+
+\begin{itemize}
+  \item a
+\end{itemize}
+
+\medskip
+
+Además de los filtros anteriormente descritos, se añadió un filtro más de manera
+que si la fotografía contuviese más de una pareja de estrellas, lo cual es
+bastante difícil que se de, se descarta porque probablemente se deba a que el
+montaje de las dos fotografías está mal hecho, por los motivos mencionados en la
+sección \ref{cap2:sec:aladin}, y parece que todas las estrellas se desplazan en
+la misma dirección o porque la fotografía representa un cúmulo de estrellas en
+los cuales nuestra aplicación no podría detectar nada.
+
+\medskip
+
+Una vez que la estrella ha pasado todos los filtros, se procede a pintar sus
+centros de otro color en la imagen recoloreada y se guardan los valores de sus
+atributos obtenidos de su análisis, de manera que sea fácil su comprobación.
