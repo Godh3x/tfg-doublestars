@@ -17,9 +17,14 @@ una ilusión de funcionamiento correcto.
 \end{resumen}
 
 %-------------------------------------------------------------------
-\section{Introducción}
+\section{Regresión logística}
 %-------------------------------------------------------------------
-\label{cap6:sec:introduccion}
+\label{cap6:sec:logreg}
+
+%-------------------------------------------------------------------
+\subsection{Introducción}
+%-------------------------------------------------------------------
+\label{cap6:sec:logreg:introduccion}
 
 Esta fase consistía en realizar un modelo de Regresión Logística que clasificara
 imágenes en dos clases: la que tiene estrellas dobles, que de ahora en adelante
@@ -46,9 +51,9 @@ es una de las más usadas, completas y mejor documentadas que hay.
 \citet{scikit-learn}
 
 %-------------------------------------------------------------------
-\section{Idea principal}
+\subsection{Idea principal}
 %-------------------------------------------------------------------
-\label{cap6:sec:idea}
+\label{cap6:sec:logreg:idea}
 
 Este modelo de regresión logística estaba pensado para realizar predicciones
 sobre la información que proporcionaba la fase del conteo de píxeles, el color
@@ -107,9 +112,9 @@ sensibilidad que llegaban al 99\%. Pero esto era solo una ilusión, puesto que el
 programa no funcionaba tan bien como podía parecer a simple vista.
 
 %-------------------------------------------------------------------
-\section{Ilusión de funcionamiento correcto}
+\subsection{Ilusión de funcionamiento correcto}
 %-------------------------------------------------------------------
-\label{cap6:sec:ilusion}
+\label{cap6:sec:logreg:ilusion}
 
 En primera instancia, el modelo parecía funcionar realmente bien y no fue hasta
 que probamos el modelo junto al resto del workflow, cuando nos dimos cuenta que,
@@ -136,9 +141,9 @@ entrenamiento del modelo, validación y test con los nuevos conjuntos y comprobar
 cómo se comportaba el modelo a la hora de realizar las predicciones.
 
 %-------------------------------------------------------------------
-\section{Causas del descarte}
+\subsection{Causas del descarte}
 %-------------------------------------------------------------------
-\label{cap6:sec:descarte}
+\label{cap6:sec:logreg:descarte}
 
 A pesar de la limpieza que realizamos en los conjuntos, el siguiente problema
 que encontramos es que el modelo no realizaba buenas predicciones para ninguna
@@ -189,3 +194,83 @@ Aunque el comportamiento final del modelo conseguimos que mejorara, no cumplía
 con nuestros requisitos de poder descartar con su uso un gran número de imágenes
 que no tuvieran estrellas dobles, con lo que finalmente decidimos descartar su
 uso.
+
+%-------------------------------------------------------------------
+\section{Parametrización automática}
+%-------------------------------------------------------------------
+\label{cap6:sec:autoparams}
+
+El siguiente paso consistía en procesar todos los datos calculados en la fase de
+análisis con la ayuda de un modelo de Machine Learning para encontrar el ajuste
+de los valores que hacen únicas a las estrellas dobles frente al resto de
+estrellas.
+
+\medskip
+
+La existencia de este paso se debe a que en primera instancia realizábamos a
+mano el ajuste de valores para decidir cuándo dos estrellas formaban parte de un
+sistema binario y cuándo no.
+
+\medskip
+
+Debido a que este proceso era muy largo y tedioso, se nos ocurrió que podíamos
+implementar un programa que encontrara por nosotros cuáles eran esos valores que
+mejor ajustaran la clasificación de las estrellas dobles.
+
+\medskip
+
+Por todo ello decidimos realizar un modelo de Machine Learning en Python con la
+ayuda de la biblioteca de Scikit-learn, dado que es la mejor para realizar este
+tipo de tareas.
+
+\citet{scikit-learn}
+
+\medskip
+
+En esta fase, nuestro trabajo consistió en realizar un proceso similar al de
+detección, pero con la particularidad de que los datos calculados para cada
+estrella en la imagen pasarían a ser introducidos en un modelo de Machine
+Learning basado en árboles de decisión conocido como ?Random Forest?, del mismo
+modo incluimos una clase que representa  si la estrella analizada formaba parte
+o no de un sistema binario, de tal manera que pudiéramos aprovechar el árbol
+resultante para introducir en la fase de detección los valores concretos en la
+comprobación de si una estrella cumple con lo especificado en un sistema
+binario.
+
+\medskip
+
+Para realizar este trabajo, el modelo propuesto debería analizar un conjunto de
+imágenes en las que hubiera en cada una de ellas estrellas dobles. Además
+deberíamos identificar a las dos estrellas que formaban parte del sistema
+binario.
+
+\medskip
+
+Para conseguir esto descubrimos que si utilizábamos los atributos del ángulo de
+posición y la separación, teniendo en cuenta un margen de error, los podríamos
+comparar con los que nos proporciona el catálogo de WDS para la coordenada en la
+que está situada el sistema binario, y añadir así, la clase de estrella doble a
+las estrellas de la imagen que cumplan esa condición, que no deberían ser más
+que dos.
+
+\medskip
+
+Durante la implementación de esta fase investigamos acerca de cómo obtener un
+árbol de decisión a partir del modelo generado, que nos permitiera obtener un
+criterio a la hora de discernir sobre si dos estrellas pertenecen o no a un
+sistema binario.
+
+\medskip
+
+En este momento nos dimos cuenta que, aunque los modelos basados en árboles de
+decisión, como Random Forest en nuestro caso, permiten obtener dicho árbol, este
+no nos proporcionaba la información que buscábamos, en cambio, nos facilitaba un
+árbol por cada estimador del modelo que en cada nodo indicaba si las muestras
+pasaban por él o no.
+
+\medskip
+
+Debido a este contratiempo en el último momento del desarrollo, que no pudimos
+subsanar, decidimos simplemente descartar esta fase de parametrización y
+trabajar con el ajuste que se realizó a mano en las primeras instancias de la
+detección.
