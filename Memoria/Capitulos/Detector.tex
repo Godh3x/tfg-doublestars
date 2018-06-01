@@ -138,10 +138,83 @@ Los valores representados en la figura \ref{cap4:fig:6} corresponden a:
 
 Una vez obtenidos los datos de la figura \ref{cap4:fig:6} se procede a
 procesarlos para calcular los valores que se utilizan para clasificar estrellas
-dobles (ver capítulo estrellas dobles). Por último, un árbol de decisión se
-encargará de procesar estos datos y clasificar la pareja de estrellas.
+dobles. Por último, un árbol de decisión se encargará de procesar estos datos y
+clasificar la pareja de estrellas.
 
 %-------------------------------------------------------------------
-\section{Placeholder}
+\section{Parametrización}
 %-------------------------------------------------------------------
 \label{cap4:sec:params}
+
+El siguiente paso consistía en procesar todos los datos calculados en la fase de
+análisis con la ayuda de un modelo de Machine Learning para encontrar el ajuste
+de los valores que hacen únicas a las estrellas dobles frente al resto de
+estrellas.
+
+\medskip
+
+La existencia de este paso se debe a que en primera instancia realizábamos a
+mano el ajuste de valores para decidir cuándo dos estrellas formaban parte de un
+sistema binario y cuándo no.
+
+\medskip
+
+Debido a que este proceso era muy largo y tedioso, se nos ocurrió que podíamos
+implementar un programa que encontrara por nosotros cuáles eran esos valores que
+mejor ajustaran la clasificación de las estrellas dobles.
+
+\medskip
+
+Por todo ello decidimos realizar un modelo de Machine Learning en Python con la
+ayuda de la biblioteca de Scikit-learn, dado que es la mejor para realizar este
+tipo de tareas. (Insertar aquí el bibtex de sklearn).
+
+\medskip
+
+En esta fase, nuestro trabajo consistió en realizar un proceso similar al de
+detección, pero con la particularidad de que los datos calculados para cada
+estrella en la imagen pasarían a ser introducidos en un modelo de Machine
+Learning basado en árboles de decisión conocido como ?Random Forest?, del mismo
+modo incluimos una clase que representa  si la estrella analizada formaba parte
+o no de un sistema binario, de tal manera que pudiéramos aprovechar el árbol
+resultante para introducir en la fase de detección los valores concretos en la
+comprobación de si una estrella cumple con lo especificado en un sistema
+binario.
+
+\medskip
+
+Para realizar este trabajo, el modelo propuesto debería analizar un conjunto de
+imágenes en las que hubiera en cada una de ellas estrellas dobles. Además
+deberíamos identificar a las dos estrellas que formaban parte del sistema
+binario.
+
+\medskip
+
+Para conseguir esto descubrimos que si utilizábamos los atributos del ángulo de
+posición y la separación, teniendo en cuenta un margen de error, los podríamos
+comparar con los que nos proporciona el catálogo de WDS para la coordenada en la
+que está situada el sistema binario, y añadir así, la clase de estrella doble a
+las estrellas de la imagen que cumplan esa condición, que no deberían ser más
+que dos.
+
+\medskip
+
+Durante la implementación de esta fase investigamos acerca de cómo obtener un
+árbol de decisión a partir del modelo generado, que nos permitiera obtener un
+criterio a la hora de discernir sobre si dos estrellas pertenecen o no a un
+sistema binario.
+
+\medskip
+
+En este momento nos dimos cuenta que, aunque los modelos basados en árboles de
+decisión, como Random Forest en nuestro caso, permiten obtener dicho árbol, este
+no nos proporcionaba la información que buscábamos, en cambio, nos facilitaba un
+árbol por cada estimador del modelo que en cada nodo indicaba si las muestras
+pasaban por él o no.
+
+\medskip
+
+Debido a este contratiempo en el último momento del desarrollo, que no pudimos
+subsanar, decidimos simplemente descartar esta fase de parametrización y
+trabajar con el ajuste que se realizó a mano en las primeras instancias de la
+detección.
