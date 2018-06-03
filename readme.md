@@ -1,6 +1,6 @@
 # TFG Double Star Detection
 
-This project tries to detect double stars using machine learning.
+This project tries to detect double star systems.
 
 ## Data
 
