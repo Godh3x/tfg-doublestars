@@ -10,19 +10,32 @@
 
 \begin{resumen}
 La detección es el paso que sigue al recoloreado y está dividida en dos partes.
-La primera parte de la detección se basa en el análisis  de la imagen obtenida
-en el recoloreado. Este análisis se lleva a cabo separando la imagen en dos que
-representan los cambios a lo largo del tiempo y calculando las diferencias entre
-cada posible pareja de estrellas. Con los resultados de este análisis se procede
-a la fase de decisión la cual se encarga de procesar los resultados de la etapa
-posterior y decidir, para cada pareja de estrellas, si forman o no una estrella
-doble.
+La primera parte se basa en el análisis de la imagen obtenida en el recoloreado.
+Este análisis se lleva a cabo separando la imagen en dos que representan los
+cambios a lo largo del tiempo y calculando las diferencias entre cada posible
+pareja de estrellas. Con los resultados de este análisis se procede a la fase de
+decisión la cual se encarga de procesar los resultados de la etapa posterior y
+decidir, para cada pareja de estrellas, si forman o no una estrella doble.
 \end{resumen}
 
 %-------------------------------------------------------------------
 \section{Análisis}
 %-------------------------------------------------------------------
 \label{cap4:sec:analisis}
+
+Para el desarrollo de este fase, partimos de las imágenes descargadas por
+Aladin, que se encarga de superponer las imágenes de las dos fotografías
+aplicando un filtro de color a cada una, de manera que en la primera se
+reemplaza el blanco por rojo y en la segunda por azul. En la fase de recoloreado
+se ha potenciado el color de la imagen para que cada pixel sea un color puro, lo
+que facilita su tratamiento. Una vez obtenidas las imágenes, El objetivo es
+relacionar cada ?estrella roja? con una ?estrella azul? de forma que seamos
+capaces de detectar que son, en efecto, dos imágenes de una misma estrella. Si
+encontramos dos estrellas que se hayan movido en la misma dirección y sentido, y
+a una velocidad similar, podemos señalar la pareja como una candidata a estrella
+binaria.
+
+\medskip
 
 Hemos programado esta fase en el lenguaje Python, debido a la gran cantidad de
 bibliotecas que permiten tratar imágenes.
@@ -71,10 +84,9 @@ los centros reales de las dos estrellas.
 
 \medskip
 
-El problema de este método radica en que si la estrella no se ha movido lo
-suficientemente rápido. Se obtendrían tres centros distintos para una misma
-pareja de estrellas y ninguno de ellos serían los centros reales de las dos
-estrellas.
+Por tanto, si la estrella no se ha movido lo suficientemente rápido. Se
+obtendrían tres centros distintos para una misma pareja de estrellas y ninguno
+de ellos serían los centros reales de las dos estrellas.
 
 \figura{Vectorial/Detector/2}{width=.5\textwidth}{cap4:fig:2}%
 {Estrella binaria cuyo movimiento no es tan apreciable debido a su menor velocidad}
@@ -85,7 +97,10 @@ Para subsanar el error se decidió realizar el análisis de contornos por
 separado. Para ello se filtran la imagen en dos imágenes de manera que una tiene
 el color rojo y el blanco, y la otra el azul y el blanco. De esta manera se
 obtienen los centros y áreas de las estrellas en origen y los centros de las
-estrellas en el destino y se pueden relacionar de manera directa.
+estrellas en el destino y se pueden relacionar de manera directa. Esto no se
+puede hacer directamente con las imágenes originales ya que habría que escalar y
+girar las imágenes de manera que coincidieran. Esta tarea la realiza Aladin con
+gran precisión.
 
 \figura{Vectorial/Detector/3}{width=.5\textwidth}{cap4:fig:3}%
 {Estrella binaria con bajo movimiento propio}
@@ -149,14 +164,14 @@ Una vez obtenidos los valores de la sección \ref{cap4:sec:analisis} se procede
 al estudio de los mismos, para decidir si la pareja de estrellas es binaria o
 no. Previamente al diseño de nuestro algoritmo, se estudió qué similitudes hay
 entre las parejas de estrellas binarias ya catalogadas. Se llegó a la conclusión
-que estas mantienen entre sí su posición relativa a lo largo de los años.Es
+que estas mantienen entre sí su posición relativa a lo largo de los años. Es
 decir, la separación entre ellas, el ángulo de la una con la otra, el ángulo de
 su trayectoria debería ser aproximadamente iguales. Además, la relación entre el
 área de cada una de las estrellas debe mantenerse a lo largo del tiempo.
 
 \medskip
 
-Una vez decididos valores necesarios para tomar la decisión Procedimos a
+Una vez decididos valores necesarios para tomar la decisión procedimos a
 establecer unos valores críticos que marcaran el límite entre lo que podría
 considerarse estrella doble y lo que no. En caso de que la diferencia entre los
 valores antes y después, por ejemplo la distancia entre las estrellas, fuera
