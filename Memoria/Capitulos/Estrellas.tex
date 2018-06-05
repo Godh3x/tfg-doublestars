@@ -20,10 +20,14 @@ los conceptos relativos a estrellas dobles que en el se tratan.
 
 Un punto fundamental para la detección de estrellas dobles consiste en la
 búsqueda y análisis de los centros de las estrellas, los llamados centroides.
-Esto es debido a que la estrella no aparece en las imágenes como un círculo,
-cuyo centro puede determinarse sin más (figura \ref{cap7:fig:cideal}), sino como
-una acumulación de puntos brillantes, con un contorno difuso
-(figura \ref{cap7:fig:creal}).
+Aunque las imágenes de la estrella son puntuales debido a diversos factores como
+la atmósfera, las imperfecciones de las ópticas o las limitaciones de las
+cámaras, las estrellas terminan siendo manchas que ni siquiera aparecen como
+círculos, cuyo centro puede determinarse sin más (figura \ref{cap7:fig:cideal}),
+sino como una acumulación de puntos brillantes, con un contorno difuso
+(figura \ref{cap7:fig:creal}). Esta problemática es incluso más notable en
+nuestro caso puesto que trabajamos con la superposición de dos imágenes, lo cual
+dificulta aún más la detección de los limites de una estrella.
 
 \begin{figure}[t]
   \centering
@@ -48,9 +52,13 @@ una acumulación de puntos brillantes, con un contorno difuso
 \label{cap7:sec:coordenadas}
 
 Un sistema de coordenadas celestes no es más que un modo de especificar
-la posición de un cuerpo en el espacio. Existen varios sistemas de este tipo
-pero en este trabajo nos quedaremos con el sistema de coordenadas ecuatorial,
-que es el usado por nuestros generadores de coordenadas.
+la posición de un cuerpo en el espacio. A pesar de estar a diferentes
+distancias, éstas son tan grandes que desde la Tierra vemos las estrellas como
+puntos situados en la bóveda celeste, gracias a este efecto es posible el uso
+de, tan solo, dos coordenadas para definir la localizacion exacta. Existen
+varios sistemas de este tipo pero en este trabajo nos quedaremos con el sistema
+de coordenadas ecuatorial, que es el usado por los astrónomos profesionales
+debido a su facilidad de cálculo y precisión.
 
 \medskip
 
@@ -110,40 +118,40 @@ recta no se corresponde al desplazamiento especificado, esto se debe a que
 estamos trabajando en un sistema esférico por lo cual debemos ajustar el
 desplazamiento en base a la declinación.
 
-\begin{itemize}
-  \item Desplazamiento RA ajustado: Desplazamiento RA * cos(Dec)
-\end{itemize}
-
-
 %-------------------------------------------------------------------
 \section{Atributos}
 %-------------------------------------------------------------------
 \label{cap7:sec:atributos}
 
-\url{http://www.asociacionhubble.org/portal/modules/grupos/estrellasdobles/guiaobs/guiaobs.pdf}
-
-
-Un sistema de estrellas binarias viene definido por una serie de parámetros que
-veremos a continuación. En el sistema una de las componentes es principal y la
-otra secundaria, el criterio para definir cual es cual es simple, la más
-brillante es la principal.
+Un sistema de estrellas binarias viene definido por una serie de parámetros,
+ilustrados en la figura \ref{cap7:fig:params}, que veremos a continuación. En el
+sistema una de las componentes es principal y la otra secundaria, el criterio
+para definir cuál es cuál es simple, la más brillante es la principal.
 
 \medskip
 
-La separación indica la distancia entre las estrellas que conforman el sistema.
+La separación o distancia angular entre dos objetos, medida desde un punto ajeno
+a ambos, es el ángulo formado por las dos trazas con origen en el punto ajeno
+desde el que se observa y ambos objetos.
 
 \medskip
 
-El angulo de posición marca la posición de la secundaria respecto de la
-principal.
+El ángulo de posición, abreviado PA, se define como el desplazamiento angular
+de la componente secundaria, medido desde el polo norte celeste, respecto de la
+primaria.
 
 \medskip
 
-La magnitud es el brillo de cada estrella, cuanto más bajo es el valor más
-brillante es la estrella. Como se comentaba al principio de la sección es este
-parámetro el que determina que componente es principal.
+La magnitud o magnitud aparente denota el brillo de una estrella observado desde
+la Tierra, cuanto más bajo es este valor más brillante es la estrella. Como se
+comentaba al principio de la sección es este parámetro el que determina que
+componente es principal.
 
 \medskip
 
-Y, por último, su espectro o color que esta directamente relacionado con la
-temperatura de la estrella.
+Y, por último, su espectro no es más que el color que emite una estrella, este
+valor está directamente relacionado con la temperatura.
+
+\figura{Vectorial/Estrellas/params}{width=.8\textwidth}{cap7:fig:params}%
+{Ilustración de los parámetros de un sistema binario.\\Fuente:
+\url{http://www.asociacionhubble.org/portal/modules/grupos/estrellasdobles/guiaobs/guiaobs.pdf}}
