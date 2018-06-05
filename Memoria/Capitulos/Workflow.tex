@@ -25,7 +25,7 @@ dobles. Cada una de estas etapas puede recibir un número arbitrario de entradas
 y salidas, además recibirá un evento de la clase Thread de Python que al abortar
 la ejecución, mediante la interrupción Ctrl+C, se activará permitiendo así a la
 etapa saber que debe parar su ejecución. Por ejemplo, la etapa de recoloreado
-que veremos en este capitulo recibe dos parametros de entrada, uno de salida y
+que veremos en este capitulo recibe dos parámetros de entrada, uno de salida y
 un evento en el que poder consultar, mediante la instrucción
 ``stop\_event.is\_set()'' si debe parar de ejecutarse.
 
@@ -43,7 +43,7 @@ mecanismo de flujo de datos, que tiene la característica de que varios pasos se
 pueden ejecutar simultáneamente. En nuestro caso es posible conseguir esta
 concurrencia de tareas porque se asume que las etapas producen elementos de
 salida de forma constante que las siguientes etapas pueden consumir. Está
-filosofia recuerda a la empleada por la herramienta flume
+filosofía recuerda a la empleada por la herramienta flume
 (\url{https://flume.apache.org/}) en entornos Big Data, empleada para recibir y
 operar con datos en streaming.
 
