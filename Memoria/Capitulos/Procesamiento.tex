@@ -9,10 +9,10 @@
 \label{cap3}
 
 \begin{resumen}
-A lo largo de este capítulo se presentaran los diferentes procesos a los que
-se pueden someter los datos, entre ellos se encuentran transformaciones que ya
-no se emplean en nuestro detector pero que podrían ser útiles si se exploran
-nuevas formas de detección.
+A lo largo de este capítulo se presentaran las diferentes etapas a las que
+se pueden someter los datos, entre ellas se encuentran transformaciones que
+actualmente no se emplean en nuestro detector pero que podrían ser útiles si se
+exploran nuevas formas de detección.
 \end{resumen}
 
 %-------------------------------------------------------------------
@@ -26,31 +26,46 @@ imágenes y crear el canvas sobre el que guardar el resultado.
 \medskip
 
 A simple vista las imágenes obtenidas en la sección \ref{cap2:sec:imgdownload}
-están coloreadas y nos permiten apreciar las diferencias fácilmente. El problema
-surge cuando queremos que el programa haga las misma extrapolaciones que hace
-nuestro cerebro.
+están coloreadas y nos permiten apreciar los contornos de las estrellas
+fácilmente. El problema surge cuando queremos que el programa haga las misma
+extrapolaciones que hace nuestro cerebro.
 
 \medskip
 
-Con el fin de facilitar la comparación de los pixels la imagen pasa por un
-proceso de recoloreado que la transforma pixel a pixel.
+La utilidad de este proceso radica en que en una imagen pueden aparecer varios
+tonos de rojo, por ejemplo. Cuantos más tonos de un color aparezcan más dificil
+será ver los contornos. Con el fin de facilitar este reconocimiento la imagen
+pasa por un proceso de recoloreado que la transforma pixel a pixel que reduce el
+numero de tonos de cada color a uno.
 
 \medskip
 
 Los colores que reconoce este proceso se definen mediante un diccionario que
-almacena el nombre y composición del mismo. Esto facilita la modificación de los
-grupos reconocidos de modo que un cambio en el coloreado inicial de las imágenes
-no supone un problema.
+almacena el nombre y composición RGB del mismo. Esto facilita la modificación de
+los grupos reconocidos de modo que un cambio en el coloreado inicial de las
+imágenes no supone un problema.
+
+\begin{lstlisting}
+  groups = {
+    'red': (255,   0,   0),
+    'green': (0, 255,   0),
+    'blue': (0,   0, 255),
+    'black': (0,   0,   0),
+    'white': (255, 255, 255)
+    }
+\end{lstlisting}
 
 \medskip
 
-El problema de este proceso es definir cómo ha de interpretar la tonalidad del
-pixel, para atajarlo hemos empleado la distancia Manhanttan. Se trata de
-medir la distancia entre la composición del pixel y la del grupo, asumiendo
-que ambas tonalidades son RGB y que están almacenadas en triplas, de la forma
-(R, G, B), tan solo hemos de restar cada componente con su homóloga y sumar los
-resultados para obtener un valor. El grupo que resulte con menor valor será
-aquel al que pertenezca el pixel.
+El objeto de este proceso es definir cómo ha de interpretar la tonalidad de cada
+pixel de la imagen original, de forma que al finalizar esta fase se obtenga una
+imagen que contenga solo los colores definidos en el diccionario inicial. Para
+esto hemos empleado la noción de distancia conocida como ``distancia
+Manhanttan''. Se trata de medir la distancia entre la composición del pixel y la
+del grupo, asumiendo que ambas tonalidades son RGB y que están almacenadas en
+triplas, de la forma (R, G, B), tan solo hemos de restar cada componente con su
+homóloga y sumar los resultados para obtener un valor. El grupo que resulte con
+menor valor será aquel al que pertenezca el pixel.
 
 \begin{figure}[t]
   \centering
@@ -83,9 +98,9 @@ el grupo del pixel, imagen \ref{cap3:fig:rthresh}.
 
 \medskip
 
-Cuando se ha obtenido el grupo del pixel se pinta del color de grupo en un
-canvas, una vez se han procesado todos los pixel se almacena el resultado en un
-fichero png.
+Para producir la imagen recoloreada creamos una imagen homóloga a la original
+sobre un canvas, pero el color de cada pixel se corresponderá al asignado
+durante el procesamiento.
 
 %-------------------------------------------------------------------
 \section{Comprobación}
@@ -98,17 +113,20 @@ fase de comprobación que se puede activar para todos los sistemas aceptados.
 
 \medskip
 
-Si se ha solicitado esta fase se realiza un primer paso que consiste en
-conectarse a WDS y descargar los datos de los sistemas conocidos, este paso solo
-se hace una vez por ejecución, al comienzo, para no saturar los servidores. El
-hecho de emplear los mismos datos durante una ejecución completa no supone un
-problema puesto que la base de datos no se altera habitualmente.
+Si se incluye esta fase dentro del flujo de datos, se realiza un primer paso que
+consiste en conectarse a la url en la que se encuentra alojado el catálogo de
+WDS, \url{http://ad.usno.navy.mil/wds/Webtextfiles/wdsweb_summ.txt}, y descargar
+los datos de los sistemas conocidos, este paso solo se hace una vez por
+ejecución, al comienzo. El hecho de emplear los mismos datos durante una
+ejecución completa no supone un problema puesto que la base de datos no se
+altera habitualmente.
 
 \medskip
 
-Cuando un sistema es aceptado esta fase toma sus coordenadas y busca
-coincidencias en todas las entradas descargadas, si no hay ninguna se ignora el
-sistema detectado. Dejando por tanto un documento json de la siguiente forma.
+Cuando los datos de un sistema aparecen en la entrada de esta fase se toman sus
+coordenadas y se buscan coincidencias en todas las entradas descargadas, si no
+hay ninguna se ignora el sistema detectado. El resultado, es un fichero con el
+formato de intercambio de datos JSON de la siguiente forma.
 
 \medskip
 
@@ -135,8 +153,31 @@ sistema detectado. Dejando por tanto un documento json de la siguiente forma.
 
 \medskip
 
+El fichero almacena los siguientes datos:
+
+\begin{itemize}
+  \item \textit{Angle difference}: es la diferencia entre los ángulos de
+    posición formados por el ``sistema de estrellas rojas'' y el ``sistema de
+    estrellas azules'', es decir, indica la evolución del ángulo de posicion.
+  \item \textit{Separation difference}: es el resultado de restar la diferencia
+    entre las separaciones de las ``estrellas rojas'' y ``azules'' del sistema.
+  \item \textit{Maximum separation}: es la mayor de las dos separaciones
+    empleadas en el dato anterior.
+  \item \textit{Separation \%}: es el tanto por ciento de la \textit{Maximum
+    separation} correspondiente al valor de \textit{Separation difference}.
+  \item \textit{PA}: es el valor medio de los ángulos de posición formados por
+    las ``estrellas rojas'' y ``azules'' del sistema.
+  \item \textit{Separation}: es la media de ambas separaciones multiplicada por
+    un factor de conversión, 1/3.95, que normaliza el valor al sistema empleado
+    por WDS.
+  \item \textit{Proper motion}: es el movimiento própio de cada estrella
+    multiplicado por un factor de conversión, 6.8, que normaliza el valor.
+\end{itemize}
+
+\medskip
+
 Si por el contrario existen datos asociados al sistema se almacenan en el
-archivo json junto con los datos proporcionados por el detector y el calculo del
+archivo json junto con los datos proporcionados por el detector y el cálculo del
 error entre ambos, dando lugar a un archivo con el siguiente formato.
 
 \begin{lstlisting}[language=json]
@@ -219,8 +260,14 @@ la imagen que pertenecen a dicha tonalidad.
 
 Al terminar de procesar es posible guardar el valor de dichos contadores o
 transformarlos para obtener otros datos. En nuestro caso, decidimos almacenar
-los porcentajes de pixels rojos, azules y blancos, y las proporciones tanto de
-blancos como de azules con respecto de los rojos.
+los porcentajes de pixels rojos, azules y blancos, así como las proporciones
+tanto de blancos como de azules con respecto de los rojos.
+
+\medskip
+
+Esta etapa ya no se incluye en el workflow, esto se debe a que el objetivo era
+proporcionar al filtro descrito en la sección \ref{cap6:sec:logreg} los datos
+que necesitaba.
 
 %-------------------------------------------------------------------
 \section{Corte}
@@ -234,18 +281,20 @@ mismo tamaño.
 \medskip
 
 En este caso decidimos que las imágenes se dividieran en 9 sectores, lo cual
-permite reducir el nivel de ruido en la fotografía pero dejando datos
-suficientes en ella para posteriores análisis. En la figura \ref{cap3:fig:uncrop}
+permite reducir la información en la fotografía pero dejando datos suficientes
+en ella para posteriores análisis. En la figura \ref{cap3:fig:uncrop}
 se puede observar que existe mucha información, sin embargo, si la dividimos en
 9 fragmentos, figura \ref{cap3:fig:crop}, las imágenes resultantes tienen menos
-ruido.
+información facilitando la toma de decisiones sobre ellas.
 
 \medskip
 
 Este proceso tan solo almacena el cuadrante central para reducir la carga de
 memoria, debido a esto solo la imagen de la figura \ref{cap3:fig:qcenter}
 aparecería en la salida. Si esto quisiese modificarse tan solo habría que
-desactivar el parámetro 'only\_center' del método run.
+desactivar el parámetro 'only\_center' del método run. Está etapa esta pensada
+para ser la primera del workflow, puesto que al eliminar trozos de la imagen
+carecería de sentido aplicar transformaciones previas que no aportarían nada.
 
 \figura{Vectorial/Corte/Original}{width=.5\textwidth}{cap3:fig:uncrop}%
 {Imagen sin recortar}

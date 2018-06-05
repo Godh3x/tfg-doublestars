@@ -10,8 +10,8 @@
 
 \begin{resumen}
 A lo largo de este capítulo veremos que herramientas hemos empleado para obtener
-imágenes astronómicas con las que trabajar, así como datos de estrellas
-dobles ya catalogadas.
+los datos astronómicos con los que trabajar, así como los de estrellas dobles ya
+catalogadas.
 \end{resumen}
 
 %-------------------------------------------------------------------
@@ -19,13 +19,9 @@ dobles ya catalogadas.
 %-------------------------------------------------------------------
 \label{cap2:sec:aladin}
 
-\url{http://aladin.u-strasbg.fr/}
-
-\medskip
-
-\textbf{Aladin Sky Atlas} es un programa interactivo desarrollado por
-el \textbf{CDS}, Centro de Datos Astronómicos de Estrasburgo, que permite
-acceder recursos astronómicos digitalizados.
+\textbf{Aladin Sky Atlas}, \url{http://aladin.u-strasbg.fr/}, es un programa
+interactivo desarrollado por el \textbf{CDS}, Centro de Datos Astronómicos de
+Estrasburgo, que permite acceder recursos astronómicos digitalizados.
 
 \medskip
 
@@ -37,14 +33,35 @@ desviación de ángulo o simplemente que no determine correctamente el encuadre,
 como resultado surgen imágenes en las que parece que todas las estrellas se han
 desplazado.
 
+\medskip
+
+En la figura \ref{cap2:fig:aladin} se ilustra la obtención de dos imágenes
+mediante este programa, en ella se pueden observar multiples zonas de interes.
+
+\begin{enumerate}[label=(\alph*)]
+  \item Permite elegir el servidor de imágenes que se quiere consultar, en
+    nuestro empleamos \textit{Aladin images}.
+  \item Indica el objetivo de la busqueda, es decir, la coordenada de la cuál se
+    desean obtener los recursos, una vez introducida es necesario pulsar \textit{Submit}.
+  \item En este caso podemos ver que para dicha coordenada existen múltiples
+    imágenes de diferentes fuentes y los datos asociados a cada una de ellas,
+    entre estos datos se encuentran las fechas en las que se tomaron. Para
+    solicitarlas tan solo es necesario seleccionarlas, empleando los recuadros
+    de la izquierda, y presionar \textit{Submit}.
+\end{enumerate}
+
+\figura{Vectorial/Obtencion/aladin}{width=\textwidth}{cap2:fig:aladin}%
+{Obtencion de recursos mediante el uso de Aladin.}
+
+
 %-------------------------------------------------------------------
-\section{Obtención de imagenes}
+\section{Obtención de imágenes}
 %-------------------------------------------------------------------
 \label{cap2:sec:imgdownload}
 
 Como se describe la sección \ref{cap2:sec:aladin} es posible obtener imágenes
-que muestren la evolución de los cuerpos celestes en coordenadas concretas con
-años de diferencia.
+de varias fuentes, que muestren la evolución de los cuerpos celestes en
+coordenadas concretas con años de diferencia.
 
 \begin{figure}[t]
   \centering
@@ -66,39 +83,95 @@ años de diferencia.
     {Imagenes/Vectorial/Obtencion/composicion}
     \label{cap2:fig:superpos}
   }
-  \caption{Superposición de imagenes\label{cap2:fig:astro}}
+  \caption{Superposición de imágenes\label{cap2:fig:astro}}
 \end{figure}
 
 \medskip
 
-Como se puede apreciar, figura \ref{cap2:fig:superpos}, Aladin no solo superpone
-las imágenes, también las rota para tratar de encajarlas y colorea cada imagen
-de un tono de modo que las estrellas pueden ser rojas o azules, dependiendo de
-la imagen en que aparezcan, si el cuerpo coincide, no se ha movido, será blanca.
+Una vez hemos obtenido las fotografías deseadas utilizamos la herramienta RGB
+de Aladin que reemplaza el blanco por rojo en una imagen y por azul en la otra,
+que corresponde a la misma zona del cielo pero 50 después.  A continuación
+superpone ambas imágenes, creando una nueva. Las estrellas que están en la misma
+posición en ambas imágenes aparecen aproximadamente blancas por la superposición
+de rojo y azul. En cambio, en las que ha habido un movimiento notable aparecerá
+una zona roja y otra azul. Si el movimiento es mayor al diámetro de la estrella,
+está aparecerá en la imagen compuesta como dos estrellas diferentes, una roja y
+otra azul. Como se puede apreciar, figura \ref{cap2:fig:superpos}, Aladin no
+solo superpone estás imágenes, también las rota para tratar de encajarlas.
+
+\medskip
+
+Nuestro reto será encontrar qué ``estrella roja'' asociar con una ``estrella
+azul'' de forma que seamos capaces de detectar que son, en efecto, dos imágenes
+de la misma estrella.
 
 \medskip
 
 Para facilitar el proceso de descarga Aladin permite emplear scripts en
 combinación con ficheros de parámetros. Puesto que no existe ninguna fuente que
-tenga fotos de todas las coordenadas celestes son necesarios dos scripts que
-emplean las siguientes fuentes.
+tenga fotos de todas las coordenadas celestes son necesarios dos scripts con el
+siguiente formato.
+
+\begin{lstlisting}[language=script]
+      reset
+      reticle off
+      overlay off
+      get aladin(POSSI,O) $1
+      get aladin(POSSII,F) $1
+      sync
+      RGB 1 2
+      sync
+      zoom 4
+      sync
+      save /.../images/$1.jpg
+\end{lstlisting}
+
+\medskip
+
+El script realizará los siguientes pasos:
+
+\begin{enumerate}
+  \item Elimina las imágenes previas que el programa tenga abiertas.
+  \item Desactiva el retículo, es un marcador que se situa sobre la coordenada
+    introducida.
+  \item Desactiva el overlay, se trata de información proporcionada por Aladin,
+    como, por ejemplo, el zoom aplicado.
+  \item Obtiene una imagen de la fuente POSSI.
+  \item Obtiene una imagen de la fuente POSSII.
+  \item Espera a que ambas imágenes se descarguen antes de continuar.
+  \item Utiliza la herramienta RGB sobre las vistas 1 y 2, las imágenes recien
+    descargadas.
+  \item Espera a que se complete el proceso.
+  \item Aplica un zoom x4 sobre la coordenada usada como parámetro.
+  \item Realiza una espera para asegurar que el zoom se ha realizado
+    correctamente.
+  \item Almacena la imagen resultante en la ruta indicada.
+\end{enumerate}
+
+En varias instrucciones se emplea el valor \$1, cada vez que esto aparece se
+está haciendo referencia al parámetro 1, en este caso la coordenada.
+
+\medskip
+
+Las instrucciones get del script, marcadas en azul, obtienen una imagen de la
+fuente indicada, en nuestro caso empleamos:
 
 \begin{itemize}
-  \item \textbf{POSSI} y \textbf{POSSII} para descargar imágenes de coordenadas
-  positivas.
+  \item \textbf{POSSI} y \textbf{POSSII} para descargar imágenes con declinación
+    positiva.
   \item \textbf{POSSI} y \textbf{SERC} para las negativas.
 \end{itemize}
 
-Además de ejecutar la superposición el script hace zoom en la coordenada
-proporcionada como parámetro y almacena la imagen resultante.
-
+Las siglas POSS hacen referencia a \textbf{Palomar Observatory Sky Survey},
+situado en San Diego, California. SERC representa \textbf{Space Environment
+Research Centre} situado en Australia.
 
 %-------------------------------------------------------------------
 \section{WDS}
 %-------------------------------------------------------------------
 \label{cap2:sec:wds}
 
-\url{http://ad.usno.navy.mil/wds/}
+
 
 \medskip
 
@@ -108,13 +181,14 @@ sistemas de estrellas dobles ya reconocidas que poder analizar con el fin de
 semi-automatizar su reconocimiento, figura \ref{cap2:fig:wds}.
 
 \figura{Vectorial/WDS/ProcesoWDS}{width=.5\textwidth}{cap2:fig:wds}%
-{Diagrama de procesamiento para WDS}
+{Diagrama de procesamiento para WDS.}
 
 \medskip
 
-\textbf{WDS}, Washington Double Star Catalog, es un catalogo mantenido por
-el Observatorio Naval de los Estados Unidos que recopila información sobre
-sistemas de estrellas múltiples.
+\textbf{WDS}, Washington Double Star Catalog disponible en
+\url{http://ad.usno.navy.mil/wds/}, es un catalogo mantenido por el Observatorio
+Naval de los Estados Unidos que recopila información sobre sistemas de estrellas
+múltiples.
 
 \medskip
 
@@ -142,37 +216,39 @@ almacenadas en un fichero que puede usarse como parámetro de los scripts
 descritos en la sección \ref{cap2:sec:imgdownload}.
 
 %-------------------------------------------------------------------
-\section{Datasets}
+\section{Conjuntos de entrenamiento positivos y negativos}
 %-------------------------------------------------------------------
 \label{cap2:sec:dsets}
 
 Usando las coordenadas obtenidas al filtrar el catálogo WDS, sección
 \ref{cap2:sec:wds}, como parámetro de los scripts de Aladin descargamos las
-imágenes que conforman el espectro positivo del dataset. Para poder formarlo
-completamente se emplearon los generadores de coordenadas para obtener un
-número equivalente de casos en los que no hay estrella doble. Con el dataset
-completo se decidió aplicar una división común en machine learning que consiste
-en partir un dataset en tres, training, test y validation, correspondientes al
-60\%, 20\% y 20\%, respectivamente, de los datos.
+imágenes que conforman conjunto de entrenamiento con datos positivos, esto es un
+conjunto de imágenes -ya catalogadas- con alto movimiento propio común. Para
+poder formarlo completamente se emplearon los generadores de coordenadas para
+obtener un número equivalente de casos en los que no hay estrella doble. Con el
+dataset completo se decidió aplicar una división común en machine learning que
+consiste en partir un dataset en tres, training, test y validation,
+correspondientes al 60\%, 20\% y 20\%, respectivamente, de los datos. De esta
+forma podemos evaluar el método, midiendo tanto los falsos positivos (cuando
+indica que hay una estrella doble y no la hay), como en los casos negativos
+(cuando descarta una imagen que sí tiene una doble).
 
 \medskip
 
 En primer lugar tenemos el training set, estos datos serán los empleados para
-generar un modelo que, a priori, funciona. El problema es que, si solo se usa un
-set, no hay una forma de comprobar si el modelo funciona, debido a esto se crea
-la partición de validación que será empleada para ajustar los parámetros de
-decisión. Una vez se han obtenido los resultados esperados es necesaria una
-comprobación externa, esto se debe a que el modelo se ha entrenado para acertar
-específicamente los datos del set de validación. Este último motivo es el que
-justifica la existencia de test set, al examinar los resultados con estos datos
-pueden ocurrir dos cosas: si los resultados son buenos el modelo entrenado
-funciona, si por el contrario no son los esperados es necesario re-entrenar el
-modelo desde cero, no vale con modificar los parámetros.
+entrenar un modelo. El validation set se utiliza para afinar el valor de los
+parametros del modelo generado. Por último, el test set es un conjunto de datos,
+independientes de los de entrenamiento, empleado para comprobar el rendimiento
+del modelo ya entrenado y afinado. Si los resultados obtenidos empleando el test
+set no son los deseados se debe volver a comenzar el entrenamiento desde cero
+con nuevos conjuntos de datos.
 
 \medskip
 
-Esta técnica es muy útil debido a que si los datos del training set están
-viciados, por ejemplo, si todas las estrellas dobles están a la misma distancia,
-una vez se evalúe sobre el test set podremos comprobar que el modelo no es
-válido pues tiene en cuenta una distancia que no tiene por qué ser la misma
-siempre.
+Esta técnica es muy útil debido a que si los datos de los training y validation
+están viciados, por ejemplo, si las estrellas dobles están formadas por
+componentes situadas a la misma distancia aparente, en pixels, dentro de la
+imagen, una vez se evalúe sobre el test set podremos comprobar que el modelo no
+es válido pues tiene en cuenta una distancia que no tiene por qué ser la misma
+siempre. Si los datos del test set también estuvieran viciados esta técnica no
+sería de utilidad.

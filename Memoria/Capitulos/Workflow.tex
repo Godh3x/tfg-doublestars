@@ -9,7 +9,7 @@
 \label{cap5}
 
 \begin{resumen}
-Una vez resuelta la recolección de datos es necesario ver que tratamientos
+Una vez resuelta la recolección de datos es necesario ver qué tratamientos
 aplicarles para alcanzar nuestro objetivo, pero antes vamos a definir una
 plataforma genérica sobre la cuál desarrollar dichos procesos.
 \end{resumen}
@@ -19,20 +19,34 @@ plataforma genérica sobre la cuál desarrollar dichos procesos.
 %-------------------------------------------------------------------
 \label{cap5:sec:introduccion}
 
-En los capítulos \ref{cap3} y \ref{cap4} se describen diferentes procesos por los
-que una fotografía ha de pasar para poder detectar sistemas de estrellas dobles,
-cada una de estas etapas viene definida por un número arbitrario de entradas y
-salidas y un evento que al abortar la ejecución permita al programa salir de
-forma segura.
+En los capítulos \ref{cap3} y \ref{cap4} se describen diferentes procesos por
+los que una fotografía ha de pasar para poder detectar sistemas de estrellas
+dobles. Cada una de estas etapas puede recibir un número arbitrario de entradas
+y salidas, además recibirá un evento de la clase Thread de Python que al abortar
+la ejecución, mediante la interrupción Ctrl+C, se activará permitiendo así a la
+etapa saber que debe parar su ejecución. Por ejemplo, la etapa de recoloreado
+que veremos en este capitulo recibe dos parametros de entrada, uno de salida y
+un evento en el que poder consultar, mediante la instrucción
+``stop\_event.is\_set()'' si debe parar de ejecutarse.
+
+\begin{lstlisting}[language=Python]
+  def run(in_lista, in_dimages, out_dout, stop_event):
+\end{lstlisting}
 
 \medskip
 
-Cada etapa por tanto puede ser configurada y lanzada por separado puesto que para
-conectarlas solo es necesario que la salida de una etapa sea la entrada de la
-siguiente, de esta forma todas las etapas pueden trabajar de forma simultánea.
-Sin embargo, creemos que esta tarea puede simplificarse mediante la creación
-de un controlador que se encargue de lanzar las etapas en diferentes hilos, para
-que sigan ejecutándose a la vez, y pararlas cuando el usuario lo requiera.
+Cada etapa por tanto puede ser configurada y lanzada por separado puesto que
+para conectarlas solo es necesario que su salida sea la entrada de la siguiente.
+De esta forma todas las etapas pueden trabajar de forma simultánea. Sin embargo,
+creemos que esta tarea puede simplificarse mediante la creación de un
+mecanismo de flujo de datos, que tiene la característica de que varios pasos se
+pueden ejecutar simultáneamente. En nuestro caso es posible conseguir esta
+concurrencia de tareas porque se asume que las etapas producen elementos de
+salida de forma constante que las siguientes etapas pueden consumir. Está
+filosofia recuerda a la empleada por la herramienta flume
+(\url{https://flume.apache.org/}) en entornos Big Data, empleada para recibir y
+operar con datos en streaming.
+
 
 %-------------------------------------------------------------------
 \section{Estructura}
@@ -47,26 +61,22 @@ llegaría a un estado definitivo en el cual se acepte o rechace.
 
 \medskip
 
-Podemos entonces definir cada fase como una entrada en un diccionario en la cual
-podemos almacenar la entrada y la salida, de este modo conectar una etapa con
-otra tan solo implica igualar la entrada de una a la salida de la otra. A la
-hora de lanzar el hilo es necesario saber a que función llamar para lo cual nos
-encontramos con dos opciones: llamar siempre a una función con un nombre
-determinado o simplemente incluir otro dato en el diccionario. En este caso se
-ha optado por que además de lo que ya guardaba se almacene la función a la que
-se debe llamar, esta opción da libertad a la hora de crear los pasos además de
-facilitar la posterior creación de los hilos.
+Podemos entonces definir cada fase como una entrada, una salida y un nombre de
+función, de este modo conectar una etapa con otra tan solo implica igualar la
+entrada de una a la salida de la otra. El nombre de función se almacena puesto
+que a la hora de lanzar el hilo es necesario saber a qué función llamar.
 
 \medskip
 
-Existe un último problema, algunas etapas del workflow pueden tener más de una
-entrada o salida por lo que en el diccionario se almacenara un array de entradas
-y otro de salidas, debido a esto también será necesario especificar el numero de
-entrada o salida a la que se hace referencia al conectar los pasos.
+Existe un último, algunas etapas del workflow pueden tener más de una entrada o
+salida por lo que se debe emplear un array de entradas y otro de salidas, debido
+a esto también será necesario especificar el numero de entrada o salida a la que
+se hace referencia al conectar los pasos.
 
 \medskip
 
-Una entrada del diccionario tendría por tanto el siguiente formato.
+Una etapa se almacenara en el workflow empleando un diccionario, tendría por
+tanto el siguiente formato.
 
 \begin{lstlisting}[language=Python]
 flow['step'] = {
@@ -103,7 +113,7 @@ que una vez recibido no se abortara la ejecución del paso hasta que sea seguro.
 
 \medskip
 
-Para poder saber que está pasando el workflow también monta un sistema de log,
+Para poder saber qué está pasando el workflow también monta un sistema de log,
 utilizando la biblioteca \textit{logging} de python, al cual las etapas pueden
 acceder para escribir mensajes de error o información de debug que le pueda ser
 de utilidad al usuario para conocer que ha ocurrido.
@@ -111,12 +121,9 @@ de utilidad al usuario para conocer que ha ocurrido.
 \medskip
 
 Debido a que las etapas se encuentran en continua ejecución podría darse el caso
-en el que los mismos datos se procesen varias veces, para prevenir esto las
-etapas que hemos implementado mantienen un log de historia que solo modifican
-ellas en el cual almacenan el identificador de los datos al acabar de
-procesarlos, una de las primeras comprobaciones al recoger datos de la entrada
-es comprobar si el id se encuentra en la historia del paso, de ser así los datos
-no se procesan.
+en el que los mismos datos se procesen varias veces. Para prevenir esto las
+etapas que hemos implementado mantienen su propio log de historia, por cada
+dato procesado se almacena un identificador, normalmente el nombre.
 
 %-------------------------------------------------------------------
 \section{Uso}

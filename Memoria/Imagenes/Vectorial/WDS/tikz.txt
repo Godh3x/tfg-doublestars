@@ -1,0 +1,18 @@
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[clo] (wds) {WDS};
+    \node[sheet, below=.6 of wds, align=center] (cat) {Datos\\Catálogo};
+    \node[unit, below=.6 of cat, align=center] (filter) {Filtro};
+    \node[txt, right=.6 of filter, align=center] (bin) {Desechar};
+    \node[sheet, below=.6 of filter, align=center] (train) {Datos\\Entrenamiento};
+
+    \path[thick, ->]
+      (wds) edge (cat)
+      (cat) edge (filter)
+      (filter) edge (bin)
+      (filter) edge (train);
+  \end{tikzpicture}
+  \caption{Diagrama de procesamiento para WDS}
+  \label{cap2:fig:wds}
+\end{figure}

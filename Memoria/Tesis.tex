@@ -119,10 +119,24 @@ constantes,guionado,Cascaras/bibliografia,config%
     commentstyle=\color{black},
 }
 
+%
+\lstdefinelanguage{script}{
+    comment=[l]{get},
+    commentstyle=\color{blue},
+}
+
 %- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 %                        Documento
 %- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 \begin{document}
+
+% tikz styles
+\tikzstyle{sheet}= [rectangle, draw = black, minimum width = .8cm, minimum height = 1.2cm]
+\tikzstyle{unit}= [rectangle, draw = blue, minimum width = 2.4cm, minimum height = 1.6cm]
+\tikzstyle{txt}= [rectangle, draw = white, align = center]
+\tikzstyle{clo} = [cloud, draw, cloud puffs = 10, cloud puff arc = 120, aspect = 1.5, inner ysep=1em]
+
+\tikzstyle{myarrow}=[->, >=open triangle 90, thick]
 
 % Incluimos el  fichero de definici�n de guionado  de algunas palabras
 % que LaTeX no ha dividido como deber�a

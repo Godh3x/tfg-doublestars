@@ -74,18 +74,18 @@ tonalidades de los pixels.
 
 En este punto las etapas no funcionaban de manera fluida, era necesario que la
 etapa previa hubiera procesado todos los datos de entrada antes de que la
-siguiente se pusiera en marcha, esto era claramente un mal diseño, por lo que
-ideé un primer concepto del workflow que ahora se emplea, en este punto las
-etapas se añadían creando manualmente el thread que las controla, pero, como
+siguiente se pusiera en marcha, esto era claramente un mal diseño. Ideé un
+primer concepto del workflow que ahora se emplea, en este punto las
+etapas se añadían creando manualmente el thread que las controlan, pero, como
 me hizo ver nuestro director, el tener que programar el thread oscurecía la
 estructura que se le daba al grafo de trabajo. Con la simpleza como objetivo
 modifiqué el formato, dando lugar a la estructura explicada en esta memoria
 gracias a la cual no es necesario tener ningún conocimiento del funcionamiento
-del workflow, tan solo es necesario saber que etapas se quieren y como se
+del workflow. Tan solo es necesario saber qué etapas se quieren y como se
 interconectan. Además del desarrollo me encargue de adaptar las etapas que ya
 estaban programadas y todas las que se crearon a posteriori a un formato
-estándar y añadirle a todas la capacidad de usar un logging para informar en
-todo momento del estado de la ejecución.
+estándar. También le añadí a todas la capacidad de usar un logging para informar
+en todo momento del estado de la ejecución.
 
 \medskip
 
