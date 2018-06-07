@@ -264,6 +264,36 @@ pasaban por él o no.
 
 \medskip
 
+Posteriormente encontramos en la clase de árboles de decisión, concretamente en
+la clase ``Decission Tree Classsifie'', una funcionalidad propia de ésta que,
+utilizando el módelo generado, devuelve un archivo con extensión ``.dot'' en el
+que se encuentra la representación del árbol de decisión generado por el modelo.
+
+\medskip
+
+Una vez generado el archivo.dot, con la ayuda de una biblioteca de Python
+utilizada para dibujar grafos llamada ``graphviz'', se puede obtener la
+representación gráfica del árbol, con la información de el valor del atributo
+utilizado para decidir en cada nodo y el valor de la clase en los nodos hoja,
+figura \ref{cap6:fig:dtree}.
+
+\figura{Vectorial/Problemas/tree}{width=\textwidth}{cap6:fig:dtree}%
+{Árbol de decisión generado a partir del modelo.}
+
+\medskip
+
+Aunque esta era justo la información que buscábamos, esta sólo se podía analizar
+a mano, puesto que el formato del archivo que utiliza esta biblioteca para
+dibujar el árbol no es más que un string que representa a la imagen.
+
+\medskip
+
+Por otro lado el modelo obtenido no era del todo satisfactorio puesto que aunque
+la precisión para la clase del no era muy buena llegando al 100\%, no lo era
+para la clase del no, llegando sólo a un 20\%.
+
+\medskip
+
 Debido a este contratiempo en el último momento del desarrollo, que no pudimos
 subsanar, decidimos simplemente descartar esta fase de parametrización y
 trabajar con el ajuste que se realizó a mano en las primeras instancias de la

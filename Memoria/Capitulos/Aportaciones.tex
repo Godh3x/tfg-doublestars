@@ -323,10 +323,13 @@ entrenamiento del modelo, ésta vez sin obtener buenos resultados. Pero tras
 volver a  investigar más cada parámetro de forma individual encontré la forma de
 mejorar el comportamiento final del programa aumentando la precisión a costa de
 la sensibilidad, y debido a que no cumplía con nuestros objetivos decidimos que
-desecharíamos esta fase del flujo del programa principal. Posteriormente, me
-dediqué a procesar los datos que identifican a las estrellas dobles mediante un
-modelo de Machine Learning que encontrara los valores más ajustados posibles que
-hacen característico a un sistema binario de estrellas.
+desecharíamos esta fase del flujo del programa principal.
+
+\medskip
+
+Posteriormente, me dediqué a procesar los datos que identifican a las estrellas
+dobles mediante un modelo de Machine Learning que encontrara los valores más
+ajustados posibles que hacen característico a un sistema binario de estrellas.
 
 \medskip
 
@@ -363,10 +366,39 @@ Desgraciadamente descubrí que el árbol de decisión que se podía obtener no nos
 daba el valor de los atributos que definen el hiperplano que separan muestras de
 estrellas que no son dobles de las que sí, en su lugar, proporcionaba un vector
 de matrices, una por cada estimador del modelo, la información que obtenías para
-cada muestra es si esta atravesaba un nodo concreto o no.
+cada muestra es si esta atravesaba un nodo concreto o no. Esta información puede
+ser útil en muchos casos, pero en el nuestro no, dado que nos proporcionaba la
+información que precisábamos.
 
 \medskip
 
-Esta información puede ser útil en muchos casos, pero en el nuestro no, dado que
-nos proporcionaba la información que precisábamos con lo que desafortunadamente
-todo este desarrollo terminó resultando infructuoso al final.
+Sin embargo, más tarde descubrí una funcionalidad propia de un clasificador
+basado en un árbol de decisión que proporcionaba la representación de dicho
+árbol con toda la información que necesitábamos en cada nodo.
+
+\medskip
+
+Para poder visualizar este árbol utilicé una biblioteca de visualización de
+grafos, que con el archivo que había generado en el paso anterior era capaz de
+generar la imágen de representación del árbol de decisión generado por el
+modelo.
+
+\medskip
+
+El inconveniente de esta representación es que dado que no es una estructura de
+datos lo que se encuentra en archivo, sino una representación de una imagen, si
+se quiere analizar el árbol no se puede hacer de forma automática y hay que
+analizarlo a mano.
+
+\medskip
+
+Independientemente de esto, me dispuse a continuación a generar el modelo, sin
+embargo, la precisión más alta que conseguí en la clase del sí con este
+clasificador, no era lo suficientemente alta para utilizar los criterios de
+decisión obtenidos de los valores de los atributos.
+
+\medskip
+
+Debido a este problema decidimos descartar esta fase para obtener los criterios
+de parametrización, con lo que desafortunadamente todo este desarrollo terminó
+resultando infructuoso al final.
